@@ -1,1 +1,72 @@
-# appli-muscu
+# Fitness Tracker — Application de suivi musculation
+
+Application web mobile-first pour suivre ses séances de musculation, visualiser sa progression et obtenir des conseils via un coach IA.
+
+## Stack technique
+
+- **React 18** + **TypeScript** + **Vite 6**
+- **Tailwind CSS v4** + **shadcn/ui** (Radix UI)
+- **Recharts** pour les graphiques
+- **React Router v7**
+- **pnpm** comme gestionnaire de paquets
+- Stockage : `localStorage` (pas de backend)
+
+## Démarrage
+
+```bash
+pnpm install
+pnpm dev        # dev avec proxy Vite (Claude fonctionne)
+pnpm build      # build de production
+pnpm preview    # aperçu du build — Claude ne fonctionne PAS (proxy absent)
+```
+
+L'app est accessible sur `http://localhost:5173`.
+
+> **Note `pnpm preview` :** le proxy Vite `/api/claude` n'est actif qu'en `pnpm dev`.
+> En `pnpm preview`, les appels vers `api.anthropic.com` sont bloqués par CORS.
+> Pour tester la clé Claude en local, utiliser `pnpm dev` uniquement.
+
+## Fonctionnalités
+
+- **Séances** — Création, suivi des séries avec poids/reps, RPE, RIR et notes
+- **Timer de repos** — Flottant, avec presets et ajustements ±15s, bip audio à la fin
+- **Records personnels** — Détection automatique des PRs (charge, 1RM Epley, volume) avec célébration
+- **Bibliothèque d'exercices** — 30 exercices intégrés + création personnalisée + import depuis wger.de
+- **Progression** — Graphiques par exercice, statut de progression (positive / stable / stagnation)
+- **Coach IA** — Chat avec Claude Haiku (clé API Anthropic requise) ou mode démo sans clé
+- **Export / Import** — Sauvegarde JSON de toutes les données, avec backup automatique avant import
+
+## Configuration du Coach IA
+
+1. Obtiens une clé API sur [console.anthropic.com](https://console.anthropic.com)
+2. Dans l'app, va sur **Coach IA** → badge **Mode démo** → entre ta clé `sk-ant-…`
+3. La clé est stockée uniquement dans ton navigateur (localStorage)
+
+En développement, les appels passent par le proxy Vite (`/api/claude` → `api.anthropic.com`).
+
+## Déploiement (Vercel)
+
+Le fichier `vercel.json` est déjà configuré. Connecte le repo sur [vercel.com](https://vercel.com) — aucune variable d'environnement à définir côté serveur (la clé est fournie par l'utilisateur dans le navigateur et transmise via la Vercel Edge Function `api/claude.ts`).
+
+```bash
+pnpm build   # vérification locale
+```
+
+## Structure
+
+```
+src/
+├── context/WorkoutContext.tsx   # état global + localStorage + export/import
+├── lib/
+│   ├── pr-utils.ts              # Epley 1RM, records, historique, progression
+│   ├── ai-context.ts            # formatage du prompt système Claude
+│   ├── ai-service.ts            # MockAIService + ClaudeAIService
+│   ├── wger-api.ts              # intégration API wger.de
+│   └── exercise-utils.ts        # labels et styles partagés
+├── pages/                       # une page par route
+└── components/
+    ├── Layout.tsx               # nav bottom + header
+    └── ui/                      # composants shadcn/ui
+api/
+└── claude.ts                    # Vercel Edge Function (proxy Anthropic)
+```

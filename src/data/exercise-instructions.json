@@ -1,0 +1,172 @@
+{
+  "bench-press-barbell": {
+    "instructions": [
+      "Allonge-toi sur le banc, pieds à plat au sol, omoplates rétractées et abaissées.",
+      "Saisit la barre en prise pronation, légèrement plus large que les épaules.",
+      "Descends la barre lentement jusqu'à effleurer le bas des pectoraux — ne rebondis pas.",
+      "Pousse la barre vers le haut et légèrement vers l'arrière en expirant, jusqu'à extension complète."
+    ],
+    "tips": [
+      "Garde les omoplates rétractées et collées au banc tout au long du mouvement.",
+      "Légère cambrure naturelle du bas du dos — ni plate ni exagérée.",
+      "Pieds bien ancrés au sol pour maximiser la stabilité."
+    ],
+    "commonMistakes": [
+      "Rebondir la barre sur la poitrine pour tricher sur la charge.",
+      "Lever les fessiers du banc pour gagner en amplitude.",
+      "Coudes à 90° du torse — trop écartés génère une tension excessive sur les épaules."
+    ]
+  },
+  "squat-barbell": {
+    "instructions": [
+      "Place la barre sur la partie haute des trapèzes (high bar) ou dans le creux du haut du dos (low bar).",
+      "Pieds à largeur d'épaules ou légèrement plus larges, orteils tournés à 15-30° vers l'extérieur.",
+      "Descends en poussant les genoux dans l'axe des orteils jusqu'au parallèle ou en dessous.",
+      "Remonte en poussant le sol, hanches et épaules au même rythme — ne laisse pas les hanches partir en premier."
+    ],
+    "tips": [
+      "Regard droit devant ou légèrement vers le haut — ne regarde pas le sol.",
+      "Genoux dans l'axe des orteils du début à la fin du mouvement.",
+      "Inspire profondément en haut, bloque le core, descends, expire à la montée."
+    ],
+    "commonMistakes": [
+      "Genoux qui rentrent vers l'intérieur (valgus) — signe de fessiers faibles ou de talons qui décollent.",
+      "Dos arrondi dans le bas du mouvement — renforce ton core et travaille la mobilité des hanches.",
+      "Talons qui décollent du sol — signe de manque de mobilité aux chevilles."
+    ]
+  },
+  "deadlift-conventional": {
+    "instructions": [
+      "Pieds à largeur de hanches, barre positionnée au-dessus des lacets.",
+      "Saisis la barre juste à l'extérieur des jambes, dos plat, hanches fléchies, omoplates au-dessus de la barre.",
+      "Pousse dans le sol avec les jambes en gardant la barre collée aux tibias — la barre monte.",
+      "Verrouille en haut avec hanches et genoux en extension complète, épaules légèrement en arrière."
+    ],
+    "tips": [
+      "La barre doit rester collée aux tibias et aux cuisses pendant toute la montée.",
+      "Inspire profondément, brace le core avant de tirer — ne commence pas sans avoir \"verrouillé\" le dos.",
+      "Pense à 'pousser le sol loin de toi' plutôt qu'à 'tirer la barre vers le haut'."
+    ],
+    "commonMistakes": [
+      "Arrondir le bas du dos (flexion lombaire) — danger réel pour les vertèbres.",
+      "Barre qui s'écarte du corps — perd de l'énergie et sollicite le dos inutilement.",
+      "Hanches qui montent avant les épaules — transforme le mouvement en good morning."
+    ]
+  },
+  "pull-up": {
+    "instructions": [
+      "Saisit la barre en pronation (paumes vers l'avant), mains légèrement plus larges que les épaules.",
+      "Depuis la position suspendue, rétracte les omoplates vers le bas et l'intérieur.",
+      "Tire ton corps vers le haut en amenant les coudes vers les hanches jusqu'à ce que le menton dépasse la barre.",
+      "Redescends lentement et complètement jusqu'à extension totale des bras avant de repartir."
+    ],
+    "tips": [
+      "Initie le mouvement avec les dorsaux — pense à 'écraser des oranges sous les aisselles'.",
+      "Corps légèrement gainé, croix les chevilles pour éviter de balancer.",
+      "La descente contrôlée est aussi importante que la montée pour gagner en force."
+    ],
+    "commonMistakes": [
+      "Balancer le corps pour prendre de l'élan (kipping) — réduit le travail des dorsaux.",
+      "Ne pas descendre complètement à bras tendus — amputation de l'amplitude utile.",
+      "Tirer avec les biceps plutôt qu'avec les dorsaux — mauvaise activation musculaire."
+    ]
+  },
+  "overhead-press-barbell": {
+    "instructions": [
+      "Barre posée sur les deltoïdes antérieurs, prise légèrement plus large que les épaules, coudes devant la barre.",
+      "Pousse la barre verticalement au-dessus de la tête.",
+      "En montant, rentre légèrement la tête pour laisser passer la barre, puis ressors-la une fois la barre passée.",
+      "Descends contrôlé jusqu'aux deltoïdes antérieurs en gardant le core engagé."
+    ],
+    "tips": [
+      "Core et fessiers contractés — évite de cambrer le bas du dos pour compenser.",
+      "La barre doit se déplacer sur une ligne verticale au-dessus des talons.",
+      "Serre la barre fort — l'irradiation de tension améliore la stabilité de tout le corps."
+    ],
+    "commonMistakes": [
+      "Cambrer excessivement le bas du dos — compense une faiblesse du core.",
+      "Pousser la barre vers l'avant plutôt que verticalement — perd de la force et déséquilibre.",
+      "Coudes qui tombent vers le bas pendant le mouvement."
+    ]
+  },
+  "dumbbell-curl": {
+    "instructions": [
+      "Debout ou assis, haltères le long du corps, paumes face en avant (supination).",
+      "Fléchis le coude en amenant l'haltère vers l'épaule, coude fixe contre le corps.",
+      "Supra le poignet légèrement en fin de mouvement pour maximiser la contraction.",
+      "Redescends lentement jusqu'à extension complète."
+    ],
+    "tips": [
+      "Coudes fixes contre les flancs du début à la fin.",
+      "Contrôle la descente — la phase excentrique est aussi efficace que la montée."
+    ],
+    "commonMistakes": [
+      "Balancer le tronc pour prendre de l'élan — réduit le travail des biceps.",
+      "Coudes qui partent vers l'avant en haut du mouvement."
+    ]
+  },
+  "barbell-row": {
+    "instructions": [
+      "Debout, penché à environ 45°, genoux légèrement fléchis, dos droit, barre en prise pronation.",
+      "Tire la barre vers le bas du ventre en ramenant les coudes vers l'arrière.",
+      "Contracte les dorsaux et rhomboïdes en haut — pince les omoplates.",
+      "Redescends en contrôlant jusqu'à extension complète des bras."
+    ],
+    "tips": [
+      "Garde le dos plat et le buste stable — pas de rebond de hanche.",
+      "Pense à 'écraser un crayon entre les omoplates' en position haute."
+    ],
+    "commonMistakes": [
+      "Arrondir le dos pour soulever plus lourd — risque de blessure lombaire.",
+      "Rebondir la barre contre les cuisses pour prendre de l'élan."
+    ]
+  },
+  "hip-thrust": {
+    "instructions": [
+      "Assis au sol, buste adossé à un banc, barre en travers des hanches (avec pad de protection).",
+      "Pieds à plat au sol, largeur des épaules, légèrement devant les genoux.",
+      "Pousse les hanches vers le haut jusqu'à ce que cuisses et torse forment une ligne droite.",
+      "Contracte fort les fessiers en haut pendant 1 seconde, puis descends contrôlé."
+    ],
+    "tips": [
+      "Menton rentré vers la poitrine — évite d'hyperextendre le cou.",
+      "Pousse avec les talons autant qu'avec l'avant du pied."
+    ],
+    "commonMistakes": [
+      "Cambrer le bas du dos plutôt que pousser les hanches vers le haut.",
+      "Pieds trop loin des fessiers — réduit l'activation des fessiers au profit des ischio-jambiers."
+    ]
+  },
+  "cable-lat-pulldown": {
+    "instructions": [
+      "Assis, genoux bloqués sous les appuis, saisit la barre en pronation, largeur supérieure aux épaules.",
+      "Penche légèrement le buste en arrière, rétracte les omoplates.",
+      "Tire la barre vers le haut des pectoraux en amenant les coudes vers les hanches.",
+      "Remonte lentement jusqu'à extension complète des bras en gardant la tension."
+    ],
+    "tips": [
+      "Amène la barre vers la poitrine, jamais derrière la nuque.",
+      "Pense à 'enfoncer tes coudes dans tes poches' pour mieux activer les dorsaux."
+    ],
+    "commonMistakes": [
+      "Tirer avec les biceps plutôt que de se concentrer sur les dorsaux.",
+      "Ne pas aller jusqu'à l'extension complète en haut — amputation de l'amplitude."
+    ]
+  },
+  "lateral-raise-dumbbell": {
+    "instructions": [
+      "Debout, haltères le long du corps, légère flexion des coudes (10-15°).",
+      "Monte les bras sur les côtés jusqu'à hauteur des épaules en gardant les coudes légèrement fléchis.",
+      "Tourne légèrement le petit doigt vers le haut — comme verser un verre d'eau.",
+      "Descends lentement en 2-3 secondes pour maximiser le travail excentrique."
+    ],
+    "tips": [
+      "Légère inclinaison du buste en avant (10-15°) aide à cibler le deltoïde médian.",
+      "Privilégie des charges légères et une exécution parfaite à de lourdes charges bâclées."
+    ],
+    "commonMistakes": [
+      "Monter les bras au-dessus de la hauteur des épaules — risque d'impingement.",
+      "Hausser les épaules et solliciter les trapèzes plutôt que les deltoïdes."
+    ]
+  }
+}
