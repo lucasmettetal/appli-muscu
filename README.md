@@ -37,6 +37,7 @@ L'app est accessible sur `http://localhost:5173`.
 - **Bibliothèque d'exercices** — 30 exercices intégrés + création personnalisée + import depuis wger.de
 - **Progression** — Graphiques par exercice, statut de progression (positive / stable / stagnation)
 - **Coach IA** — Chat avec Claude Haiku (clé API Anthropic requise) ou mode démo sans clé
+- **Profils locaux** — Plusieurs personnes peuvent partager le même appareil : chaque profil garde ses propres séances, exercices et clé IA (isolés dans le navigateur, sans synchronisation entre appareils)
 - **Export / Import** — Sauvegarde JSON de toutes les données, avec backup automatique avant import
 
 ## Configuration du Coach IA

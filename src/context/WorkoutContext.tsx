@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import exercisesData from '../data/exercises.json';
+import { scopedKey } from '../lib/profiles';
 
 export interface Exercise {
   id: string;
@@ -160,19 +161,19 @@ const baseExercises = exercisesData.exercises as Exercise[];
 
 export function WorkoutProvider({ children }: { children: ReactNode }) {
   const [customExercises, setCustomExercises] = useState<Exercise[]>(() =>
-    safeJSONParse<Exercise[]>(STORAGE_KEYS.CUSTOM_EXERCISES, [])
+    safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), [])
   );
 
   const [workouts, setWorkouts] = useState<Workout[]>(() =>
-    safeJSONParse<Workout[]>(STORAGE_KEYS.WORKOUTS, [])
+    safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), [])
   );
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CUSTOM_EXERCISES, JSON.stringify(customExercises));
+    localStorage.setItem(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), JSON.stringify(customExercises));
   }, [customExercises]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.WORKOUTS, JSON.stringify(workouts));
+    localStorage.setItem(scopedKey(STORAGE_KEYS.WORKOUTS), JSON.stringify(workouts));
   }, [workouts]);
 
   const exercises: Exercise[] = [...baseExercises, ...customExercises];
@@ -199,7 +200,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     workouts,
     customExercises,
     settings: {
-      restDuration: safeJSONParse<number>(STORAGE_KEYS.REST_DURATION, 90),
+      restDuration: safeJSONParse<number>(scopedKey(STORAGE_KEYS.REST_DURATION), 90),
     },
   });
 
@@ -212,7 +213,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
     const rd = Number(data.settings?.restDuration);
     if (Number.isFinite(rd) && rd > 0) {
-      localStorage.setItem(STORAGE_KEYS.REST_DURATION, String(rd));
+      localStorage.setItem(scopedKey(STORAGE_KEYS.REST_DURATION), String(rd));
     }
 
     return validation;

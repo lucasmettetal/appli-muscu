@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useWorkout, STORAGE_KEYS, type WorkoutExercise, type WorkoutSet } from '../context/WorkoutContext';
 import { detectNewPRs, getExercisePR, epley1RM, type NewPR, PR_TYPE_LABEL, PR_TYPE_UNIT } from '@/lib/pr-utils';
 import { loadDraft, saveDraft, clearDraft } from '@/lib/workout-draft';
+import { scopedKey } from '@/lib/profiles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -237,7 +238,7 @@ export function WorkoutSession() {
 
   // ─── Timer de repos ─────────────────────────────────────────────────────────
   const [restDuration, setRestDuration] = useState<number>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.REST_DURATION);
+    const saved = localStorage.getItem(scopedKey(STORAGE_KEYS.REST_DURATION));
     return saved ? Number(saved) : 90;
   });
   const [restRemaining, setRestRemaining] = useState(0);
@@ -276,7 +277,7 @@ export function WorkoutSession() {
 
   const handleChangeDuration = useCallback((d: number) => {
     setRestDuration(d);
-    localStorage.setItem(STORAGE_KEYS.REST_DURATION, String(d));
+    localStorage.setItem(scopedKey(STORAGE_KEYS.REST_DURATION), String(d));
     startRest(d);
   }, [startRest]);
 

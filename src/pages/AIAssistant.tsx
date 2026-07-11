@@ -4,7 +4,7 @@ import {
   createAIService,
   ClaudeAIService,
   MockAIService,
-  CLAUDE_KEY,
+  claudeKeyName,
   type AIMessage,
 } from '@/lib/ai-service';
 import { buildSystemPrompt } from '@/lib/ai-context';
@@ -62,16 +62,16 @@ function APIKeyModal({
       return;
     }
     if (key) {
-      localStorage.setItem(CLAUDE_KEY, key);
+      localStorage.setItem(claudeKeyName(), key);
     } else {
-      localStorage.removeItem(CLAUDE_KEY);
+      localStorage.removeItem(claudeKeyName());
     }
     onSave(key);
     onClose();
   };
 
   const handleRemove = () => {
-    localStorage.removeItem(CLAUDE_KEY);
+    localStorage.removeItem(claudeKeyName());
     onSave(null);
     onClose();
   };
@@ -214,7 +214,7 @@ function TypingIndicator() {
 export function AIAssistant() {
   const { workouts, exercises } = useWorkout();
 
-  const [apiKey, setApiKey]       = useState<string | null>(() => localStorage.getItem(CLAUDE_KEY));
+  const [apiKey, setApiKey]       = useState<string | null>(() => localStorage.getItem(claudeKeyName()));
   const [showKeyModal, setShowKeyModal] = useState(false);
 
   const isRealClaude = !!apiKey;

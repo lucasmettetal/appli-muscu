@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router';
 import { Home, Dumbbell, ListChecks, TrendingUp, Bot, Settings } from 'lucide-react';
+import { ProfileSwitcher } from './ProfileSwitcher';
 
 export function Layout() {
   const location = useLocation();
@@ -20,19 +21,22 @@ export function Layout() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-gray-900">💪 Fitness Tracker</h1>
-          <Link
-            to="/settings"
-            className={`p-1.5 rounded-lg transition-colors ${
-              location.pathname === '/settings'
-                ? 'text-blue-600 bg-blue-50'
-                : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
-            }`}
-            aria-label="Réglages"
-          >
-            <Settings className="w-5 h-5" />
-          </Link>
+        <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between gap-2">
+          <h1 className="text-xl font-bold text-gray-900 shrink-0">💪</h1>
+          <div className="flex items-center gap-1.5 min-w-0">
+            <ProfileSwitcher />
+            <Link
+              to="/settings"
+              className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                location.pathname === '/settings'
+                  ? 'text-blue-600 bg-blue-50'
+                  : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'
+              }`}
+              aria-label="Réglages"
+            >
+              <Settings className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </header>
 

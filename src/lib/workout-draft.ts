@@ -1,11 +1,14 @@
 import type { WorkoutExercise } from '../context/WorkoutContext';
+import { scopedKey } from './profiles';
 
 // ─── Brouillon de séance en cours ─────────────────────────────────────────────
 // Une séance en cours n'est enregistrée définitivement qu'au moment de
 // « Terminer la séance ». Pour éviter de tout perdre en quittant l'onglet ou en
 // rafraîchissant, on sauvegarde en continu un brouillon dans le localStorage.
+// Le brouillon est isolé par profil actif (cf. scopedKey).
 
-const DRAFT_KEY = 'muscu_workout_draft';
+const DRAFT_BASE = 'muscu_workout_draft';
+const draftKey = () => scopedKey(DRAFT_BASE);
 
 export interface WorkoutDraft {
   name: string;
@@ -16,7 +19,7 @@ export interface WorkoutDraft {
 
 export function loadDraft(): WorkoutDraft | null {
   try {
-    const raw = localStorage.getItem(DRAFT_KEY);
+    const raw = localStorage.getItem(draftKey());
     if (!raw) return null;
 
     const d = JSON.parse(raw) as Partial<WorkoutDraft>;
@@ -36,7 +39,7 @@ export function loadDraft(): WorkoutDraft | null {
 export function saveDraft(draft: Omit<WorkoutDraft, 'updatedAt'>): void {
   try {
     const payload: WorkoutDraft = { ...draft, updatedAt: Date.now() };
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(payload));
+    localStorage.setItem(draftKey(), JSON.stringify(payload));
   } catch {
     // Quota dépassé ou localStorage indisponible : on ignore silencieusement.
   }
@@ -44,7 +47,7 @@ export function saveDraft(draft: Omit<WorkoutDraft, 'updatedAt'>): void {
 
 export function clearDraft(): void {
   try {
-    localStorage.removeItem(DRAFT_KEY);
+    localStorage.removeItem(draftKey());
   } catch {
     // ignore
   }

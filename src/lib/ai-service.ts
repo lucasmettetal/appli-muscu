@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from '../context/WorkoutContext';
+import { scopedKey } from './profiles';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -107,9 +108,10 @@ export class ClaudeAIService implements AIService {
 
 // ─── Factory — sélectionne le service selon la clé disponible ─────────────────
 
-export const CLAUDE_KEY = STORAGE_KEYS.CLAUDE_KEY;
+// Nom de la clé Claude isolée par profil actif (à recalculer à chaque usage).
+export const claudeKeyName = () => scopedKey(STORAGE_KEYS.CLAUDE_KEY);
 
 export function createAIService(): AIService {
-  const key = localStorage.getItem(CLAUDE_KEY);
+  const key = localStorage.getItem(claudeKeyName());
   return key ? new ClaudeAIService(key) : new MockAIService();
 }
