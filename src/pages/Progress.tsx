@@ -12,6 +12,7 @@ import {
 } from 'recharts';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TrendingUp, Award, Dumbbell } from 'lucide-react';
+import { BodyWeightTracker } from '../components/BodyWeightTracker';
 
 export function Progress() {
   const { exercises, workouts } = useWorkout();
@@ -58,6 +59,8 @@ export function Progress() {
   return (
     <div className="space-y-5">
       <h2 className="text-2xl font-bold text-gray-900">Progression</h2>
+
+      <BodyWeightTracker />
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium text-gray-700">Choisir un exercice</label>

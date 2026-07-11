@@ -47,6 +47,13 @@ export interface Workout {
   notes?: string;
 }
 
+export interface BodyWeight {
+  id: string;
+  date: string;   // ISO
+  weight: number; // kg
+  note?: string;
+}
+
 // ─── Format d'export / import ────────────────────────────────────────────────
 
 export interface AppData {
@@ -54,6 +61,7 @@ export interface AppData {
   exportedAt: string;
   workouts: Workout[];
   customExercises: Exercise[];
+  bodyWeights?: BodyWeight[];
   settings: {
     restDuration: number;
   };
@@ -70,6 +78,7 @@ export interface ImportResult {
 export const STORAGE_KEYS = {
   WORKOUTS:          'muscu_workouts',
   CUSTOM_EXERCISES:  'muscu_custom_exercises',
+  BODYWEIGHTS:       'muscu_bodyweights',
   REST_DURATION:     'muscu_rest_duration',
   CLAUDE_KEY:        'muscu_claude_key',
 } as const;
@@ -149,10 +158,13 @@ function validateImport(data: unknown): ImportResult {
 interface WorkoutContextType {
   exercises: Exercise[];
   workouts: Workout[];
+  bodyWeights: BodyWeight[];
   addExercise: (exercise: Omit<Exercise, 'id' | 'custom'>) => void;
   addWorkout: (workout: Omit<Workout, 'id'>) => void;
   updateWorkout: (id: string, workout: Partial<Workout>) => void;
   deleteWorkout: (id: string) => void;
+  addBodyWeight: (weight: number, date?: string, note?: string) => void;
+  deleteBodyWeight: (id: string) => void;
   exportData: () => AppData;
   importData: (data: AppData) => ImportResult;
 }
@@ -174,6 +186,10 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     cloudUserId ? [] : safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), [])
   );
 
+  const [bodyWeights, setBodyWeights] = useState<BodyWeight[]>(() =>
+    cloudUserId ? [] : safeJSONParse<BodyWeight[]>(scopedKey(STORAGE_KEYS.BODYWEIGHTS), [])
+  );
+
   // En mode cloud, on attend le premier chargement distant avant d'autoriser les
   // écritures cloud (pour ne pas écraser les données existantes avec du vide).
   const [cloudLoaded, setCloudLoaded] = useState<boolean>(!cloudUserId);
@@ -191,22 +207,32 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
       if (cancelled) return;
 
-      const cloud = (row?.data ?? {}) as { workouts?: Workout[]; customExercises?: Exercise[] };
-      const hasCloud = (cloud.workouts?.length ?? 0) > 0 || (cloud.customExercises?.length ?? 0) > 0;
+      const cloud = (row?.data ?? {}) as {
+        workouts?: Workout[];
+        customExercises?: Exercise[];
+        bodyWeights?: BodyWeight[];
+      };
+      const hasCloud =
+        (cloud.workouts?.length ?? 0) > 0 ||
+        (cloud.customExercises?.length ?? 0) > 0 ||
+        (cloud.bodyWeights?.length ?? 0) > 0;
 
       if (hasCloud) {
         setWorkouts(cloud.workouts ?? []);
         setCustomExercises((cloud.customExercises ?? []).map(e => ({ ...e, custom: true })));
+        setBodyWeights(cloud.bodyWeights ?? []);
       } else {
         // Aucune donnée cloud : migration des données locales (profil actif) vers le compte.
         const localWorkouts = safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), []);
         const localCustom = safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), []);
-        if (localWorkouts.length > 0 || localCustom.length > 0) {
+        const localBodyWeights = safeJSONParse<BodyWeight[]>(scopedKey(STORAGE_KEYS.BODYWEIGHTS), []);
+        if (localWorkouts.length > 0 || localCustom.length > 0 || localBodyWeights.length > 0) {
           setWorkouts(localWorkouts);
           setCustomExercises(localCustom.map(e => ({ ...e, custom: true })));
+          setBodyWeights(localBodyWeights);
           await supabase!
             .from('user_data')
-            .upsert({ user_id: cloudUserId, data: { workouts: localWorkouts, customExercises: localCustom } });
+            .upsert({ user_id: cloudUserId, data: { workouts: localWorkouts, customExercises: localCustom, bodyWeights: localBodyWeights } });
         }
       }
       if (!cancelled) setCloudLoaded(true);
@@ -226,6 +252,11 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(scopedKey(STORAGE_KEYS.WORKOUTS), JSON.stringify(workouts));
   }, [workouts, cloudUserId]);
 
+  useEffect(() => {
+    if (cloudUserId) return;
+    localStorage.setItem(scopedKey(STORAGE_KEYS.BODYWEIGHTS), JSON.stringify(bodyWeights));
+  }, [bodyWeights, cloudUserId]);
+
   // ─── Persistance cloud (débounce) ────────────────────────────────────────────
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
@@ -234,13 +265,13 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     saveTimer.current = setTimeout(() => {
       supabase!
         .from('user_data')
-        .upsert({ user_id: cloudUserId, data: { workouts, customExercises } })
+        .upsert({ user_id: cloudUserId, data: { workouts, customExercises, bodyWeights } })
         .then(({ error }) => {
           if (error) console.warn('[muscu] Échec de la sauvegarde cloud :', error.message);
         });
     }, 800);
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
-  }, [workouts, customExercises, cloudUserId, cloudLoaded]);
+  }, [workouts, customExercises, bodyWeights, cloudUserId, cloudLoaded]);
 
   const exercises: Exercise[] = [...baseExercises, ...customExercises];
 
@@ -260,11 +291,26 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     setWorkouts(prev => prev.filter(w => w.id !== id));
   };
 
+  const addBodyWeight = (weight: number, date?: string, note?: string) => {
+    const entry: BodyWeight = {
+      id: crypto.randomUUID(),
+      date: date ?? new Date().toISOString(),
+      weight,
+      ...(note?.trim() ? { note: note.trim() } : {}),
+    };
+    setBodyWeights(prev => [...prev, entry]);
+  };
+
+  const deleteBodyWeight = (id: string) => {
+    setBodyWeights(prev => prev.filter(b => b.id !== id));
+  };
+
   const exportData = (): AppData => ({
     version: 1,
     exportedAt: new Date().toISOString(),
     workouts,
     customExercises,
+    bodyWeights,
     settings: {
       restDuration: safeJSONParse<number>(scopedKey(STORAGE_KEYS.REST_DURATION), 90),
     },
@@ -276,6 +322,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
     setWorkouts(data.workouts);
     setCustomExercises(data.customExercises.map(e => ({ ...e, custom: true })));
+    setBodyWeights(Array.isArray(data.bodyWeights) ? data.bodyWeights : []);
 
     const rd = Number(data.settings?.restDuration);
     if (Number.isFinite(rd) && rd > 0) {
@@ -287,8 +334,9 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
   return (
     <WorkoutContext.Provider value={{
-      exercises, workouts,
+      exercises, workouts, bodyWeights,
       addExercise, addWorkout, updateWorkout, deleteWorkout,
+      addBodyWeight, deleteBodyWeight,
       exportData, importData,
     }}>
       {children}

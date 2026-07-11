@@ -20,6 +20,7 @@ const ACTIVE_KEY = 'muscu_active_profile';
 export const SCOPED_BASES = [
   'muscu_workouts',
   'muscu_custom_exercises',
+  'muscu_bodyweights',
   'muscu_rest_duration',
   'muscu_claude_key',
   'muscu_workout_draft',
