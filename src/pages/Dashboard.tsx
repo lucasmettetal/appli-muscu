@@ -3,6 +3,7 @@ import { useWorkout } from '../context/WorkoutContext';
 import { getExercisePR } from '@/lib/pr-utils';
 import { Calendar, Dumbbell, TrendingUp, Award, Trophy } from 'lucide-react';
 import { Link } from 'react-router';
+import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
 
 export function Dashboard() {
   const { workouts, exercises } = useWorkout();
@@ -45,6 +46,8 @@ export function Dashboard() {
         <h2 className="text-2xl font-bold text-gray-900 mb-1">Tableau de bord</h2>
         <p className="text-gray-500 text-sm">Bienvenue dans ton suivi de musculation</p>
       </div>
+
+      <WorkoutDraftBanner />
 
       <Link
         to="/workout/new"

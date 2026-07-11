@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useWorkout, STORAGE_KEYS, type WorkoutExercise, type WorkoutSet } from '../context/WorkoutContext';
 import { detectNewPRs, getExercisePR, epley1RM, type NewPR, PR_TYPE_LABEL, PR_TYPE_UNIT } from '@/lib/pr-utils';
+import { loadDraft, saveDraft, clearDraft } from '@/lib/workout-draft';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -213,15 +214,21 @@ export function WorkoutSession() {
   const isNew = id === 'new';
   const existingWorkout = isNew ? null : workouts.find(w => w.id === id);
 
+  // Brouillon d'une séance en cours (uniquement pour une nouvelle séance),
+  // lu une seule fois au montage pour restaurer ce qui n'avait pas été terminé.
+  const initialDraft = useMemo(() => (isNew ? loadDraft() : null), [isNew]);
+
   const [name, setName] = useState(
     isNew
-      ? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+      ? initialDraft?.name ?? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
       : existingWorkout?.name ?? ''
   );
   const [sessionExercises, setSessionExercises] = useState<WorkoutExercise[]>(
-    isNew ? [] : existingWorkout?.exercises ?? []
+    isNew ? initialDraft?.exercises ?? [] : existingWorkout?.exercises ?? []
   );
-  const [elapsed, setElapsed]               = useState(0);
+  const [elapsed, setElapsed]               = useState(
+    isNew && initialDraft ? Math.max(0, Math.floor((Date.now() - initialDraft.startedAt) / 1000)) : 0
+  );
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [dialogOpen, setDialogOpen]         = useState(false);
   const [expandedSets, setExpandedSets]     = useState<Set<string>>(new Set());
@@ -277,7 +284,9 @@ export function WorkoutSession() {
   useEffect(() => () => { if (restIntervalRef.current) clearInterval(restIntervalRef.current); }, []);
 
   // ─── Timer de séance ─────────────────────────────────────────────────────────
-  const startTimeRef = useRef<number>(Date.now());
+  const startTimeRef = useRef<number>(
+    isNew ? initialDraft?.startedAt ?? Date.now() : Date.now()
+  );
 
   useEffect(() => {
     if (!isNew) return;
@@ -287,6 +296,18 @@ export function WorkoutSession() {
     );
     return () => clearInterval(timer);
   }, [isNew]);
+
+  // ─── Sauvegarde automatique du brouillon ─────────────────────────────────────
+  // À chaque modification, on persiste la séance en cours pour qu'elle survive à
+  // un changement d'onglet, un rafraîchissement ou une mise en veille.
+  useEffect(() => {
+    if (!isNew) return;
+    if (sessionExercises.length === 0) {
+      clearDraft(); // rien de significatif à conserver
+      return;
+    }
+    saveDraft({ name, exercises: sessionExercises, startedAt: startTimeRef.current });
+  }, [isNew, name, sessionExercises]);
 
   // ─── Records actuels (snapshot au démarrage) ─────────────────────────────────
   const currentPRs = useMemo(() => {
@@ -374,12 +395,25 @@ export function WorkoutSession() {
     const exerciseNames = new Map(exercises.map(e => [e.id, e.name]));
     const prs = detectNewPRs(workouts, workout, exerciseNames);
     addWorkout(workout);
+    clearDraft(); // la séance est enregistrée : plus besoin du brouillon
     if (prs.length > 0) {
       setNewPRs(prs);
       setShowPRModal(true);
     } else {
       navigate('/workouts');
     }
+  };
+
+  const abandonWorkout = () => {
+    if (
+      sessionExercises.length > 0 &&
+      !window.confirm('Abandonner cette séance ? Les données non enregistrées seront perdues.')
+    ) {
+      return;
+    }
+    stopRest();
+    clearDraft();
+    navigate('/workouts');
   };
 
   const filteredExercises = exercises.filter(
@@ -739,6 +773,13 @@ export function WorkoutSession() {
             <Button className="w-full" size="lg" onClick={finishWorkout}>
               Terminer la séance
             </Button>
+
+            <button
+              onClick={abandonWorkout}
+              className="w-full text-sm text-gray-400 hover:text-red-500 transition-colors py-1"
+            >
+              Abandonner la séance
+            </button>
           </div>
         )}
       </div>

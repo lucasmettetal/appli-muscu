@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
 import { Dumbbell, Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
 
 function DeleteConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
   return (
@@ -49,6 +50,8 @@ export function Workouts() {
           </Link>
         </Button>
       </div>
+
+      <WorkoutDraftBanner />
 
       {workouts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
