@@ -34,6 +34,19 @@ export default defineConfig({
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
+  build: {
+    rollupOptions: {
+      output: {
+        // Regroupe les grosses libs tierces dans des chunks stables, mis en
+        // cache indépendamment du code applicatif.
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router'],
+          'charts-vendor': ['recharts'],
+        },
+      },
+    },
+  },
+
   server: {
     proxy: {
       '/api/claude': {

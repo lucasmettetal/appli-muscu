@@ -1,29 +1,25 @@
 import { createBrowserRouter } from 'react-router';
-import { Dashboard } from './pages/Dashboard';
-import { Workouts } from './pages/Workouts';
-import { Exercises } from './pages/Exercises';
-import { ExerciseDetail } from './pages/ExerciseDetail';
-import { Progress } from './pages/Progress';
-import { AIAssistant } from './pages/AIAssistant';
-import { Settings } from './pages/Settings';
 import { Layout } from './components/Layout';
-import { WorkoutSession } from './pages/WorkoutSession';
-import { NotFound } from './pages/NotFound';
+import { Dashboard } from './pages/Dashboard';
 
+// Le Layout (coquille) et le Dashboard (page d'accueil) sont chargés
+// immédiatement pour un premier affichage rapide. Les autres pages sont
+// découpées en chunks séparés et chargées à la demande — cela sort notamment
+// recharts (graphiques) du bundle initial.
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: Layout,
     children: [
       { index: true, Component: Dashboard },
-      { path: 'workouts', Component: Workouts },
-      { path: 'workout/:id', Component: WorkoutSession },
-      { path: 'exercises', Component: Exercises },
-      { path: 'exercise/:id', Component: ExerciseDetail },
-      { path: 'progress', Component: Progress },
-      { path: 'ai', Component: AIAssistant },
-      { path: 'settings', Component: Settings },
-      { path: '*', Component: NotFound },
+      { path: 'workouts', lazy: async () => ({ Component: (await import('./pages/Workouts')).Workouts }) },
+      { path: 'workout/:id', lazy: async () => ({ Component: (await import('./pages/WorkoutSession')).WorkoutSession }) },
+      { path: 'exercises', lazy: async () => ({ Component: (await import('./pages/Exercises')).Exercises }) },
+      { path: 'exercise/:id', lazy: async () => ({ Component: (await import('./pages/ExerciseDetail')).ExerciseDetail }) },
+      { path: 'progress', lazy: async () => ({ Component: (await import('./pages/Progress')).Progress }) },
+      { path: 'ai', lazy: async () => ({ Component: (await import('./pages/AIAssistant')).AIAssistant }) },
+      { path: 'settings', lazy: async () => ({ Component: (await import('./pages/Settings')).Settings }) },
+      { path: '*', lazy: async () => ({ Component: (await import('./pages/NotFound')).NotFound }) },
     ],
   },
 ]);

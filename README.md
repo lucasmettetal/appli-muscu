@@ -6,8 +6,9 @@ Application web mobile-first pour suivre ses séances de musculation, visualiser
 
 - **React 18** + **TypeScript** + **Vite 6**
 - **Tailwind CSS v4** + **shadcn/ui** (Radix UI)
-- **Recharts** pour les graphiques
-- **React Router v7**
+- **Recharts** pour les graphiques (chargé à la demande)
+- **React Router v7** (routes en lazy-loading)
+- **Vitest** pour les tests unitaires
 - **pnpm** comme gestionnaire de paquets
 - Stockage : `localStorage` (pas de backend)
 
@@ -16,8 +17,10 @@ Application web mobile-first pour suivre ses séances de musculation, visualiser
 ```bash
 pnpm install
 pnpm dev        # dev avec proxy Vite (Claude fonctionne)
-pnpm build      # build de production
+pnpm build      # build de production (typecheck + vite build)
 pnpm preview    # aperçu du build — Claude ne fonctionne PAS (proxy absent)
+pnpm test       # tests unitaires (Vitest)
+pnpm typecheck  # vérification TypeScript seule
 ```
 
 L'app est accessible sur `http://localhost:5173`.
@@ -52,6 +55,18 @@ Le fichier `vercel.json` est déjà configuré. Connecte le repo sur [vercel.com
 pnpm build   # vérification locale
 ```
 
+## Tests
+
+Le cœur métier (`lib/`) est couvert par des tests unitaires Vitest :
+
+- `pr-utils.test.ts` — formule Epley, détection des records, historique, statut de progression
+- `ai-context.test.ts` — formatage du contexte injecté dans le prompt Claude
+
+```bash
+pnpm test          # exécution unique
+pnpm test:watch    # mode watch
+```
+
 ## Structure
 
 ```
@@ -59,11 +74,14 @@ src/
 ├── context/WorkoutContext.tsx   # état global + localStorage + export/import
 ├── lib/
 │   ├── pr-utils.ts              # Epley 1RM, records, historique, progression
+│   ├── pr-utils.test.ts         # tests unitaires
 │   ├── ai-context.ts            # formatage du prompt système Claude
+│   ├── ai-context.test.ts       # tests unitaires
 │   ├── ai-service.ts            # MockAIService + ClaudeAIService
 │   ├── wger-api.ts              # intégration API wger.de
 │   └── exercise-utils.ts        # labels et styles partagés
-├── pages/                       # une page par route
+├── pages/                       # une page par route (chargées en lazy)
+├── routes.tsx                   # routeur + code-splitting par route
 └── components/
     ├── Layout.tsx               # nav bottom + header
     └── ui/                      # composants shadcn/ui

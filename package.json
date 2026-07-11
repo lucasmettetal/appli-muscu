@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "1.1.6",
@@ -30,7 +32,8 @@
     "@vitejs/plugin-react": "4.7.0",
     "tailwindcss": "4.1.12",
     "typescript": "^6.0.3",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vitest": "^2.1.9"
   },
   "pnpm": {
     "overrides": {
