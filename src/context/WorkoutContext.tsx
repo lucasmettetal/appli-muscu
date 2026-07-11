@@ -1,6 +1,8 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
 import exercisesData from '../data/exercises.json';
 import { scopedKey } from '../lib/profiles';
+import { supabase } from '../lib/supabase';
+import { useAuth } from './AuthContext';
 
 export interface Exercise {
   id: string;
@@ -160,21 +162,85 @@ const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 const baseExercises = exercisesData.exercises as Exercise[];
 
 export function WorkoutProvider({ children }: { children: ReactNode }) {
+  const { configured, session } = useAuth();
+  // Id du compte cloud si connecté ; sinon null → persistance locale par profil.
+  const cloudUserId = configured && session ? session.user.id : null;
+
   const [customExercises, setCustomExercises] = useState<Exercise[]>(() =>
-    safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), [])
+    cloudUserId ? [] : safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), [])
   );
 
   const [workouts, setWorkouts] = useState<Workout[]>(() =>
-    safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), [])
+    cloudUserId ? [] : safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), [])
   );
 
+  // En mode cloud, on attend le premier chargement distant avant d'autoriser les
+  // écritures cloud (pour ne pas écraser les données existantes avec du vide).
+  const [cloudLoaded, setCloudLoaded] = useState<boolean>(!cloudUserId);
+
+  // ─── Chargement + migration (mode cloud) ─────────────────────────────────────
   useEffect(() => {
+    if (!cloudUserId || !supabase) return;
+    let cancelled = false;
+
+    (async () => {
+      const { data: row } = await supabase!
+        .from('user_data')
+        .select('data')
+        .eq('user_id', cloudUserId)
+        .maybeSingle();
+      if (cancelled) return;
+
+      const cloud = (row?.data ?? {}) as { workouts?: Workout[]; customExercises?: Exercise[] };
+      const hasCloud = (cloud.workouts?.length ?? 0) > 0 || (cloud.customExercises?.length ?? 0) > 0;
+
+      if (hasCloud) {
+        setWorkouts(cloud.workouts ?? []);
+        setCustomExercises((cloud.customExercises ?? []).map(e => ({ ...e, custom: true })));
+      } else {
+        // Aucune donnée cloud : migration des données locales (profil actif) vers le compte.
+        const localWorkouts = safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), []);
+        const localCustom = safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), []);
+        if (localWorkouts.length > 0 || localCustom.length > 0) {
+          setWorkouts(localWorkouts);
+          setCustomExercises(localCustom.map(e => ({ ...e, custom: true })));
+          await supabase!
+            .from('user_data')
+            .upsert({ user_id: cloudUserId, data: { workouts: localWorkouts, customExercises: localCustom } });
+        }
+      }
+      if (!cancelled) setCloudLoaded(true);
+    })();
+
+    return () => { cancelled = true; };
+  }, [cloudUserId]);
+
+  // ─── Persistance locale (mode local uniquement) ──────────────────────────────
+  useEffect(() => {
+    if (cloudUserId) return;
     localStorage.setItem(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), JSON.stringify(customExercises));
-  }, [customExercises]);
+  }, [customExercises, cloudUserId]);
 
   useEffect(() => {
+    if (cloudUserId) return;
     localStorage.setItem(scopedKey(STORAGE_KEYS.WORKOUTS), JSON.stringify(workouts));
-  }, [workouts]);
+  }, [workouts, cloudUserId]);
+
+  // ─── Persistance cloud (débounce) ────────────────────────────────────────────
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (!cloudUserId || !supabase || !cloudLoaded) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      supabase!
+        .from('user_data')
+        .upsert({ user_id: cloudUserId, data: { workouts, customExercises } })
+        .then(({ error }) => {
+          if (error) console.warn('[muscu] Échec de la sauvegarde cloud :', error.message);
+        });
+    }, 800);
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
+  }, [workouts, customExercises, cloudUserId, cloudLoaded]);
 
   const exercises: Exercise[] = [...baseExercises, ...customExercises];
 

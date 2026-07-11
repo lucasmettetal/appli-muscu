@@ -1,9 +1,12 @@
 import { Outlet, Link, useLocation } from 'react-router';
-import { Home, Dumbbell, ListChecks, TrendingUp, Bot, Settings } from 'lucide-react';
+import { Home, Dumbbell, ListChecks, TrendingUp, Bot, Settings, LogOut } from 'lucide-react';
 import { ProfileSwitcher } from './ProfileSwitcher';
+import { useAuth } from '../context/AuthContext';
 
 export function Layout() {
   const location = useLocation();
+  const { configured, session, user, signOut } = useAuth();
+  const cloudMode = configured && !!session;
 
   const navItems = [
     { path: '/', icon: Home, label: 'Accueil' },
@@ -24,7 +27,18 @@ export function Layout() {
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between gap-2">
           <h1 className="text-xl font-bold text-gray-900 shrink-0">💪</h1>
           <div className="flex items-center gap-1.5 min-w-0">
-            <ProfileSwitcher />
+            {cloudMode ? (
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors max-w-[45vw]"
+                title="Se déconnecter"
+              >
+                <span className="text-sm font-medium text-gray-700 truncate">{user?.email ?? 'Compte'}</span>
+                <LogOut className="w-4 h-4 text-gray-400 shrink-0" />
+              </button>
+            ) : (
+              <ProfileSwitcher />
+            )}
             <Link
               to="/settings"
               className={`p-1.5 rounded-lg transition-colors shrink-0 ${
