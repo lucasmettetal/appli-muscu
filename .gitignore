@@ -1,6 +1,9 @@
 # Dépendances
 node_modules/
 
+# Lockfile npm (le projet utilise pnpm)
+package-lock.json
+
 # Build
 dist/
 dist-ssr/
