@@ -21,6 +21,7 @@ export const SCOPED_BASES = [
   'muscu_workouts',
   'muscu_custom_exercises',
   'muscu_bodyweights',
+  'muscu_programs',
   'muscu_rest_duration',
   'muscu_claude_key',
   'muscu_workout_draft',

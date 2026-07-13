@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { useWorkout, STORAGE_KEYS, type WorkoutExercise, type WorkoutSet } from '../context/WorkoutContext';
+import { useParams, useNavigate, useLocation } from 'react-router';
+import { useWorkout, STORAGE_KEYS, type WorkoutExercise, type WorkoutSet, type ProgramExercise } from '../context/WorkoutContext';
 import { detectNewPRs, getExercisePR, epley1RM, type NewPR, PR_TYPE_LABEL, PR_TYPE_UNIT } from '@/lib/pr-utils';
 import { loadDraft, saveDraft, clearDraft } from '@/lib/workout-draft';
 import { scopedKey } from '@/lib/profiles';
@@ -210,10 +210,23 @@ function PRBadge() {
 export function WorkoutSession() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { exercises, workouts, addWorkout } = useWorkout();
 
   const isNew = id === 'new';
   const existingWorkout = isNew ? null : workouts.find(w => w.id === id);
+
+  // Séance lancée depuis un programme (via l'état de navigation) : prioritaire.
+  const programStart = (location.state as { program?: { name: string; exercises: ProgramExercise[] } } | null)?.program ?? null;
+  const initialFromProgram = useMemo<WorkoutExercise[] | null>(() => {
+    if (!isNew || !programStart) return null;
+    return programStart.exercises.map(pe => ({
+      exerciseId: pe.exerciseId,
+      sets: Array.from({ length: Math.max(1, pe.sets) }, () => ({
+        id: crypto.randomUUID(), weight: 0, reps: pe.reps ?? 0, completed: false,
+      })),
+    }));
+  }, [isNew, programStart]);
 
   // Brouillon d'une séance en cours (uniquement pour une nouvelle séance),
   // lu une seule fois au montage pour restaurer ce qui n'avait pas été terminé.
@@ -221,14 +234,14 @@ export function WorkoutSession() {
 
   const [name, setName] = useState(
     isNew
-      ? initialDraft?.name ?? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+      ? programStart?.name ?? initialDraft?.name ?? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
       : existingWorkout?.name ?? ''
   );
   const [sessionExercises, setSessionExercises] = useState<WorkoutExercise[]>(
-    isNew ? initialDraft?.exercises ?? [] : existingWorkout?.exercises ?? []
+    isNew ? (initialFromProgram ?? initialDraft?.exercises ?? []) : existingWorkout?.exercises ?? []
   );
   const [elapsed, setElapsed]               = useState(
-    isNew && initialDraft ? Math.max(0, Math.floor((Date.now() - initialDraft.startedAt) / 1000)) : 0
+    isNew && initialDraft && !programStart ? Math.max(0, Math.floor((Date.now() - initialDraft.startedAt) / 1000)) : 0
   );
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [dialogOpen, setDialogOpen]         = useState(false);
@@ -286,7 +299,7 @@ export function WorkoutSession() {
 
   // ─── Timer de séance ─────────────────────────────────────────────────────────
   const startTimeRef = useRef<number>(
-    isNew ? initialDraft?.startedAt ?? Date.now() : Date.now()
+    isNew && !programStart ? initialDraft?.startedAt ?? Date.now() : Date.now()
   );
 
   useEffect(() => {

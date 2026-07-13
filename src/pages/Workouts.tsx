@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
-import { Dumbbell, Trash2, Plus } from 'lucide-react';
+import { Dumbbell, Trash2, Plus, ClipboardList, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
 
@@ -52,6 +52,20 @@ export function Workouts() {
       </div>
 
       <WorkoutDraftBanner />
+
+      <Link
+        to="/programs"
+        className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-300 transition-colors"
+      >
+        <div className="shrink-0 bg-blue-50 rounded-lg p-2">
+          <ClipboardList className="w-5 h-5 text-blue-600" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-gray-900">Programmes</p>
+          <p className="text-xs text-gray-400 mt-0.5">Génère un programme avec l'IA et lance tes séances</p>
+        </div>
+        <ChevronRight className="w-5 h-5 text-gray-300 shrink-0" />
+      </Link>
 
       {workouts.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
