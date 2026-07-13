@@ -49,13 +49,10 @@ export default defineConfig({
 
   server: {
     proxy: {
-      '/api/claude': {
-        target: 'https://api.anthropic.com',
+      '/api/gemini': {
+        target: 'https://generativelanguage.googleapis.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace('/api/claude', ''),
-        headers: {
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
+        rewrite: (path) => path.replace('/api/gemini', ''),
       },
     },
   },

@@ -68,28 +68,30 @@ export class MockAIService implements AIService {
   }
 }
 
-// ─── Claude (clé API utilisateur) ────────────────────────────────────────────
+// ─── Google Gemini (clé API utilisateur, gratuite) ───────────────────────────
+// Modèle gratuit de Google. Si tu changes ce nom, mets-le à jour aussi dans
+// api/gemini.ts (la fonction serveur proxy utilisée en production).
+export const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MAX_TOK = 1024;
 
-const CLAUDE_MODEL   = 'claude-haiku-4-5-20251001';
-const CLAUDE_MAX_TOK = 1024;
-
-export class ClaudeAIService implements AIService {
+export class GeminiAIService implements AIService {
   constructor(private readonly apiKey: string) {}
 
   async chat(messages: AIMessage[], systemPrompt: string): Promise<string> {
-    const response = await fetch('/api/claude/v1/messages', {
+    const response = await fetch(`/api/gemini/v1beta/models/${GEMINI_MODEL}:generateContent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': this.apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
+        'x-goog-api-key': this.apiKey,
       },
       body: JSON.stringify({
-        model: CLAUDE_MODEL,
-        max_tokens: CLAUDE_MAX_TOK,
-        system: systemPrompt,
-        messages: messages.map(m => ({ role: m.role, content: m.content })),
+        // Gemini utilise les rôles "user" et "model" (pas "assistant").
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: messages.map(m => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }],
+        })),
+        generationConfig: { maxOutputTokens: GEMINI_MAX_TOK },
       }),
     });
 
@@ -100,18 +102,19 @@ export class ClaudeAIService implements AIService {
     }
 
     const data = await response.json() as {
-      content: Array<{ type: string; text: string }>;
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
     };
-    return data.content.find(b => b.type === 'text')?.text ?? '';
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    return parts.map(p => p.text ?? '').join('').trim();
   }
 }
 
 // ─── Factory — sélectionne le service selon la clé disponible ─────────────────
 
-// Nom de la clé Claude isolée par profil actif (à recalculer à chaque usage).
-export const claudeKeyName = () => scopedKey(STORAGE_KEYS.CLAUDE_KEY);
+// Nom de la clé Gemini isolée par profil actif (à recalculer à chaque usage).
+export const geminiKeyName = () => scopedKey(STORAGE_KEYS.GEMINI_KEY);
 
 export function createAIService(): AIService {
-  const key = localStorage.getItem(claudeKeyName());
-  return key ? new ClaudeAIService(key) : new MockAIService();
+  const key = localStorage.getItem(geminiKeyName());
+  return key ? new GeminiAIService(key) : new MockAIService();
 }

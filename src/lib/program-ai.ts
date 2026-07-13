@@ -1,5 +1,5 @@
 import type { Exercise } from '../context/WorkoutContext';
-import { ClaudeAIService, claudeKeyName } from './ai-service';
+import { GeminiAIService, geminiKeyName } from './ai-service';
 
 // ─── Programme généré (format intermédiaire, avant sauvegarde) ────────────────
 
@@ -136,20 +136,20 @@ export function mockGenerateProgram(request: string, exercises: Exercise[]): Gen
 
   return {
     name: `Programme ${dayCount} jour${dayCount > 1 ? 's' : ''}`,
-    description: 'Programme généré automatiquement (mode démo). Ajoute ta clé Claude pour un programme personnalisé.',
+    description: 'Programme généré automatiquement (mode démo). Ajoute ta clé Gemini pour un programme personnalisé.',
     days,
   };
 }
 
-// ─── Point d'entrée : Claude si clé dispo, sinon mock ─────────────────────────
+// ─── Point d'entrée : Gemini si clé dispo, sinon mock ─────────────────────────
 
 export async function generateProgram(request: string, exercises: Exercise[]): Promise<GeneratedProgram> {
-  const key = localStorage.getItem(claudeKeyName());
+  const key = localStorage.getItem(geminiKeyName());
   if (!key) {
     return mockGenerateProgram(request, exercises);
   }
 
-  const svc = new ClaudeAIService(key);
+  const svc = new GeminiAIService(key);
   const text = await svc.chat(
     [{ role: 'user', content: request || 'Crée-moi un programme de musculation équilibré sur 3 jours.' }],
     buildProgramSystemPrompt(exercises),

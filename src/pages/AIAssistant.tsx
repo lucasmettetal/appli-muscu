@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useWorkout } from '../context/WorkoutContext';
 import {
   createAIService,
-  ClaudeAIService,
+  GeminiAIService,
   MockAIService,
-  claudeKeyName,
+  geminiKeyName,
   type AIMessage,
 } from '@/lib/ai-service';
 import { buildSystemPrompt } from '@/lib/ai-context';
@@ -41,7 +41,7 @@ function APIKeyModal({
     setTesting(true);
     setTestResult(null);
     try {
-      const svc = new ClaudeAIService(input.trim());
+      const svc = new GeminiAIService(input.trim());
       await svc.chat([{ role: 'user', content: 'Dis juste "OK".' }], 'Réponds uniquement "OK".');
       setTestResult('ok');
     } catch (e) {
@@ -52,26 +52,26 @@ function APIKeyModal({
     }
   };
 
-  const isValidKey = (k: string) => k.startsWith('sk-ant-');
+  const isValidKey = (k: string) => k.startsWith('AIza');
 
   const handleSave = () => {
     const key = input.trim() || null;
     if (key && !isValidKey(key)) {
       setTestResult('error');
-      setTestError('Format invalide — la clé doit commencer par "sk-ant-".');
+      setTestError('Format invalide — une clé Gemini commence par "AIza".');
       return;
     }
     if (key) {
-      localStorage.setItem(claudeKeyName(), key);
+      localStorage.setItem(geminiKeyName(), key);
     } else {
-      localStorage.removeItem(claudeKeyName());
+      localStorage.removeItem(geminiKeyName());
     }
     onSave(key);
     onClose();
   };
 
   const handleRemove = () => {
-    localStorage.removeItem(claudeKeyName());
+    localStorage.removeItem(geminiKeyName());
     onSave(null);
     onClose();
   };
@@ -85,7 +85,7 @@ function APIKeyModal({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Key className="w-5 h-5 text-blue-600" />
-            <h2 className="text-base font-bold text-gray-900">Connecter Claude</h2>
+            <h2 className="text-base font-bold text-gray-900">Connecter Gemini</h2>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
@@ -93,7 +93,7 @@ function APIKeyModal({
         </div>
 
         <p className="text-sm text-gray-500">
-          Entre ta clé API Anthropic pour utiliser Claude Haiku. Elle sera stockée uniquement dans ton navigateur et ne sera jamais partagée.
+          Entre ta clé API Google Gemini (gratuite) pour activer le coach. Elle sera stockée uniquement dans ton navigateur et ne sera jamais partagée.
         </p>
 
         {/* Champ clé */}
@@ -102,7 +102,7 @@ function APIKeyModal({
             type={visible ? 'text' : 'password'}
             value={input}
             onChange={e => { setInput(e.target.value); setTestResult(null); }}
-            placeholder="sk-ant-api03-…"
+            placeholder="AIza…"
             className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-mono focus:outline-none focus:border-blue-400"
             autoFocus
           />
@@ -118,7 +118,7 @@ function APIKeyModal({
         {testResult === 'ok' && (
           <div className="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-3 py-2">
             <CheckCircle2 className="w-4 h-4 shrink-0" />
-            Connexion réussie ! Claude est prêt.
+            Connexion réussie ! Gemini est prêt.
           </div>
         )}
         {testResult === 'error' && (
@@ -158,8 +158,8 @@ function APIKeyModal({
         )}
 
         <p className="text-xs text-gray-400 text-center">
-          Obtiens une clé sur{' '}
-          <span className="font-mono">console.anthropic.com</span>
+          Obtiens une clé gratuite sur{' '}
+          <span className="font-mono">aistudio.google.com</span> (aucune carte bancaire)
         </p>
       </div>
     </div>
@@ -214,15 +214,15 @@ function TypingIndicator() {
 export function AIAssistant() {
   const { workouts, exercises } = useWorkout();
 
-  const [apiKey, setApiKey]       = useState<string | null>(() => localStorage.getItem(claudeKeyName()));
+  const [apiKey, setApiKey]       = useState<string | null>(() => localStorage.getItem(geminiKeyName()));
   const [showKeyModal, setShowKeyModal] = useState(false);
 
-  const isRealClaude = !!apiKey;
+  const isRealAI = !!apiKey;
 
   // Recréer le service quand la clé change
   const serviceRef = useRef(createAIService());
   useEffect(() => {
-    serviceRef.current = apiKey ? new ClaudeAIService(apiKey) : new MockAIService();
+    serviceRef.current = apiKey ? new GeminiAIService(apiKey) : new MockAIService();
   }, [apiKey]);
 
   const [messages, setMessages] = useState<AIMessage[]>([
@@ -303,13 +303,13 @@ export function AIAssistant() {
           <button
             onClick={() => setShowKeyModal(true)}
             className={`shrink-0 flex items-center gap-1.5 text-xs font-medium px-2.5 py-1.5 rounded-full border transition-colors ${
-              isRealClaude
+              isRealAI
                 ? 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
                 : 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100'
             }`}
           >
-            {isRealClaude
-              ? <><Bot className="w-3 h-3" /> Claude</>
+            {isRealAI
+              ? <><Bot className="w-3 h-3" /> Gemini</>
               : <><Sparkles className="w-3 h-3" /> Mode démo</>
             }
           </button>
@@ -322,7 +322,7 @@ export function AIAssistant() {
               <MessageBubble message={msg} />
               {msg.role === 'assistant' && (
                 <p className="text-[10px] text-gray-300 ml-9 mt-0.5">
-                  {isRealClaude ? 'Claude Haiku' : 'Mode démo'}
+                  {isRealAI ? 'Gemini' : 'Mode démo'}
                 </p>
               )}
             </div>
@@ -379,9 +379,9 @@ export function AIAssistant() {
             </button>
           </div>
           <p className="text-[10px] text-gray-300 text-center mt-2">
-            {isRealClaude
-              ? 'Propulsé par Claude Haiku · Clé stockée localement'
-              : 'Mode démo · Appuie sur le badge pour connecter Claude'
+            {isRealAI
+              ? 'Propulsé par Google Gemini · Clé stockée localement'
+              : 'Mode démo · Appuie sur le badge pour connecter Gemini'
             }
           </p>
         </div>

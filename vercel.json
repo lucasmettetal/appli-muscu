@@ -2,7 +2,7 @@
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/api/claude/(.*)", "destination": "/api/claude" },
+    { "source": "/api/gemini/(.*)", "destination": "/api/gemini" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }

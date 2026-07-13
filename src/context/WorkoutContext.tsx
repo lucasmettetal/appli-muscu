@@ -105,7 +105,7 @@ export const STORAGE_KEYS = {
   BODYWEIGHTS:       'muscu_bodyweights',
   PROGRAMS:          'muscu_programs',
   REST_DURATION:     'muscu_rest_duration',
-  CLAUDE_KEY:        'muscu_claude_key',
+  GEMINI_KEY:        'muscu_gemini_key',
 } as const;
 
 function safeJSONParse<T>(key: string, fallback: T): T {
