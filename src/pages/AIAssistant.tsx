@@ -89,8 +89,29 @@ function APIKeyModal({
         </div>
 
         <p className="text-sm text-gray-500">
-          Entre ta clé API Google Gemini (gratuite) pour activer le coach. Elle sera stockée uniquement dans ton navigateur et ne sera jamais partagée.
+          Le coach utilise <strong>Google Gemini</strong>. La clé est <strong>gratuite</strong> (sans carte bancaire), stockée uniquement dans ton navigateur et jamais partagée.
         </p>
+
+        {/* Mini-tuto : comment obtenir une clé gratuite */}
+        <div className="bg-blue-50/60 border border-blue-100 rounded-xl p-4 space-y-2">
+          <p className="text-sm font-semibold text-gray-800">Obtenir ta clé en 3 étapes :</p>
+          <ol className="text-sm text-gray-600 space-y-1.5 list-decimal list-inside">
+            <li>
+              Ouvre{' '}
+              <a
+                href="https://aistudio.google.com/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 font-medium underline"
+              >
+                aistudio.google.com/apikey
+              </a>{' '}
+              (connexion avec ton compte Google)
+            </li>
+            <li>Clique sur <strong>« Create API key »</strong></li>
+            <li>Copie la clé et colle-la ci-dessous, puis <strong>Enregistrer</strong></li>
+          </ol>
+        </div>
 
         {/* Champ clé */}
         <div className="relative">
@@ -153,10 +174,6 @@ function APIKeyModal({
           </button>
         )}
 
-        <p className="text-xs text-gray-400 text-center">
-          Obtiens une clé gratuite sur{' '}
-          <span className="font-mono">aistudio.google.com</span> (aucune carte bancaire)
-        </p>
       </div>
     </div>
   );
