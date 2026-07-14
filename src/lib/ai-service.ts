@@ -69,16 +69,18 @@ export class MockAIService implements AIService {
 }
 
 // ─── Google Gemini (clé API utilisateur, gratuite) ───────────────────────────
-// Modèle gratuit de Google. Si tu changes ce nom, mets-le à jour aussi dans
-// api/gemini.ts (la fonction serveur proxy utilisée en production).
+// Modèle gratuit de Google (alias qui suit toujours la dernière version Flash).
+// Appel DIRECT depuis le navigateur : l'API Gemini autorise le CORS, donc pas
+// besoin de proxy serveur (et pas de limite de durée qui causait des 504).
 export const GEMINI_MODEL = 'gemini-flash-latest';
+const GEMINI_ENDPOINT = 'https://generativelanguage.googleapis.com';
 const GEMINI_MAX_TOK = 2048;
 
 export class GeminiAIService implements AIService {
   constructor(private readonly apiKey: string) {}
 
   async chat(messages: AIMessage[], systemPrompt: string): Promise<string> {
-    const response = await fetch(`/api/gemini/v1beta/models/${GEMINI_MODEL}:generateContent`, {
+    const response = await fetch(`${GEMINI_ENDPOINT}/v1beta/models/${GEMINI_MODEL}:generateContent`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

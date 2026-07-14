@@ -16,18 +16,18 @@ Application web mobile-first pour suivre ses séances de musculation, visualiser
 
 ```bash
 pnpm install
-pnpm dev        # dev avec proxy Vite (le Coach IA fonctionne)
+pnpm dev        # serveur de dev
 pnpm build      # build de production (typecheck + vite build)
-pnpm preview    # aperçu du build — le Coach IA ne fonctionne PAS (proxy absent)
+pnpm preview    # aperçu du build
 pnpm test       # tests unitaires (Vitest)
 pnpm typecheck  # vérification TypeScript seule
 ```
 
 L'app est accessible sur `http://localhost:5173`.
 
-> **Note `pnpm preview` :** le proxy Vite `/api/gemini` n'est actif qu'en `pnpm dev`.
-> En `pnpm preview`, les appels vers l'API Gemini sont bloqués par CORS.
-> Pour tester la clé Gemini en local, utiliser `pnpm dev` uniquement.
+> Le Coach IA appelle l'API Gemini **directement depuis le navigateur** (l'API
+> Gemini autorise le CORS), donc il fonctionne aussi bien en `dev`, `preview`
+> qu'en production — aucun proxy ni fonction serveur nécessaire.
 
 ## Fonctionnalités
 
@@ -47,11 +47,11 @@ L'app est accessible sur `http://localhost:5173`.
 3. La clé est stockée uniquement dans ton navigateur (localStorage)
 
 Chaque utilisateur fournit sa propre clé (gratuite) : le propriétaire de l'app ne paie rien.
-En développement, les appels passent par le proxy Vite (`/api/gemini` → `generativelanguage.googleapis.com`).
+Les appels vont directement du navigateur vers l'API Gemini (aucun proxy).
 
 ## Déploiement (Vercel)
 
-Le fichier `vercel.json` est déjà configuré. Connecte le repo sur [vercel.com](https://vercel.com) — aucune variable d'environnement à définir côté serveur (la clé est fournie par l'utilisateur dans le navigateur et transmise via la Vercel Edge Function `api/gemini.ts`).
+Le fichier `vercel.json` est déjà configuré (app statique). Connecte le repo sur [vercel.com](https://vercel.com) — aucune variable d'environnement à définir côté serveur (la clé Gemini est fournie par l'utilisateur dans son navigateur).
 
 ```bash
 pnpm build   # vérification locale
@@ -87,6 +87,4 @@ src/
 └── components/
     ├── Layout.tsx               # nav bottom + header
     └── ui/                      # composants shadcn/ui
-api/
-└── gemini.ts                    # Vercel Edge Function (proxy Google Gemini)
 ```
