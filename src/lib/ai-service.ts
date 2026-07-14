@@ -72,7 +72,7 @@ export class MockAIService implements AIService {
 // Modèle gratuit de Google. Si tu changes ce nom, mets-le à jour aussi dans
 // api/gemini.ts (la fonction serveur proxy utilisée en production).
 export const GEMINI_MODEL = 'gemini-flash-latest';
-const GEMINI_MAX_TOK = 1024;
+const GEMINI_MAX_TOK = 2048;
 
 export class GeminiAIService implements AIService {
   constructor(private readonly apiKey: string) {}
@@ -91,7 +91,12 @@ export class GeminiAIService implements AIService {
           role: m.role === 'assistant' ? 'model' : 'user',
           parts: [{ text: m.content }],
         })),
-        generationConfig: { maxOutputTokens: GEMINI_MAX_TOK },
+        generationConfig: {
+          maxOutputTokens: GEMINI_MAX_TOK,
+          // Désactive le "thinking" (activé par défaut sur Gemini Flash récent)
+          // qui ralentit fortement les réponses et provoque des timeouts (504).
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
     });
 

@@ -8,7 +8,29 @@ import {
   type AIMessage,
 } from '@/lib/ai-service';
 import { buildSystemPrompt } from '@/lib/ai-context';
-import { Bot, Send, Loader2, Sparkles, Key, X, Eye, EyeOff, Trash2, CheckCircle2 } from 'lucide-react';
+import { scopedKey } from '@/lib/profiles';
+import { Bot, Send, Loader2, Sparkles, Key, X, Eye, EyeOff, Trash2, CheckCircle2, RotateCcw } from 'lucide-react';
+
+// Historique du chat, isolé par profil et persistant (survit au changement d'onglet).
+const chatStorageKey = () => scopedKey('muscu_ai_chat');
+
+const GREETING: AIMessage = {
+  role: 'assistant',
+  content: `Bonjour ! Je suis ton coach IA. 💪\n\nJe peux analyser tes performances, t'aider à planifier tes séances et répondre à tes questions sur l'entraînement.\n\nQue veux-tu savoir ?`,
+};
+
+function loadChat(): AIMessage[] {
+  try {
+    const saved = localStorage.getItem(chatStorageKey());
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed as AIMessage[];
+    }
+  } catch {
+    // ignore
+  }
+  return [GREETING];
+}
 
 // ─── Suggestions rapides ──────────────────────────────────────────────────────
 
@@ -238,12 +260,7 @@ export function AIAssistant() {
     serviceRef.current = apiKey ? new GeminiAIService(apiKey) : new MockAIService();
   }, [apiKey]);
 
-  const [messages, setMessages] = useState<AIMessage[]>([
-    {
-      role: 'assistant',
-      content: `Bonjour ! Je suis ton coach IA. 💪\n\nJe peux analyser tes performances, t'aider à planifier tes séances et répondre à tes questions sur l'entraînement.\n\nQue veux-tu savoir ?`,
-    },
-  ]);
+  const [messages, setMessages] = useState<AIMessage[]>(loadChat);
   const [input, setInput]     = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -252,6 +269,16 @@ export function AIAssistant() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  // Sauvegarde l'historique à chaque changement.
+  useEffect(() => {
+    try { localStorage.setItem(chatStorageKey(), JSON.stringify(messages)); } catch { /* ignore */ }
+  }, [messages]);
+
+  const resetChat = () => {
+    setMessages([GREETING]);
+    try { localStorage.removeItem(chatStorageKey()); } catch { /* ignore */ }
+  };
 
   const sendMessage = useCallback(async (text: string) => {
     const trimmed = text.trim();
@@ -312,6 +339,18 @@ export function AIAssistant() {
                 : 'Aucune séance enregistrée'}
             </p>
           </div>
+          {/* Nouvelle conversation */}
+          {messages.length > 1 && (
+            <button
+              onClick={resetChat}
+              className="shrink-0 p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              title="Nouvelle conversation"
+              aria-label="Nouvelle conversation"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+          )}
+
           {/* Badge statut + bouton paramètres */}
           <button
             onClick={() => setShowKeyModal(true)}

@@ -25,6 +25,7 @@ export const SCOPED_BASES = [
   'muscu_rest_duration',
   'muscu_gemini_key',
   'muscu_workout_draft',
+  'muscu_ai_chat',
 ];
 
 export const AVATARS = ['💪', '🔥', '🏋️', '⚡', '🦍', '🐺', '🚀', '🎯', '🥇', '🧠', '🦁', '🐉'];
