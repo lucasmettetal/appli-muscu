@@ -52,15 +52,11 @@ function APIKeyModal({
     }
   };
 
-  const isValidKey = (k: string) => k.startsWith('AIza');
-
   const handleSave = () => {
+    // Pas de contrôle de préfixe : les clés Gemini ont plusieurs formats
+    // (AIza…, AQ…). C'est le bouton « Tester la clé » et l'appel réel qui
+    // valident la clé pour de vrai.
     const key = input.trim() || null;
-    if (key && !isValidKey(key)) {
-      setTestResult('error');
-      setTestError('Format invalide — une clé Gemini commence par "AIza".');
-      return;
-    }
     if (key) {
       localStorage.setItem(geminiKeyName(), key);
     } else {
@@ -102,7 +98,7 @@ function APIKeyModal({
             type={visible ? 'text' : 'password'}
             value={input}
             onChange={e => { setInput(e.target.value); setTestResult(null); }}
-            placeholder="AIza…"
+            placeholder="Colle ta clé Gemini…"
             className="w-full border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-mono focus:outline-none focus:border-blue-400"
             autoFocus
           />
