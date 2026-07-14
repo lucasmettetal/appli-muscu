@@ -34,7 +34,7 @@ L'app est accessible sur `http://localhost:5173`.
 - **Séances** — Création, suivi des séries avec poids/reps, RPE, RIR et notes
 - **Timer de repos** — Flottant, avec presets et ajustements ±15s, bip audio à la fin
 - **Records personnels** — Détection automatique des PRs (charge, 1RM Epley, volume) avec célébration
-- **Bibliothèque d'exercices** — 30 exercices intégrés + création personnalisée + import depuis wger.de
+- **Bibliothèque d'exercices** — 30 exercices intégrés (avec images début/fin) + création personnalisée + import depuis une banque de ~870 exercices avec images (Free Exercise DB), instructions traduisibles en français à la demande via le Coach IA
 - **Progression** — Graphiques par exercice, statut de progression (positive / stable / stagnation)
 - **Coach IA** — Chat avec Google Gemini (clé API gratuite requise, sans carte bancaire) ou mode démo sans clé
 - **Profils locaux** — Plusieurs personnes peuvent partager le même appareil : chaque profil garde ses propres séances, exercices et clé IA (isolés dans le navigateur, sans synchronisation entre appareils)

@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router';
 import { useWorkout, type Exercise } from '../context/WorkoutContext';
 import { Button } from '@/components/ui/button';
@@ -8,12 +8,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { EQUIPMENT_LABEL as EQ_LABEL, DIFFICULTY_LABEL, DIFFICULTY_STYLE } from '@/lib/exercise-utils';
 import {
-  searchWgerExercises,
-  fetchWgerExerciseInfo,
-  mapWgerToExercise,
-  type WgerSuggestion,
-} from '@/lib/wger-api';
-import { Plus, Search, SlidersHorizontal, X, ChevronRight, Globe, Loader2, CheckCircle2 } from 'lucide-react';
+  fetchExerciseDb,
+  searchDb,
+  mapDbEntry,
+  entrySubtitle,
+  imageUrl,
+  type ExerciseDbEntry,
+} from '@/lib/exercise-db';
+import { Plus, Search, SlidersHorizontal, X, ChevronRight, Library, Loader2, CheckCircle2, ImageIcon } from 'lucide-react';
 
 const CATEGORIES: { value: Exercise['category'] | 'all'; label: string }[] = [
   { value: 'all',       label: 'Tous' },
@@ -52,11 +54,9 @@ const DIFFICULTY_OPTIONS = [
 ];
 
 
-// ─── Dialog de recherche API wger ────────────────────────────────────────────
+// ─── Dialog d'import depuis la banque d'exercices ────────────────────────────
 
-type ImportStatus = 'idle' | 'loading' | 'done' | 'exists';
-
-function WgerSearchDialog({
+function BankSearchDialog({
   open,
   onOpenChange,
   existingNames,
@@ -67,52 +67,32 @@ function WgerSearchDialog({
   existingNames: Set<string>;
   onImport: (exercise: Omit<Exercise, 'id' | 'custom'>) => void;
 }) {
-  const [query, setQuery]             = useState('');
-  const [results, setResults]         = useState<WgerSuggestion[]>([]);
-  const [searching, setSearching]     = useState(false);
-  const [searchError, setSearchError] = useState<string | null>(null);
-  const [importStatus, setImportStatus] = useState<Map<number, ImportStatus>>(new Map());
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [all, setAll]         = useState<ExerciseDbEntry[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState<string | null>(null);
+  const [query, setQuery]     = useState('');
+  const [imported, setImported] = useState<Set<string>>(new Set());
 
-  const handleQueryChange = (q: string) => {
-    setQuery(q);
-    setSearchError(null);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (q.trim().length < 2) { setResults([]); return; }
-    debounceRef.current = setTimeout(async () => {
-      setSearching(true);
-      try {
-        const suggestions = await searchWgerExercises(q.trim());
-        setResults(suggestions.slice(0, 15));
-      } catch {
-        setSearchError('Impossible de joindre la base wger. Vérifie ta connexion.');
-        setResults([]);
-      } finally {
-        setSearching(false);
-      }
-    }, 400);
-  };
+  // Charge la banque à la demande (une fois), quand le dialog s'ouvre.
+  useEffect(() => {
+    if (!open || all || loading) return;
+    setLoading(true);
+    setError(null);
+    fetchExerciseDb()
+      .then(setAll)
+      .catch(e => setError(e instanceof Error ? e.message : 'Chargement impossible'))
+      .finally(() => setLoading(false));
+  }, [open, all, loading]);
 
-  const handleImport = async (suggestion: WgerSuggestion) => {
-    const baseId = suggestion.data.base_id;
-    setImportStatus(prev => new Map(prev).set(baseId, 'loading'));
-    try {
-      const info     = await fetchWgerExerciseInfo(baseId);
-      const exercise = mapWgerToExercise(info, suggestion.value);
-      onImport(exercise);
-      setImportStatus(prev => new Map(prev).set(baseId, 'done'));
-    } catch {
-      setImportStatus(prev => new Map(prev).set(baseId, 'idle'));
-    }
+  const results = useMemo(() => (all ? searchDb(all, query) : []), [all, query]);
+
+  const handleImport = (entry: ExerciseDbEntry) => {
+    onImport(mapDbEntry(entry));
+    setImported(prev => new Set(prev).add(entry.id));
   };
 
   const handleClose = (v: boolean) => {
-    if (!v) {
-      setQuery('');
-      setResults([]);
-      setSearchError(null);
-      setImportStatus(new Map());
-    }
+    if (!v) { setQuery(''); setImported(new Set()); }
     onOpenChange(v);
   };
 
@@ -121,12 +101,12 @@ function WgerSearchDialog({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Globe className="w-4 h-4 text-blue-500" />
-            Chercher un exercice en ligne
+            <Library className="w-4 h-4 text-blue-500" />
+            Banque d'exercices
           </DialogTitle>
         </DialogHeader>
 
-        <p className="text-xs text-gray-400 -mt-1">Base wger.de — +800 exercices</p>
+        <p className="text-xs text-gray-400 -mt-1">+870 exercices avec images (noms en anglais)</p>
 
         {/* Champ de recherche */}
         <div className="relative">
@@ -134,63 +114,63 @@ function WgerSearchDialog({
           <Input
             placeholder="ex: bench press, squat, curl…"
             value={query}
-            onChange={e => handleQueryChange(e.target.value)}
+            onChange={e => setQuery(e.target.value)}
             className="pl-9"
+            disabled={loading || !!error}
             autoFocus
           />
-          {searching && (
+          {loading && (
             <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
           )}
         </div>
 
-        {/* Erreur réseau */}
-        {searchError && (
-          <p className="text-xs text-red-500 bg-red-50 rounded-lg px-3 py-2">{searchError}</p>
+        {error && (
+          <p className="text-xs text-red-500 bg-red-50 rounded-lg px-3 py-2">{error}</p>
         )}
 
         {/* Résultats */}
-        <div className="space-y-1.5 max-h-72 overflow-y-auto pr-0.5">
-          {results.length === 0 && query.trim().length >= 2 && !searching && !searchError && (
-            <p className="text-sm text-gray-400 text-center py-6">Aucun résultat pour « {query} »</p>
-          )}
-          {query.trim().length < 2 && !searching && (
+        <div className="space-y-1.5 max-h-80 overflow-y-auto pr-0.5">
+          {loading && <p className="text-sm text-gray-400 text-center py-6">Chargement de la banque…</p>}
+          {!loading && !error && query.trim().length < 2 && (
             <p className="text-xs text-gray-400 text-center py-6">Tape au moins 2 caractères…</p>
           )}
+          {!loading && !error && query.trim().length >= 2 && results.length === 0 && (
+            <p className="text-sm text-gray-400 text-center py-6">Aucun résultat pour « {query} »</p>
+          )}
 
-          {results.map(s => {
-            const baseId  = s.data.base_id;
-            const status  = importStatus.get(baseId) ?? 'idle';
-            const alreadyLocal = existingNames.has(s.value.toLowerCase());
-            const effectiveStatus = alreadyLocal ? 'exists' : status;
+          {results.map(entry => {
+            const alreadyHere = imported.has(entry.id) || existingNames.has(entry.name.toLowerCase());
+            const thumb = entry.images?.[0] ? imageUrl(entry.images[0]) : null;
 
             return (
               <div
-                key={baseId}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-lg border border-gray-100 hover:border-gray-200 bg-white"
+                key={entry.id}
+                className="flex items-center gap-3 px-2.5 py-2 rounded-lg border border-gray-100 hover:border-gray-200 bg-white"
               >
+                {thumb ? (
+                  <img src={thumb} alt="" loading="lazy" className="w-12 h-12 rounded-lg object-cover bg-gray-100 shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center shrink-0">
+                    <ImageIcon className="w-5 h-5 text-gray-200" />
+                  </div>
+                )}
+
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{s.value}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{s.data.category}</p>
+                  <p className="text-sm font-medium text-gray-900 truncate">{entry.name}</p>
+                  <p className="text-xs text-gray-400 mt-0.5 truncate">{entrySubtitle(entry)}</p>
                 </div>
 
-                {effectiveStatus === 'idle' && (
+                {alreadyHere ? (
+                  <span className="shrink-0 flex items-center gap-1 text-xs text-green-600 font-medium">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Ajouté
+                  </span>
+                ) : (
                   <button
-                    onClick={() => handleImport(s)}
+                    onClick={() => handleImport(entry)}
                     className="shrink-0 text-xs font-medium text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 px-2.5 py-1 rounded-full transition-colors"
                   >
                     Importer
                   </button>
-                )}
-                {effectiveStatus === 'loading' && (
-                  <Loader2 className="w-4 h-4 text-blue-400 animate-spin shrink-0" />
-                )}
-                {effectiveStatus === 'done' && (
-                  <span className="shrink-0 flex items-center gap-1 text-xs text-green-600 font-medium">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Ajouté
-                  </span>
-                )}
-                {effectiveStatus === 'exists' && (
-                  <span className="shrink-0 text-xs text-gray-400">Déjà présent</span>
                 )}
               </div>
             );
@@ -214,7 +194,7 @@ export function Exercises() {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const [dialogOpen, setDialogOpen]         = useState(false);
-  const [wgerOpen, setWgerOpen]             = useState(false);
+  const [bankOpen, setBankOpen]             = useState(false);
   const [newName, setNewName]               = useState('');
   const [newCategory, setNewCategory]       = useState<Exercise['category']>('chest');
   const [newMuscleGroup, setNewMuscleGroup] = useState('');
@@ -283,10 +263,10 @@ export function Exercises() {
   return (
     <div className="space-y-4">
 
-      {/* Dialog API wger */}
-      <WgerSearchDialog
-        open={wgerOpen}
-        onOpenChange={setWgerOpen}
+      {/* Dialog banque d'exercices */}
+      <BankSearchDialog
+        open={bankOpen}
+        onOpenChange={setBankOpen}
         existingNames={existingNames}
         onImport={addExercise}
       />
@@ -295,8 +275,8 @@ export function Exercises() {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Exercices</h2>
         <div className="flex items-center gap-2">
-          <Button size="sm" variant="outline" onClick={() => setWgerOpen(true)}>
-            <Globe className="w-4 h-4 mr-1" />En ligne
+          <Button size="sm" variant="outline" onClick={() => setBankOpen(true)}>
+            <Library className="w-4 h-4 mr-1" />Banque
           </Button>
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>

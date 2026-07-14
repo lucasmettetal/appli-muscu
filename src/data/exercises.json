@@ -7,16 +7,28 @@
       "nameEn": "Barbell Bench Press",
       "category": "chest",
       "muscleGroup": "Pectoraux",
-      "musclesPrimary": ["pectoraux"],
-      "musclesSecondary": ["triceps", "deltoide-anterieur"],
-      "equipment": ["barbell", "bench"],
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "deltoide-anterieur"
+      ],
+      "equipment": [
+        "barbell",
+        "bench"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "force", "powerlifting"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "force",
+        "powerlifting"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/1.jpg"
     },
     {
       "id": "bench-press-incline-barbell",
@@ -24,16 +36,26 @@
       "nameEn": "Incline Barbell Bench Press",
       "category": "chest",
       "muscleGroup": "Pectoraux (chef claviculaire)",
-      "musclesPrimary": ["pectoraux"],
-      "musclesSecondary": ["triceps", "deltoide-anterieur"],
-      "equipment": ["barbell", "bench"],
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "deltoide-anterieur"
+      ],
+      "equipment": [
+        "barbell",
+        "bench"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg"
     },
     {
       "id": "dumbbell-fly",
@@ -41,16 +63,26 @@
       "nameEn": "Dumbbell Fly",
       "category": "chest",
       "muscleGroup": "Pectoraux",
-      "musclesPrimary": ["pectoraux"],
-      "musclesSecondary": ["deltoide-anterieur"],
-      "equipment": ["dumbbell", "bench"],
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "deltoide-anterieur"
+      ],
+      "equipment": [
+        "dumbbell",
+        "bench"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "étirement"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "étirement"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/1.jpg"
     },
     {
       "id": "push-up",
@@ -58,16 +90,25 @@
       "nameEn": "Push-up",
       "category": "chest",
       "muscleGroup": "Pectoraux",
-      "musclesPrimary": ["pectoraux"],
-      "musclesSecondary": ["triceps", "deltoide-anterieur", "core"],
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "deltoide-anterieur",
+        "core"
+      ],
       "equipment": [],
       "type": "compound",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["push", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/1.jpg"
     },
     {
       "id": "deadlift-conventional",
@@ -75,16 +116,30 @@
       "nameEn": "Conventional Deadlift",
       "category": "back",
       "muscleGroup": "Dos / Ischio-jambiers",
-      "musclesPrimary": ["ischio-jambiers", "fessiers", "erecteurs-spinaux"],
-      "musclesSecondary": ["quadriceps", "trapèzes", "avant-bras"],
-      "equipment": ["barbell"],
+      "musclesPrimary": [
+        "ischio-jambiers",
+        "fessiers",
+        "erecteurs-spinaux"
+      ],
+      "musclesSecondary": [
+        "quadriceps",
+        "trapèzes",
+        "avant-bras"
+      ],
+      "equipment": [
+        "barbell"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull", "force", "powerlifting"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "force",
+        "powerlifting"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/1.jpg"
     },
     {
       "id": "deadlift-romanian",
@@ -92,16 +147,27 @@
       "nameEn": "Romanian Deadlift",
       "category": "back",
       "muscleGroup": "Ischio-jambiers / Fessiers",
-      "musclesPrimary": ["ischio-jambiers", "fessiers"],
-      "musclesSecondary": ["erecteurs-spinaux", "avant-bras"],
-      "equipment": ["barbell"],
+      "musclesPrimary": [
+        "ischio-jambiers",
+        "fessiers"
+      ],
+      "musclesSecondary": [
+        "erecteurs-spinaux",
+        "avant-bras"
+      ],
+      "equipment": [
+        "barbell"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull", "ischio"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "ischio"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/1.jpg"
     },
     {
       "id": "pull-up",
@@ -109,16 +175,27 @@
       "nameEn": "Pull-up",
       "category": "back",
       "muscleGroup": "Grand Dorsal",
-      "musclesPrimary": ["grand-dorsal"],
-      "musclesSecondary": ["biceps", "trapèzes-inferieurs", "rhomboïdes"],
-      "equipment": ["pull-up-bar"],
+      "musclesPrimary": [
+        "grand-dorsal"
+      ],
+      "musclesSecondary": [
+        "biceps",
+        "trapèzes-inferieurs",
+        "rhomboïdes"
+      ],
+      "equipment": [
+        "pull-up-bar"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["pull", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/1.jpg"
     },
     {
       "id": "barbell-row",
@@ -126,16 +203,27 @@
       "nameEn": "Barbell Row",
       "category": "back",
       "muscleGroup": "Dos",
-      "musclesPrimary": ["grand-dorsal", "rhomboïdes"],
-      "musclesSecondary": ["biceps", "trapèzes", "erecteurs-spinaux"],
-      "equipment": ["barbell"],
+      "musclesPrimary": [
+        "grand-dorsal",
+        "rhomboïdes"
+      ],
+      "musclesSecondary": [
+        "biceps",
+        "trapèzes",
+        "erecteurs-spinaux"
+      ],
+      "equipment": [
+        "barbell"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/1.jpg"
     },
     {
       "id": "cable-lat-pulldown",
@@ -143,16 +231,25 @@
       "nameEn": "Lat Pulldown",
       "category": "back",
       "muscleGroup": "Grand Dorsal",
-      "musclesPrimary": ["grand-dorsal"],
-      "musclesSecondary": ["biceps", "trapèzes-inferieurs"],
-      "equipment": ["cable"],
+      "musclesPrimary": [
+        "grand-dorsal"
+      ],
+      "musclesSecondary": [
+        "biceps",
+        "trapèzes-inferieurs"
+      ],
+      "equipment": [
+        "cable"
+      ],
       "type": "compound",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
     },
     {
       "id": "dumbbell-row",
@@ -160,16 +257,28 @@
       "nameEn": "Dumbbell Row",
       "category": "back",
       "muscleGroup": "Dos",
-      "musclesPrimary": ["grand-dorsal", "rhomboïdes"],
-      "musclesSecondary": ["biceps", "trapèzes"],
-      "equipment": ["dumbbell", "bench"],
+      "musclesPrimary": [
+        "grand-dorsal",
+        "rhomboïdes"
+      ],
+      "musclesSecondary": [
+        "biceps",
+        "trapèzes"
+      ],
+      "equipment": [
+        "dumbbell",
+        "bench"
+      ],
       "type": "compound",
       "difficulty": "beginner",
       "unilateral": true,
       "bodyweight": false,
-      "tags": ["pull", "unilateral"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "unilateral"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/1.jpg"
     },
     {
       "id": "overhead-press-barbell",
@@ -177,16 +286,28 @@
       "nameEn": "Barbell Overhead Press",
       "category": "shoulders",
       "muscleGroup": "Épaules",
-      "musclesPrimary": ["deltoide-anterieur", "deltoide-median"],
-      "musclesSecondary": ["triceps", "trapèzes", "core"],
-      "equipment": ["barbell"],
+      "musclesPrimary": [
+        "deltoide-anterieur",
+        "deltoide-median"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "trapèzes",
+        "core"
+      ],
+      "equipment": [
+        "barbell"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "force"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "force"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/1.jpg"
     },
     {
       "id": "lateral-raise-dumbbell",
@@ -194,16 +315,25 @@
       "nameEn": "Dumbbell Lateral Raise",
       "category": "shoulders",
       "muscleGroup": "Deltoïde Médian",
-      "musclesPrimary": ["deltoide-median"],
-      "musclesSecondary": ["deltoide-anterieur", "trapèzes"],
-      "equipment": ["dumbbell"],
+      "musclesPrimary": [
+        "deltoide-median"
+      ],
+      "musclesSecondary": [
+        "deltoide-anterieur",
+        "trapèzes"
+      ],
+      "equipment": [
+        "dumbbell"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/1.jpg"
     },
     {
       "id": "face-pull-cable",
@@ -211,16 +341,27 @@
       "nameEn": "Cable Face Pull",
       "category": "shoulders",
       "muscleGroup": "Deltoïde Postérieur",
-      "musclesPrimary": ["deltoide-posterieur"],
-      "musclesSecondary": ["trapèzes", "rhomboïdes", "coiffe-rotateurs"],
-      "equipment": ["cable"],
+      "musclesPrimary": [
+        "deltoide-posterieur"
+      ],
+      "musclesSecondary": [
+        "trapèzes",
+        "rhomboïdes",
+        "coiffe-rotateurs"
+      ],
+      "equipment": [
+        "cable"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull", "santé-épaules"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "santé-épaules"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/1.jpg"
     },
     {
       "id": "arnold-press",
@@ -228,16 +369,25 @@
       "nameEn": "Arnold Press",
       "category": "shoulders",
       "muscleGroup": "Épaules",
-      "musclesPrimary": ["deltoide-anterieur", "deltoide-median"],
-      "musclesSecondary": ["triceps"],
-      "equipment": ["dumbbell"],
+      "musclesPrimary": [
+        "deltoide-anterieur",
+        "deltoide-median"
+      ],
+      "musclesSecondary": [
+        "triceps"
+      ],
+      "equipment": [
+        "dumbbell"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Arnold_Press/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Arnold_Press/1.jpg"
     },
     {
       "id": "squat-barbell",
@@ -245,16 +395,30 @@
       "nameEn": "Barbell Back Squat",
       "category": "legs",
       "muscleGroup": "Quadriceps / Fessiers",
-      "musclesPrimary": ["quadriceps", "fessiers"],
-      "musclesSecondary": ["ischio-jambiers", "mollets", "core"],
-      "equipment": ["barbell", "squat-rack"],
+      "musclesPrimary": [
+        "quadriceps",
+        "fessiers"
+      ],
+      "musclesSecondary": [
+        "ischio-jambiers",
+        "mollets",
+        "core"
+      ],
+      "equipment": [
+        "barbell",
+        "squat-rack"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "force", "powerlifting"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "force",
+        "powerlifting"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/1.jpg"
     },
     {
       "id": "leg-press-machine",
@@ -262,16 +426,25 @@
       "nameEn": "Leg Press",
       "category": "legs",
       "muscleGroup": "Quadriceps",
-      "musclesPrimary": ["quadriceps"],
-      "musclesSecondary": ["fessiers", "ischio-jambiers"],
-      "equipment": ["machine"],
+      "musclesPrimary": [
+        "quadriceps"
+      ],
+      "musclesSecondary": [
+        "fessiers",
+        "ischio-jambiers"
+      ],
+      "equipment": [
+        "machine"
+      ],
       "type": "compound",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/1.jpg"
     },
     {
       "id": "lunge",
@@ -279,16 +452,27 @@
       "nameEn": "Forward Lunge",
       "category": "legs",
       "muscleGroup": "Quadriceps / Fessiers",
-      "musclesPrimary": ["quadriceps", "fessiers"],
-      "musclesSecondary": ["ischio-jambiers", "mollets"],
-      "equipment": ["dumbbell"],
+      "musclesPrimary": [
+        "quadriceps",
+        "fessiers"
+      ],
+      "musclesSecondary": [
+        "ischio-jambiers",
+        "mollets"
+      ],
+      "equipment": [
+        "dumbbell"
+      ],
       "type": "compound",
       "difficulty": "beginner",
       "unilateral": true,
       "bodyweight": true,
-      "tags": ["push", "unilateral"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "unilateral"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/1.jpg"
     },
     {
       "id": "leg-curl-machine",
@@ -296,16 +480,25 @@
       "nameEn": "Lying Leg Curl",
       "category": "legs",
       "muscleGroup": "Ischio-jambiers",
-      "musclesPrimary": ["ischio-jambiers"],
-      "musclesSecondary": ["mollets"],
-      "equipment": ["machine"],
+      "musclesPrimary": [
+        "ischio-jambiers"
+      ],
+      "musclesSecondary": [
+        "mollets"
+      ],
+      "equipment": [
+        "machine"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull", "ischio"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "ischio"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/1.jpg"
     },
     {
       "id": "hip-thrust",
@@ -313,16 +506,26 @@
       "nameEn": "Hip Thrust",
       "category": "legs",
       "muscleGroup": "Fessiers",
-      "musclesPrimary": ["fessiers"],
-      "musclesSecondary": ["ischio-jambiers", "core"],
-      "equipment": ["barbell", "bench"],
+      "musclesPrimary": [
+        "fessiers"
+      ],
+      "musclesSecondary": [
+        "ischio-jambiers",
+        "core"
+      ],
+      "equipment": [
+        "barbell",
+        "bench"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/1.jpg"
     },
     {
       "id": "calf-raise-standing",
@@ -330,16 +533,22 @@
       "nameEn": "Standing Calf Raise",
       "category": "legs",
       "muscleGroup": "Mollets",
-      "musclesPrimary": ["mollets"],
+      "musclesPrimary": [
+        "mollets"
+      ],
       "musclesSecondary": [],
-      "equipment": ["machine"],
+      "equipment": [
+        "machine"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/1.jpg"
     },
     {
       "id": "dumbbell-curl",
@@ -347,16 +556,26 @@
       "nameEn": "Dumbbell Bicep Curl",
       "category": "arms",
       "muscleGroup": "Biceps",
-      "musclesPrimary": ["biceps"],
-      "musclesSecondary": ["brachial", "avant-bras"],
-      "equipment": ["dumbbell"],
+      "musclesPrimary": [
+        "biceps"
+      ],
+      "musclesSecondary": [
+        "brachial",
+        "avant-bras"
+      ],
+      "equipment": [
+        "dumbbell"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": true,
       "bodyweight": false,
-      "tags": ["pull", "isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/1.jpg"
     },
     {
       "id": "hammer-curl",
@@ -364,16 +583,26 @@
       "nameEn": "Hammer Curl",
       "category": "arms",
       "muscleGroup": "Biceps / Brachial",
-      "musclesPrimary": ["brachial", "biceps"],
-      "musclesSecondary": ["avant-bras"],
-      "equipment": ["dumbbell"],
+      "musclesPrimary": [
+        "brachial",
+        "biceps"
+      ],
+      "musclesSecondary": [
+        "avant-bras"
+      ],
+      "equipment": [
+        "dumbbell"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": true,
       "bodyweight": false,
-      "tags": ["pull", "isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/1.jpg"
     },
     {
       "id": "barbell-curl-ez",
@@ -381,16 +610,25 @@
       "nameEn": "EZ Bar Curl",
       "category": "arms",
       "muscleGroup": "Biceps",
-      "musclesPrimary": ["biceps"],
-      "musclesSecondary": ["avant-bras"],
-      "equipment": ["barbell"],
+      "musclesPrimary": [
+        "biceps"
+      ],
+      "musclesSecondary": [
+        "avant-bras"
+      ],
+      "equipment": [
+        "barbell"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["pull", "isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "pull",
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/1.jpg"
     },
     {
       "id": "triceps-pushdown-cable",
@@ -398,16 +636,23 @@
       "nameEn": "Cable Triceps Pushdown",
       "category": "arms",
       "muscleGroup": "Triceps",
-      "musclesPrimary": ["triceps"],
+      "musclesPrimary": [
+        "triceps"
+      ],
       "musclesSecondary": [],
-      "equipment": ["cable"],
+      "equipment": [
+        "cable"
+      ],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/1.jpg"
     },
     {
       "id": "skull-crusher",
@@ -415,16 +660,24 @@
       "nameEn": "Skull Crusher",
       "category": "arms",
       "muscleGroup": "Triceps",
-      "musclesPrimary": ["triceps"],
+      "musclesPrimary": [
+        "triceps"
+      ],
       "musclesSecondary": [],
-      "equipment": ["barbell", "bench"],
+      "equipment": [
+        "barbell",
+        "bench"
+      ],
       "type": "isolation",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": false,
-      "tags": ["push", "isolation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "isolation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Skullcrusher/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Skullcrusher/1.jpg"
     },
     {
       "id": "dips",
@@ -432,16 +685,26 @@
       "nameEn": "Dips",
       "category": "arms",
       "muscleGroup": "Triceps / Pectoraux",
-      "musclesPrimary": ["triceps"],
-      "musclesSecondary": ["pectoraux", "deltoide-anterieur"],
-      "equipment": ["dip-bar"],
+      "musclesPrimary": [
+        "triceps"
+      ],
+      "musclesSecondary": [
+        "pectoraux",
+        "deltoide-anterieur"
+      ],
+      "equipment": [
+        "dip-bar"
+      ],
       "type": "compound",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["push", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/1.jpg"
     },
     {
       "id": "plank",
@@ -449,16 +712,24 @@
       "nameEn": "Plank",
       "category": "core",
       "muscleGroup": "Abdominaux",
-      "musclesPrimary": ["core"],
-      "musclesSecondary": ["obliques", "erecteurs-spinaux"],
+      "musclesPrimary": [
+        "core"
+      ],
+      "musclesSecondary": [
+        "obliques",
+        "erecteurs-spinaux"
+      ],
       "equipment": [],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["gainage", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "gainage",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/1.jpg"
     },
     {
       "id": "crunch",
@@ -466,16 +737,21 @@
       "nameEn": "Crunch",
       "category": "core",
       "muscleGroup": "Abdominaux",
-      "musclesPrimary": ["core"],
+      "musclesPrimary": [
+        "core"
+      ],
       "musclesSecondary": [],
       "equipment": [],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["gainage", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "gainage",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/1.jpg"
     },
     {
       "id": "hanging-leg-raise",
@@ -483,16 +759,26 @@
       "nameEn": "Hanging Leg Raise",
       "category": "core",
       "muscleGroup": "Abdominaux (bas)",
-      "musclesPrimary": ["core"],
-      "musclesSecondary": ["avant-bras", "hip-flexors"],
-      "equipment": ["pull-up-bar"],
+      "musclesPrimary": [
+        "core"
+      ],
+      "musclesSecondary": [
+        "avant-bras",
+        "hip-flexors"
+      ],
+      "equipment": [
+        "pull-up-bar"
+      ],
       "type": "isolation",
       "difficulty": "intermediate",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["gainage", "poids-du-corps"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "gainage",
+        "poids-du-corps"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/1.jpg"
     },
     {
       "id": "russian-twist",
@@ -500,16 +786,24 @@
       "nameEn": "Russian Twist",
       "category": "core",
       "muscleGroup": "Obliques",
-      "musclesPrimary": ["obliques"],
-      "musclesSecondary": ["core"],
+      "musclesPrimary": [
+        "obliques"
+      ],
+      "musclesSecondary": [
+        "core"
+      ],
       "equipment": [],
       "type": "isolation",
       "difficulty": "beginner",
       "unilateral": false,
       "bodyweight": true,
-      "tags": ["gainage", "poids-du-corps", "rotation"],
-      "imageStart": null,
-      "imageEnd": null
+      "tags": [
+        "gainage",
+        "poids-du-corps",
+        "rotation"
+      ],
+      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/0.jpg",
+      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/1.jpg"
     }
   ]
 }

@@ -20,6 +20,7 @@ export interface Exercise {
   tags: string[];
   imageStart: string | null;
   imageEnd: string | null;
+  instructions?: string[]; // étapes inline (exos importés depuis la banque)
   custom?: boolean;
 }
 

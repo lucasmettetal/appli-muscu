@@ -10,12 +10,13 @@ import {
   type ProgressionResult,
 } from '@/lib/pr-utils';
 import instructionsData from '../data/exercise-instructions.json';
+import { geminiKeyName, GeminiAIService } from '@/lib/ai-service';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
 import {
   ChevronLeft, Award, Dumbbell, ImageIcon, CheckCircle2, XCircle,
-  TrendingUp, TrendingDown, Minus,
+  TrendingUp, TrendingDown, Minus, Languages, Loader2,
 } from 'lucide-react';
 
 type InstructionKey = keyof typeof instructionsData;
@@ -47,6 +48,109 @@ function ImageSlot({ src, label }: { src: string | null; label: string }) {
       <ImageIcon className="w-7 h-7 text-gray-200" />
       <span className="text-xs text-gray-400 font-medium text-center px-2">{label}</span>
     </div>
+  );
+}
+
+// ─── Instructions (banque : anglais + traduction Gemini à la demande) ────────
+
+const TR_KEY = 'muscu_instr_fr';
+function loadAllTr(): Record<string, string[]> {
+  try { return JSON.parse(localStorage.getItem(TR_KEY) || '{}'); } catch { return {}; }
+}
+function saveTranslation(id: string, steps: string[]) {
+  const m = loadAllTr();
+  m[id] = steps;
+  try { localStorage.setItem(TR_KEY, JSON.stringify(m)); } catch { /* ignore */ }
+}
+
+async function translateSteps(steps: string[]): Promise<string[]> {
+  const key = localStorage.getItem(geminiKeyName());
+  if (!key) throw new Error('Clé Gemini absente');
+  const svc = new GeminiAIService(key);
+  const numbered = steps.map((s, i) => `${i + 1}. ${s}`).join('\n');
+  const system =
+    "Tu es un traducteur spécialisé en musculation. Traduis en français chaque étape ci-dessous. " +
+    "Renvoie UNIQUEMENT les étapes traduites, une par ligne, dans le même ordre, sans numéro ni commentaire.";
+  const out = await svc.chat([{ role: 'user', content: numbered }], system);
+  const lines = out.split('\n').map(l => l.replace(/^\s*\d+[.)]\s*/, '').trim()).filter(Boolean);
+  return lines.length ? lines : [out.trim()];
+}
+
+function StepsList({ steps }: { steps: string[] }) {
+  return (
+    <ol className="space-y-3">
+      {steps.map((step, i) => (
+        <li key={i} className="flex gap-3">
+          <span className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
+            {i + 1}
+          </span>
+          <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+function InstructionsBlock({
+  exerciseId,
+  builtinSteps,
+  inlineSteps,
+}: {
+  exerciseId: string;
+  builtinSteps?: string[];
+  inlineSteps?: string[];
+}) {
+  const [translated, setTranslated] = useState<string[] | null>(() => loadAllTr()[exerciseId] ?? null);
+  const [translating, setTranslating] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  // Priorité aux instructions françaises intégrées (les 30 de base).
+  if (builtinSteps && builtinSteps.length > 0) {
+    return <Section title="Instructions"><StepsList steps={builtinSteps} /></Section>;
+  }
+  if (!inlineSteps || inlineSteps.length === 0) return null;
+
+  const steps = translated ?? inlineSteps;
+  const isEnglish = !translated;
+  const hasKey = !!localStorage.getItem(geminiKeyName());
+
+  const handleTranslate = async () => {
+    setTranslating(true);
+    setErr(null);
+    try {
+      const fr = await translateSteps(inlineSteps);
+      setTranslated(fr);
+      saveTranslation(exerciseId, fr);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Traduction impossible');
+    } finally {
+      setTranslating(false);
+    }
+  };
+
+  return (
+    <Section title="Instructions">
+      {isEnglish && (
+        <div className="mb-3">
+          {hasKey ? (
+            <button
+              onClick={handleTranslate}
+              disabled={translating}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 border border-blue-200 hover:border-blue-400 rounded-full px-3 py-1.5 transition-colors disabled:opacity-50"
+            >
+              {translating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Languages className="w-3.5 h-3.5" />}
+              {translating ? 'Traduction…' : 'Traduire en français'}
+            </button>
+          ) : (
+            <p className="text-xs text-gray-400">
+              Instructions en anglais. Ajoute ta clé Gemini (onglet <span className="font-medium">Coach IA</span>) pour les traduire.
+            </p>
+          )}
+          {err && <p className="text-xs text-red-500 mt-1.5">{err}</p>}
+        </div>
+      )}
+      <StepsList steps={steps} />
+    </Section>
   );
 }
 
@@ -343,20 +447,13 @@ export function ExerciseDetail() {
         </Section>
       )}
 
-      {/* Instructions */}
-      {content?.instructions && content.instructions.length > 0 && (
-        <Section title="Instructions">
-          <ol className="space-y-3">
-            {content.instructions.map((step, i) => (
-              <li key={i} className="flex gap-3">
-                <span className="shrink-0 w-6 h-6 rounded-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center mt-0.5">
-                  {i + 1}
-                </span>
-                <p className="text-sm text-gray-700 leading-relaxed">{step}</p>
-              </li>
-            ))}
-          </ol>
-        </Section>
+      {/* Instructions (intégrées FR, ou inline EN de la banque avec traduction) */}
+      {id && (
+        <InstructionsBlock
+          exerciseId={id}
+          builtinSteps={content?.instructions}
+          inlineSteps={exercise.instructions}
+        />
       )}
 
       {/* Conseils */}
@@ -387,7 +484,7 @@ export function ExerciseDetail() {
         </Section>
       )}
 
-      {!content && (
+      {!content && (!exercise.instructions || exercise.instructions.length === 0) && (
         <div className="bg-gray-50 rounded-xl border border-dashed border-gray-200 p-4 text-center">
           <p className="text-sm text-gray-400">Instructions à venir pour cet exercice.</p>
         </div>
