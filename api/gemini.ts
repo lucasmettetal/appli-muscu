@@ -2,7 +2,7 @@ export const config = { runtime: 'edge' };
 
 // Modèle Gemini gratuit. Doit rester cohérent avec GEMINI_MODEL dans
 // src/lib/ai-service.ts (utilisé côté client en développement).
-const GEMINI_MODEL = 'gemini-2.5-flash';
+const GEMINI_MODEL = 'gemini-flash-latest';
 
 // Proxy vers l'API Google Gemini : évite les soucis de CORS et garde la clé de
 // l'utilisateur côté requête (elle n'est jamais stockée sur le serveur).

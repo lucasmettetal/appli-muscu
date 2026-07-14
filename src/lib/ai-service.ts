@@ -71,7 +71,7 @@ export class MockAIService implements AIService {
 // ─── Google Gemini (clé API utilisateur, gratuite) ───────────────────────────
 // Modèle gratuit de Google. Si tu changes ce nom, mets-le à jour aussi dans
 // api/gemini.ts (la fonction serveur proxy utilisée en production).
-export const GEMINI_MODEL = 'gemini-2.5-flash';
+export const GEMINI_MODEL = 'gemini-flash-latest';
 const GEMINI_MAX_TOK = 1024;
 
 export class GeminiAIService implements AIService {
