@@ -9,6 +9,7 @@ import {
 } from '@/lib/ai-service';
 import { buildSystemPrompt } from '@/lib/ai-context';
 import { scopedKey } from '@/lib/profiles';
+import { Markdown } from '@/components/Markdown';
 import { Bot, Send, Loader2, Sparkles, Key, X, Eye, EyeOff, Trash2, CheckCircle2, RotateCcw } from 'lucide-react';
 
 // Historique du chat, isolé par profil et persistant (survit au changement d'onglet).
@@ -213,13 +214,13 @@ function MessageBubble({ message }: { message: AIMessage }) {
         </div>
       )}
       <div
-        className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+        className={`max-w-[82%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${
           isUser
-            ? 'bg-blue-600 text-white rounded-tr-sm'
+            ? 'bg-blue-600 text-white rounded-tr-sm whitespace-pre-wrap'
             : 'bg-white border border-gray-200 text-gray-800 rounded-tl-sm'
         }`}
       >
-        {message.content}
+        {isUser ? message.content : <Markdown content={message.content} />}
       </div>
     </div>
   );
