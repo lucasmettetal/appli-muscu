@@ -40,7 +40,7 @@ export function Workouts() {
         onCancel={() => setWorkoutToDelete(null)}
       />
     )}
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Séances</h2>
         <Button asChild size="sm">
@@ -55,7 +55,7 @@ export function Workouts() {
 
       <Link
         to="/programs"
-        className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-300 transition-colors"
+        className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 hover:border-blue-300 transition-colors"
       >
         <div className="shrink-0 bg-blue-50 rounded-lg p-2">
           <ClipboardList className="w-5 h-5 text-blue-600" />
@@ -88,7 +88,7 @@ export function Workouts() {
             return (
               <div
                 key={workout.id}
-                className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden"
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
               >
                 <Link to={`/workout/${workout.id}`} className="block p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex justify-between items-start">

@@ -160,7 +160,9 @@ function PRCelebrationModal({ prs, onClose }: { prs: NewPR[]; onClose: () => voi
     <div className="fixed inset-0 z-50 flex items-end bg-black/60 backdrop-blur-sm">
       <div className="bg-white w-full rounded-t-2xl p-6 space-y-5 max-h-[80vh] overflow-y-auto">
         <div className="text-center">
-          <div className="text-4xl mb-2">🏆</div>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 text-white shadow-lg shadow-amber-500/30 mb-3">
+            <Trophy className="w-8 h-8" />
+          </div>
           <h2 className="text-xl font-bold text-gray-900">
             {prs.length > 1 ? 'Nouveaux Records !' : 'Nouveau Record !'}
           </h2>
@@ -187,7 +189,7 @@ function PRCelebrationModal({ prs, onClose }: { prs: NewPR[]; onClose: () => voi
           ))}
         </div>
         <Button className="w-full" size="lg" onClick={onClose}>
-          Continuer 💪
+          Continuer
         </Button>
       </div>
     </div>
@@ -518,7 +520,7 @@ export function WorkoutSession() {
             const prevMaxWeight  = currentPRs.get(workoutEx.exerciseId) ?? 0;
 
             return (
-              <div key={workoutEx.exerciseId} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+              <div key={workoutEx.exerciseId} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
 
                 <div className="flex justify-between items-center px-4 pt-4 pb-3 border-b border-gray-100">
                   <div>
@@ -635,8 +637,8 @@ export function WorkoutSession() {
                               {est1RM > 0 && (
                                 <div className="flex items-center justify-between text-xs">
                                   <span className="text-gray-400">1RM estimé (Epley)</span>
-                                  <span className={`font-semibold ${isWeightPR ? 'text-yellow-600' : 'text-gray-700'}`}>
-                                    {est1RM} kg {isWeightPR && '🏆'}
+                                  <span className={`inline-flex items-center gap-1 font-semibold ${isWeightPR ? 'text-yellow-600' : 'text-gray-700'}`}>
+                                    {est1RM} kg {isWeightPR && <Trophy className="w-3 h-3" />}
                                   </span>
                                 </div>
                               )}

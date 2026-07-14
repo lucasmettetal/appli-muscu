@@ -31,6 +31,14 @@ export default defineConfig({
     },
   },
 
+  server: {
+    // Port fixe en dev : l'origine (http://localhost:5173) reste stable, ce qui
+    // permet de l'autoriser une fois pour toutes dans les « Redirect URLs »
+    // Supabase (sinon le lien magique retombe sur la Site URL de prod).
+    port: 5173,
+    strictPort: true,
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 

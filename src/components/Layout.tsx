@@ -1,12 +1,21 @@
+import { useState } from 'react';
 import { Outlet, Link, useLocation } from 'react-router';
-import { Home, Dumbbell, ListChecks, TrendingUp, Bot, Settings, LogOut } from 'lucide-react';
+import { Home, Dumbbell, ListChecks, TrendingUp, Bot, Settings, LogOut, Moon, Sun } from 'lucide-react';
 import { ProfileSwitcher } from './ProfileSwitcher';
 import { useAuth } from '../context/AuthContext';
+import { applyTheme, getInitialTheme, type Theme } from '../lib/theme';
 
 export function Layout() {
   const location = useLocation();
   const { configured, session, user, signOut } = useAuth();
   const cloudMode = configured && !!session;
+
+  const [theme, setTheme] = useState<Theme>(() => getInitialTheme());
+  const toggleTheme = () => {
+    const next: Theme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    applyTheme(next);
+  };
 
   const navItems = [
     { path: '/', icon: Home, label: 'Accueil' },
@@ -25,7 +34,12 @@ export function Layout() {
     <div className="min-h-screen bg-gray-50 pb-20">
       <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-lg mx-auto px-4 py-4 flex items-center justify-between gap-2">
-          <h1 className="text-xl font-bold text-gray-900 shrink-0">💪</h1>
+          <Link to="/" className="flex items-center gap-2 shrink-0" aria-label="Accueil">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-500 text-white shadow-sm shadow-blue-600/25">
+              <Dumbbell className="w-4 h-4" />
+            </span>
+            <span className="text-lg font-extrabold tracking-tight text-gray-900">Muscu</span>
+          </Link>
           <div className="flex items-center gap-1.5 min-w-0">
             {cloudMode ? (
               <button
@@ -39,6 +53,14 @@ export function Layout() {
             ) : (
               <ProfileSwitcher />
             )}
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors shrink-0"
+              aria-label={theme === 'dark' ? 'Passer en clair' : 'Passer en sombre'}
+              title={theme === 'dark' ? 'Passer en clair' : 'Passer en sombre'}
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <Link
               to="/settings"
               className={`p-1.5 rounded-lg transition-colors shrink-0 ${

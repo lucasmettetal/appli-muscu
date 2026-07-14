@@ -11,13 +11,14 @@ import { buildSystemPrompt } from '@/lib/ai-context';
 import { scopedKey } from '@/lib/profiles';
 import { Markdown } from '@/components/Markdown';
 import { Bot, Send, Loader2, Sparkles, Key, X, Eye, EyeOff, Trash2, CheckCircle2, RotateCcw } from 'lucide-react';
+import { KawashimaHead } from '../components/KawashimaHead';
 
 // Historique du chat, isolé par profil et persistant (survit au changement d'onglet).
 const chatStorageKey = () => scopedKey('muscu_ai_chat');
 
 const GREETING: AIMessage = {
   role: 'assistant',
-  content: `Bonjour ! Je suis ton coach IA. 💪\n\nJe peux analyser tes performances, t'aider à planifier tes séances et répondre à tes questions sur l'entraînement.\n\nQue veux-tu savoir ?`,
+  content: `Bonjour ! Je suis ton coach IA.\n\nJe peux analyser tes performances, t'aider à planifier tes séances et répondre à tes questions sur l'entraînement.\n\nQue veux-tu savoir ?`,
 };
 
 function loadChat(): AIMessage[] {
@@ -209,8 +210,8 @@ function MessageBubble({ message }: { message: AIMessage }) {
   return (
     <div className={`flex gap-2.5 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
       {!isUser && (
-        <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center shrink-0 mt-0.5">
-          <Bot className="w-4 h-4 text-white" />
+        <div className="w-10 h-10 rounded-full bg-gray-900 ring-1 ring-emerald-500/25 flex items-center justify-center shrink-0 mt-0.5">
+          <KawashimaHead className="w-8 h-8" />
         </div>
       )}
       <div
@@ -229,8 +230,8 @@ function MessageBubble({ message }: { message: AIMessage }) {
 function TypingIndicator() {
   return (
     <div className="flex gap-2.5">
-      <div className="w-7 h-7 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
-        <Bot className="w-4 h-4 text-white" />
+      <div className="w-10 h-10 rounded-full bg-gray-900 ring-1 ring-emerald-500/25 flex items-center justify-center shrink-0">
+        <KawashimaHead className="w-8 h-8" talking />
       </div>
       <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">
         {[0, 1, 2].map(i => (
@@ -329,8 +330,8 @@ export function AIAssistant() {
 
         {/* Header */}
         <div className="flex items-center gap-3 pb-4 border-b border-gray-200 shrink-0">
-          <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center">
-            <Bot className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 rounded-full bg-gray-900 ring-1 ring-emerald-500/25 flex items-center justify-center">
+            <KawashimaHead className="w-10 h-10" talking={loading} />
           </div>
           <div className="flex-1 min-w-0">
             <h2 className="text-base font-bold text-gray-900">Coach IA</h2>

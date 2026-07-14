@@ -57,7 +57,7 @@ export function Progress() {
   const progression = prevWeight !== null ? lastWeight - prevWeight : null;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Progression</h2>
 
       <BodyWeightTracker />
@@ -93,14 +93,14 @@ export function Progress() {
         <>
           {/* Stats rapides */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
               <div className="flex justify-center mb-1">
                 <Award className="w-4 h-4 text-yellow-500" />
               </div>
               <p className="text-xl font-bold text-gray-900">{pr} kg</p>
               <p className="text-xs text-gray-400">Record</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
               <div className="flex justify-center mb-1">
                 <TrendingUp className={`w-4 h-4 ${progression && progression > 0 ? 'text-green-500' : 'text-red-400'}`} />
               </div>
@@ -109,7 +109,7 @@ export function Progress() {
               </p>
               <p className="text-xs text-gray-400">Progression</p>
             </div>
-            <div className="bg-white rounded-xl border border-gray-200 p-3 text-center">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-3 text-center">
               <div className="flex justify-center mb-1">
                 <Dumbbell className="w-4 h-4 text-blue-500" />
               </div>
@@ -119,7 +119,7 @@ export function Progress() {
           </div>
 
           {/* Graphique */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-4">Poids max par séance (kg)</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
@@ -143,7 +143,7 @@ export function Progress() {
           </div>
 
           {/* Historique détaillé */}
-          <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm divide-y divide-gray-100">
             <div className="px-4 py-3">
               <h3 className="text-sm font-semibold text-gray-700">Historique</h3>
             </div>

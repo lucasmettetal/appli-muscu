@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react';
 import { useWorkout, type AppData } from '../context/WorkoutContext';
-import { Download, Upload, CheckCircle2, AlertTriangle, Database, Dumbbell, X } from 'lucide-react';
+import { Download, Upload, CheckCircle2, AlertTriangle, Database, Dumbbell, X, Sparkles, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { generateDemoWorkouts, generateDemoBodyWeights } from '../lib/demo-data';
 
 // ─── Téléchargement d'un blob JSON ───────────────────────────────────────────
 
@@ -51,7 +52,7 @@ function ImportConfirmModal({
         </div>
 
         {/* Tableau avant / après */}
-        <div className="rounded-xl border border-gray-200 overflow-hidden text-sm">
+        <div className="rounded-2xl border border-gray-100 shadow-sm overflow-hidden text-sm">
           <div className="grid grid-cols-3 bg-gray-50 px-4 py-2 text-xs font-semibold text-gray-500">
             <span />
             <span className="text-center">Actuellement</span>
@@ -103,6 +104,23 @@ type ImportState =
 export function Settings() {
   const { workouts, exercises, exportData, importData } = useWorkout();
   const customCount = exercises.filter(e => e.custom).length;
+
+  // ─── Données démo (dev) ──────────────────────────────────────────────────────
+  const handleLoadDemo = () => {
+    const current = exportData();
+    importData({
+      ...current,
+      workouts: [...generateDemoWorkouts(exercises), ...current.workouts],
+      bodyWeights: [...generateDemoBodyWeights(), ...(current.bodyWeights ?? [])],
+    });
+    setImportState({ status: 'idle' });
+  };
+
+  const handleClearAll = () => {
+    const current = exportData();
+    importData({ ...current, workouts: [], bodyWeights: [] });
+    setImportState({ status: 'idle' });
+  };
 
   const [importState, setImportState] = useState<ImportState>({ status: 'idle' });
   const [showConfirm, setShowConfirm]   = useState(false);
@@ -209,7 +227,7 @@ export function Settings() {
         <h2 className="text-2xl font-bold text-gray-900">Réglages</h2>
 
         {/* Résumé des données actuelles */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
             Données actuelles
           </h3>
@@ -235,7 +253,7 @@ export function Settings() {
         </div>
 
         {/* Export */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
             Exporter mes données
           </h3>
@@ -250,7 +268,7 @@ export function Settings() {
         </div>
 
         {/* Import */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
           <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
             Importer des données
           </h3>
@@ -305,6 +323,30 @@ export function Settings() {
             Choisir un fichier de sauvegarde
           </Button>
         </div>
+
+        {/* Données démo (dev uniquement) */}
+        {import.meta.env.DEV && (
+          <div className="bg-white rounded-xl border border-dashed border-violet-300 p-4 space-y-3">
+            <h3 className="text-sm font-bold text-violet-700 uppercase tracking-wide flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Données démo (dev)
+            </h3>
+            <p className="text-sm text-gray-500">
+              Génère ~4 semaines de séances réalistes (avec progression) et quelques pesées, pour
+              visualiser tous les widgets du tableau de bord remplis.
+            </p>
+            <div className="flex gap-3">
+              <Button onClick={handleLoadDemo} className="flex-1 bg-violet-600 hover:bg-violet-700">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Charger la démo
+              </Button>
+              <Button onClick={handleClearAll} variant="outline" className="flex-1 text-red-600 hover:bg-red-50">
+                <Trash2 className="w-4 h-4 mr-2" />
+                Tout effacer
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Info stockage */}
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-1.5">

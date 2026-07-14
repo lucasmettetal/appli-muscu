@@ -54,14 +54,14 @@ export function Programs() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-gray-900">Programmes</h2>
         <p className="text-gray-500 text-sm mt-0.5">Génère un programme avec l'IA, puis lance tes séances à partir de lui.</p>
       </div>
 
       {/* Générateur IA */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-3">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-blue-600" />
           <h3 className="text-sm font-semibold text-gray-700">Générer avec l'IA</h3>
@@ -160,7 +160,7 @@ export function Programs() {
             <Link
               key={p.id}
               to={`/program/${p.id}`}
-              className="flex items-center gap-3 bg-white rounded-xl border border-gray-200 p-4 hover:border-blue-300 transition-colors"
+              className="flex items-center gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm p-4 hover:border-blue-300 transition-colors"
             >
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-900 truncate">{p.name}</p>

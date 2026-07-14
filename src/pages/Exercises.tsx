@@ -261,7 +261,7 @@ export function Exercises() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
 
       {/* Dialog banque d'exercices */}
       <BankSearchDialog
@@ -447,7 +447,7 @@ function ExerciseCard({ exercise: ex }: { exercise: Exercise }) {
   return (
     <Link
       to={`/exercise/${ex.id}`}
-      className="block bg-white rounded-xl border border-gray-200 px-4 py-3 hover:border-blue-300 hover:bg-blue-50/30 transition-colors"
+      className="block bg-white rounded-2xl border border-gray-100 shadow-sm px-4 py-3 hover:border-blue-300 hover:bg-blue-50/30 transition-colors"
     >
       <div className="flex justify-between items-start gap-2">
         <div className="flex-1 min-w-0">

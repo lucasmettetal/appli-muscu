@@ -168,5 +168,325 @@
       "Monter les bras au-dessus de la hauteur des épaules — risque d'impingement.",
       "Hausser les épaules et solliciter les trapèzes plutôt que les deltoïdes."
     ]
+  },
+  "bench-press-incline-barbell": {
+    "instructions": [
+      "Règle le banc à 30-45° d'inclinaison, allonge-toi, pieds à plat au sol, omoplates rétractées.",
+      "Saisis la barre en pronation, un peu plus large que les épaules, et déracke-la bras tendus.",
+      "Descends la barre lentement vers le haut des pectoraux, sous les clavicules.",
+      "Pousse la barre verticalement jusqu'à extension complète en expirant."
+    ],
+    "tips": [
+      "Une inclinaison trop élevée (>45°) transfère le travail sur les épaules.",
+      "Garde les omoplates serrées et les fessiers en contact avec le banc."
+    ],
+    "commonMistakes": [
+      "Incliner le banc trop haut et transformer l'exercice en développé militaire.",
+      "Rebondir la barre sur la poitrine pour tricher sur la charge."
+    ]
+  },
+  "dumbbell-fly": {
+    "instructions": [
+      "Allongé sur un banc plat, haltères tendus au-dessus de la poitrine, paumes face à face.",
+      "Descends les bras sur les côtés en arc de cercle, coudes légèrement fléchis et fixes.",
+      "Ouvre jusqu'à sentir l'étirement des pectoraux, sans descendre plus bas que les épaules.",
+      "Remonte en suivant le même arc de cercle en contractant les pectoraux."
+    ],
+    "tips": [
+      "Garde un angle de coude constant — ce n'est pas un développé.",
+      "Charges modérées : l'écarté place l'épaule en position vulnérable."
+    ],
+    "commonMistakes": [
+      "Fléchir puis tendre les coudes pour tricher (ça devient un développé).",
+      "Descendre les haltères trop bas et sur-étirer l'articulation de l'épaule."
+    ]
+  },
+  "push-up": {
+    "instructions": [
+      "En appui sur les mains (largeur épaules) et la pointe des pieds, corps gainé en ligne droite.",
+      "Descends en fléchissant les coudes jusqu'à ce que la poitrine frôle le sol.",
+      "Garde les coudes à environ 45° du buste, pas complètement écartés.",
+      "Pousse pour remonter jusqu'à extension complète des bras."
+    ],
+    "tips": [
+      "Gaine les abdominaux et les fessiers pour garder le corps aligné.",
+      "Regarde légèrement devant tes mains pour conserver un cou neutre."
+    ],
+    "commonMistakes": [
+      "Laisser les hanches s'affaisser ou pointer vers le haut.",
+      "Amplitude partielle — descends la poitrine tout près du sol."
+    ]
+  },
+  "deadlift-romanian": {
+    "instructions": [
+      "Debout, barre tenue en pronation à largeur d'épaules, genoux légèrement fléchis.",
+      "Pousse les hanches vers l'arrière en faisant glisser la barre le long des cuisses.",
+      "Descends jusqu'à sentir l'étirement des ischio-jambiers, dos plat.",
+      "Reviens en poussant les hanches vers l'avant et en contractant les fessiers."
+    ],
+    "tips": [
+      "Le mouvement vient d'une charnière de hanche, pas d'une flexion des genoux.",
+      "Garde la barre collée aux jambes pendant toute la descente."
+    ],
+    "commonMistakes": [
+      "Arrondir le bas du dos en descendant.",
+      "Plier les genoux comme pour un soulevé de terre classique."
+    ]
+  },
+  "dumbbell-row": {
+    "instructions": [
+      "Un genou et une main en appui sur un banc, dos plat et parallèle au sol, haltère dans l'autre main bras tendu.",
+      "Tire l'haltère vers la hanche en ramenant le coude vers l'arrière.",
+      "Contracte le dorsal en haut, coude le long du corps.",
+      "Redescends lentement jusqu'à extension complète du bras."
+    ],
+    "tips": [
+      "Garde le dos plat et les épaules parallèles au sol — pas de rotation du buste.",
+      "Tire avec le coude, pas avec la main."
+    ],
+    "commonMistakes": [
+      "Tourner le buste pour prendre de l'élan.",
+      "Hausser l'épaule au lieu de rétracter l'omoplate."
+    ]
+  },
+  "face-pull-cable": {
+    "instructions": [
+      "Règle la poulie à hauteur de visage, corde en prise neutre (paumes face à face).",
+      "Recule pour mettre le câble en tension, bras tendus devant toi.",
+      "Tire la corde vers ton visage en écartant les mains, coudes hauts.",
+      "Contracte les deltoïdes postérieurs et les rhomboïdes, puis reviens contrôlé."
+    ],
+    "tips": [
+      "Vise le front, coudes à hauteur des épaules.",
+      "Charges légères et exécution lente — c'est un muscle postural."
+    ],
+    "commonMistakes": [
+      "Tirer trop bas (vers la poitrine) et solliciter les dorsaux.",
+      "Utiliser une charge trop lourde qui casse la posture."
+    ]
+  },
+  "arnold-press": {
+    "instructions": [
+      "Assis, haltères devant les épaules, paumes tournées vers toi.",
+      "Monte les haltères en tournant les poignets pour finir paumes vers l'avant.",
+      "Termine bras tendus au-dessus de la tête sans verrouiller brutalement les coudes.",
+      "Redescends en inversant la rotation jusqu'à la position de départ."
+    ],
+    "tips": [
+      "Mouvement fluide et contrôlé — la rotation sollicite tout le deltoïde.",
+      "Gaine le tronc et évite de cambrer le bas du dos."
+    ],
+    "commonMistakes": [
+      "Cambrer le dos pour aider à monter la charge.",
+      "Aller trop vite et négliger la rotation des poignets."
+    ]
+  },
+  "leg-press-machine": {
+    "instructions": [
+      "Assis dans la machine, pieds à plat sur la plateforme, largeur d'épaules.",
+      "Déverrouille les sécurités, descends en fléchissant les genoux vers la poitrine.",
+      "Arrête quand les genoux atteignent environ 90°, sans décoller les fessiers.",
+      "Pousse la plateforme jusqu'à l'extension sans verrouiller brutalement les genoux."
+    ],
+    "tips": [
+      "Genoux dans l'axe des pieds, jamais vers l'intérieur.",
+      "Ne verrouille pas les genoux en fin de poussée."
+    ],
+    "commonMistakes": [
+      "Descendre trop bas et décoller le bassin (arrondit le bas du dos).",
+      "Verrouiller violemment les genoux en haut."
+    ]
+  },
+  "lunge": {
+    "instructions": [
+      "Debout, pieds à largeur de hanches, buste droit (haltères en option).",
+      "Fais un grand pas en avant et descends jusqu'à ce que le genou arrière frôle le sol.",
+      "Le genou avant reste au-dessus de la cheville, tibia vertical.",
+      "Pousse sur le talon avant pour revenir en position de départ."
+    ],
+    "tips": [
+      "Garde le buste droit et le regard devant toi.",
+      "Grand pas = plus de fessiers ; petit pas = plus de quadriceps."
+    ],
+    "commonMistakes": [
+      "Genou avant qui dépasse largement la pointe du pied.",
+      "Buste qui penche en avant."
+    ]
+  },
+  "leg-curl-machine": {
+    "instructions": [
+      "Allongé face contre la machine, chevilles sous le rouleau, jambes tendues.",
+      "Fléchis les genoux en amenant le rouleau vers les fessiers.",
+      "Contracte les ischio-jambiers en fin de mouvement.",
+      "Redescends lentement sans laisser les poids se reposer complètement."
+    ],
+    "tips": [
+      "Bassin collé au support — évite de décoller les hanches.",
+      "Contrôle la phase de descente (excentrique)."
+    ],
+    "commonMistakes": [
+      "Décoller le bassin pour prendre de l'élan.",
+      "Amplitude partielle qui écourte la contraction."
+    ]
+  },
+  "calf-raise-standing": {
+    "instructions": [
+      "Debout, avant-pieds sur une marche ou un support, talons dans le vide.",
+      "Descends les talons sous le niveau de la marche pour étirer les mollets.",
+      "Monte sur la pointe des pieds le plus haut possible.",
+      "Marque une pause en haut, puis redescends lentement."
+    ],
+    "tips": [
+      "Amplitude complète : étirement en bas, contraction maximale en haut.",
+      "Marque un temps d'arrêt en haut de chaque répétition."
+    ],
+    "commonMistakes": [
+      "Rebondir en bas sans contrôler l'étirement.",
+      "Amplitude trop courte."
+    ]
+  },
+  "hammer-curl": {
+    "instructions": [
+      "Debout, haltères le long du corps, paumes face à face (prise neutre).",
+      "Fléchis les coudes en gardant les paumes face à face.",
+      "Monte jusqu'à hauteur des épaules, coudes fixes contre le corps.",
+      "Redescends lentement jusqu'à extension complète."
+    ],
+    "tips": [
+      "Cible le brachial et le brachio-radial (avant-bras).",
+      "Coudes immobiles, pas de balancier du buste."
+    ],
+    "commonMistakes": [
+      "Balancer le buste pour monter la charge.",
+      "Coudes qui avancent en fin de mouvement."
+    ]
+  },
+  "barbell-curl-ez": {
+    "instructions": [
+      "Debout, barre EZ tenue en supination sur les prises inclinées, coudes le long du corps.",
+      "Fléchis les coudes pour monter la barre vers les épaules.",
+      "Contracte les biceps en haut sans avancer les coudes.",
+      "Redescends lentement jusqu'à extension complète des bras."
+    ],
+    "tips": [
+      "La barre EZ ménage les poignets par rapport à la barre droite.",
+      "Garde les coudes fixes contre les flancs."
+    ],
+    "commonMistakes": [
+      "Balancer le dos pour tricher sur la charge.",
+      "Ne pas tendre complètement les bras en bas."
+    ]
+  },
+  "triceps-pushdown-cable": {
+    "instructions": [
+      "Face à la poulie haute, saisis la barre ou la corde, coudes collés au corps.",
+      "Pousse vers le bas jusqu'à extension complète des bras.",
+      "Contracte les triceps en bas, seuls les avant-bras bougent.",
+      "Remonte de façon contrôlée sans laisser les coudes s'écarter."
+    ],
+    "tips": [
+      "Seuls les avant-bras bougent — les coudes restent fixes.",
+      "Buste légèrement penché en avant et gainé."
+    ],
+    "commonMistakes": [
+      "Écarter les coudes du corps.",
+      "Utiliser le poids du buste pour pousser la charge."
+    ]
+  },
+  "skull-crusher": {
+    "instructions": [
+      "Allongé sur un banc, barre EZ tendue au-dessus de la poitrine, prise serrée.",
+      "Fléchis les coudes pour descendre la barre vers le front, bras immobiles.",
+      "Descends jusqu'au front ou légèrement derrière la tête.",
+      "Tends les bras en contractant les triceps."
+    ],
+    "tips": [
+      "Garde les coudes pointés vers le plafond, pas écartés.",
+      "Descendre derrière la tête augmente l'étirement du long chef du triceps."
+    ],
+    "commonMistakes": [
+      "Écarter les coudes en descendant.",
+      "Bouger les épaules au lieu d'isoler les triceps."
+    ]
+  },
+  "dips": {
+    "instructions": [
+      "En appui bras tendus sur des barres parallèles, corps suspendu.",
+      "Descends en fléchissant les coudes jusqu'à ce que les épaules arrivent au niveau des coudes.",
+      "Buste vertical pour cibler les triceps, penché en avant pour les pectoraux.",
+      "Pousse pour remonter jusqu'à extension complète des bras."
+    ],
+    "tips": [
+      "Ne descends pas plus bas que 90° au coude (contrainte sur l'épaule).",
+      "Gaine le tronc pour éviter de te balancer."
+    ],
+    "commonMistakes": [
+      "Descendre trop bas et forcer sur l'articulation de l'épaule.",
+      "Se balancer pour prendre de l'élan."
+    ]
+  },
+  "plank": {
+    "instructions": [
+      "En appui sur les avant-bras et la pointe des pieds, coudes sous les épaules.",
+      "Aligne tête, dos, bassin et jambes en une seule ligne droite.",
+      "Contracte les abdominaux et les fessiers, respire calmement.",
+      "Tiens la position sans laisser le bassin s'affaisser."
+    ],
+    "tips": [
+      "Rentre le nombril et serre les fessiers pour protéger le bas du dos.",
+      "Mieux vaut 20 s parfaites que 60 s bassin affaissé."
+    ],
+    "commonMistakes": [
+      "Laisser les hanches s'affaisser (cambrure lombaire).",
+      "Relever les fessiers trop haut."
+    ]
+  },
+  "crunch": {
+    "instructions": [
+      "Allongé sur le dos, genoux fléchis, pieds au sol, mains près des tempes.",
+      "Enroule le haut du dos en décollant les omoplates du sol.",
+      "Contracte les abdominaux en soufflant en haut du mouvement.",
+      "Redescends lentement sans reposer complètement la tête."
+    ],
+    "tips": [
+      "Le mouvement est court : c'est un enroulement, pas un redressement complet.",
+      "Ne tire pas sur la nuque avec les mains."
+    ],
+    "commonMistakes": [
+      "Tirer sur la tête et le cou avec les mains.",
+      "Décoller tout le dos comme un sit-up (sollicite les fléchisseurs de hanche)."
+    ]
+  },
+  "hanging-leg-raise": {
+    "instructions": [
+      "Suspendu à une barre, bras tendus, corps immobile.",
+      "Monte les jambes tendues (ou genoux fléchis) vers l'avant.",
+      "Enroule le bassin en fin de mouvement pour contracter les abdominaux bas.",
+      "Redescends lentement sans te balancer."
+    ],
+    "tips": [
+      "Bascule le bassin en haut — ce n'est pas qu'un mouvement de hanche.",
+      "Genoux fléchis pour une version plus accessible."
+    ],
+    "commonMistakes": [
+      "Se balancer pour prendre de l'élan.",
+      "Ne monter que les cuisses sans enrouler le bassin."
+    ]
+  },
+  "russian-twist": {
+    "instructions": [
+      "Assis, buste incliné en arrière (~45°), pieds décollés ou au sol, mains jointes ou avec un lest.",
+      "Tourne le buste d'un côté en amenant les mains vers le sol.",
+      "Reviens au centre puis tourne de l'autre côté.",
+      "Garde le dos droit et le tronc gainé pendant tout le mouvement."
+    ],
+    "tips": [
+      "La rotation vient du tronc, pas seulement des bras.",
+      "Décolle les pieds du sol pour augmenter la difficulté."
+    ],
+    "commonMistakes": [
+      "Arrondir le dos.",
+      "Bouger seulement les bras sans faire tourner le buste."
+    ]
   }
 }

@@ -47,7 +47,7 @@ export function BodyWeightTracker() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
       {/* En-tête + poids actuel */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">

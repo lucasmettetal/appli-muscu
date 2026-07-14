@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --color-background: hsl(0 0% 100%);
   --color-foreground: hsl(222.2 84% 4.9%);
@@ -11,4 +13,126 @@
   --color-card: hsl(0 0% 100%);
   --color-card-foreground: hsl(222.2 84% 4.9%);
   --color-destructive: hsl(0 84.2% 60.2%);
+}
+
+/* ─── Dark mode ──────────────────────────────────────────────────────────────
+   Les pages utilisent des classes Tailwind « en dur » (bg-white, text-gray-900…).
+   Plutôt que d'annoter chaque écran, on redéfinit ici les tons neutres et on
+   adoucit les accents quand <html> porte la classe .dark. La spécificité
+   supplémentaire (.dark …) garantit que ces règles priment sur les utilitaires. */
+
+.dark body { background-color: #0f172a; }
+
+/* Fonds neutres */
+.dark .bg-white { background-color: #1e293b; }
+.dark .bg-gray-50 { background-color: #0f172a; }
+.dark .bg-gray-100 { background-color: #334155; }
+.dark .bg-gray-200 { background-color: #475569; }
+.dark .hover\:bg-gray-50:hover { background-color: #273449; }
+.dark .hover\:bg-gray-100:hover { background-color: #334155; }
+
+/* Textes neutres */
+.dark .text-gray-900 { color: #f1f5f9; }
+.dark .text-gray-800 { color: #e2e8f0; }
+.dark .text-gray-700 { color: #cbd5e1; }
+.dark .text-gray-600 { color: #cbd5e1; }
+.dark .text-gray-500 { color: #94a3b8; }
+.dark .text-gray-400 { color: #64748b; }
+.dark .text-gray-300 { color: #475569; }
+.dark .text-gray-200 { color: #334155; }
+
+/* Bordures neutres */
+.dark .border-gray-200 { border-color: #334155; }
+.dark .border-gray-100 { border-color: #334155; }
+.dark .border-gray-50 { border-color: #1e293b; }
+.dark .border-gray-300 { border-color: #475569; }
+.dark .border { border-color: #334155; }
+
+/* Séparateurs (divide-*) */
+.dark .divide-gray-50 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]) { border-color: #334155; }
+
+/* Accents : fonds pastels adoucis + textes éclaircis pour la lisibilité */
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.15); }
+.dark .bg-blue-100 { background-color: rgba(59, 130, 246, 0.22); }
+.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.15); }
+.dark .bg-violet-50 { background-color: rgba(139, 92, 246, 0.15); }
+.dark .bg-violet-100 { background-color: rgba(139, 92, 246, 0.22); }
+.dark .bg-amber-50 { background-color: rgba(245, 158, 11, 0.15); }
+.dark .bg-amber-100 { background-color: rgba(245, 158, 11, 0.22); }
+.dark .bg-rose-100 { background-color: rgba(244, 63, 94, 0.22); }
+.dark .bg-orange-50 { background-color: rgba(249, 115, 22, 0.15); }
+.dark .bg-red-50 { background-color: rgba(239, 68, 68, 0.15); }
+.dark .bg-green-50 { background-color: rgba(34, 197, 94, 0.15); }
+.dark .bg-purple-50 { background-color: rgba(168, 85, 247, 0.15); }
+
+.dark .text-blue-600, .dark .text-blue-700 { color: #60a5fa; }
+.dark .text-emerald-600, .dark .text-emerald-700 { color: #34d399; }
+.dark .text-violet-600, .dark .text-violet-700 { color: #a78bfa; }
+.dark .text-amber-600, .dark .text-amber-700, .dark .text-amber-800 { color: #fbbf24; }
+.dark .text-rose-600 { color: #fb7185; }
+.dark .text-orange-500, .dark .text-orange-600 { color: #fb923c; }
+.dark .text-red-600, .dark .text-red-700 { color: #f87171; }
+.dark .text-green-600, .dark .text-green-700 { color: #4ade80; }
+.dark .text-purple-500 { color: #c084fc; }
+.dark .bg-yellow-50 { background-color: rgba(234, 179, 8, 0.15); }
+.dark .border-yellow-200 { border-color: rgba(234, 179, 8, 0.3); }
+.dark .text-yellow-600, .dark .text-yellow-700 { color: #facc15; }
+
+/* Traits SVG neutres (anneaux de progression) */
+.dark .stroke-gray-100 { stroke: #334155; }
+
+/* ─── Micro-animations ────────────────────────────────────────────────────────
+   Apparition en douceur des blocs, avec une légère cascade. Désactivé si
+   l'utilisateur préfère réduire les animations. */
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ─── Tête « Dr Kawashima » (hommage SVG) ─────────────────────────────────── */
+@keyframes kawashima-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-1.5px); }
+}
+@keyframes kawashima-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+@keyframes kawashima-talk {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+.kawashima-float { animation: kawashima-float 3s ease-in-out infinite; }
+.kawashima-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: kawashima-blink 4.5s ease-in-out infinite;
+}
+.kawashima-mouth {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scaleY(0.25);
+}
+.kawashima-mouth.talking { animation: kawashima-talk 0.28s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kawashima-float, .kawashima-eye, .kawashima-mouth.talking { animation: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stagger-children > * {
+    animation: rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .stagger-children > *:nth-child(1)  { animation-delay: 0.02s; }
+  .stagger-children > *:nth-child(2)  { animation-delay: 0.06s; }
+  .stagger-children > *:nth-child(3)  { animation-delay: 0.10s; }
+  .stagger-children > *:nth-child(4)  { animation-delay: 0.14s; }
+  .stagger-children > *:nth-child(5)  { animation-delay: 0.18s; }
+  .stagger-children > *:nth-child(6)  { animation-delay: 0.22s; }
+  .stagger-children > *:nth-child(7)  { animation-delay: 0.26s; }
+  .stagger-children > *:nth-child(8)  { animation-delay: 0.30s; }
+  .stagger-children > *:nth-child(9)  { animation-delay: 0.34s; }
+  .stagger-children > *:nth-child(n+10) { animation-delay: 0.38s; }
 }

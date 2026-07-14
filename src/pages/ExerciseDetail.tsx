@@ -25,7 +25,7 @@ type InstructionKey = keyof typeof instructionsData;
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4">
       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">{title}</h3>
       {children}
     </div>
@@ -199,7 +199,7 @@ function ProgressionSection({
   }));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-4">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
       <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">Progression</h3>
 
       {/* Badge statut */}
@@ -363,7 +363,7 @@ export function ExerciseDetail() {
   const progression = getProgressionStatus(snapshots);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
 
       {/* Header */}
       <div className="flex items-start gap-3">

@@ -49,7 +49,7 @@ export function ProgramDetail() {
   };
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button onClick={() => navigate('/programs')} className="text-gray-400 hover:text-gray-600 shrink-0">
@@ -82,7 +82,7 @@ export function ProgramDetail() {
       {/* Jours du programme */}
       <div className="space-y-3">
         {program.days.map(day => (
-          <div key={day.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div key={day.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="px-4 pt-4 pb-3 border-b border-gray-100">
               <h3 className="font-semibold text-gray-900 text-sm">{day.name}</h3>
               <p className="text-xs text-gray-400 mt-0.5">{day.exercises.length} exercice(s)</p>

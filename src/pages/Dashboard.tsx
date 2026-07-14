@@ -1,12 +1,33 @@
 import { useMemo } from 'react';
 import { useWorkout } from '../context/WorkoutContext';
+import { useProfile } from '../context/ProfileContext';
+import { useAuth } from '../context/AuthContext';
 import { getExercisePR } from '@/lib/pr-utils';
-import { Calendar, Dumbbell, TrendingUp, Award, Trophy, Plus, ChevronRight } from 'lucide-react';
+import { Calendar, Dumbbell, TrendingUp, Award, Trophy, Plus, ChevronRight, Layers } from 'lucide-react';
 import { Link } from 'react-router';
 import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
+import { WorkoutSummaryCard } from '../components/WorkoutSummaryCard';
+import { WeeklyGoalsCard } from '../components/WeeklyGoalsCard';
+import { TrendMetricCard } from '../components/TrendMetricCard';
+import { MuscleBreakdownCard } from '../components/MuscleBreakdownCard';
+import { StreakStrip } from '../components/StreakStrip';
+import { CountUp } from '../components/CountUp';
 
 export function Dashboard() {
   const { workouts, exercises } = useWorkout();
+  const { activeProfile } = useProfile();
+  const { configured, session, user } = useAuth();
+
+  // Nom affiché : profil local, sinon préfixe de l'email en mode cloud.
+  const displayName =
+    configured && session
+      ? (user?.email?.split('@')[0] ?? 'toi')
+      : (activeProfile?.name ?? 'toi');
+
+  const hour = new Date().getHours();
+  const greeting = hour < 6 ? 'Bonne nuit' : hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon aprem' : 'Bonsoir';
+  const todayLabel = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const avatarInitial = displayName.charAt(0).toUpperCase() || 'M';
 
   const thisWeekWorkouts = workouts.filter(w => {
     const workoutDate = new Date(w.date);
@@ -20,13 +41,29 @@ export function Dashboard() {
   );
 
   const stats = [
-    { label: 'Séances cette semaine', value: thisWeekWorkouts.length, icon: Calendar,   gradient: 'from-blue-50',   chip: 'bg-blue-600 shadow-blue-600/25' },
-    { label: 'Total séances',         value: workouts.length,          icon: Dumbbell,   gradient: 'from-emerald-50', chip: 'bg-emerald-500 shadow-emerald-500/25' },
-    { label: 'Exercices dispo',       value: exercises.length,         icon: TrendingUp, gradient: 'from-violet-50',  chip: 'bg-violet-500 shadow-violet-500/25' },
-    { label: 'Total séries',          value: totalSets,                icon: Award,      gradient: 'from-amber-50',   chip: 'bg-amber-500 shadow-amber-500/25' },
+    { label: 'Séances cette semaine', value: thisWeekWorkouts.length, icon: Calendar,   bg: 'bg-blue-50',    ring: 'ring-blue-100',    chip: 'bg-blue-600 shadow-blue-600/30' },
+    { label: 'Total séances',         value: workouts.length,          icon: Dumbbell,   bg: 'bg-emerald-50', ring: 'ring-emerald-100', chip: 'bg-emerald-500 shadow-emerald-500/30' },
+    { label: 'Exercices dispo',       value: exercises.length,         icon: TrendingUp, bg: 'bg-violet-50',  ring: 'ring-violet-100',  chip: 'bg-violet-500 shadow-violet-500/30' },
+    { label: 'Total séries',          value: totalSets,                icon: Award,      bg: 'bg-amber-50',   ring: 'ring-amber-100',   chip: 'bg-amber-500 shadow-amber-500/30' },
   ];
 
   const recentWorkouts = workouts.slice(0, 5);
+
+  // Tendances : 8 dernières séances, du plus ancien au plus récent (pour le graphe)
+  const trend = useMemo(() => {
+    const last = workouts.slice(0, 8).reverse();
+    const volume = last.map(w =>
+      w.exercises.reduce(
+        (s, ex) => s + ex.sets.reduce((v, set) => v + (set.weight || 0) * (set.reps || 0), 0),
+        0
+      )
+    );
+    const sets = last.map(w => w.exercises.reduce((s, ex) => s + ex.sets.length, 0));
+    return { volume, sets };
+  }, [workouts]);
+
+  const lastVolume = trend.volume[trend.volume.length - 1] ?? 0;
+  const lastSets = trend.sets[trend.sets.length - 1] ?? 0;
 
   // Top PRs : exercices avec le meilleur record, triés par date du PR (les plus récents d'abord)
   const recentPRs = useMemo(() => {
@@ -41,10 +78,18 @@ export function Dashboard() {
   }, [workouts, exercises]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-1">Tableau de bord</h2>
-        <p className="text-gray-500 text-sm">Bienvenue dans ton suivi de musculation</p>
+    <div className="space-y-6 stagger-children">
+      {/* En-tête app : salutation + avatar */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-sm text-gray-500 capitalize">{todayLabel}</p>
+          <h2 className="text-2xl font-bold text-gray-900 truncate">
+            {greeting}, <span className="capitalize">{displayName}</span>
+          </h2>
+        </div>
+        <div className="inline-flex items-center justify-center w-11 h-11 shrink-0 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 text-white text-lg font-bold shadow-md shadow-blue-600/20">
+          {avatarInitial}
+        </div>
       </div>
 
       <WorkoutDraftBanner />
@@ -58,18 +103,52 @@ export function Dashboard() {
         Démarrer une séance
       </Link>
 
+      {/* Régularité (7 jours + streak) */}
+      <StreakStrip workouts={workouts} />
+
+      {/* Objectifs de la semaine (anneaux) */}
+      <WeeklyGoalsCard workouts={workouts} />
+
+      {/* Résumé de la dernière séance */}
+      {recentWorkouts.length > 0 && <WorkoutSummaryCard workout={recentWorkouts[0]} />}
+
+      {/* Tendances (KPI + mini-graphes) */}
+      <div className="grid grid-cols-2 gap-3">
+        <TrendMetricCard
+          label="Volume / séance"
+          value={`${lastVolume.toLocaleString('fr-FR')} kg`}
+          icon={TrendingUp}
+          data={trend.volume}
+          color="#3b82f6"
+          gradientId="trend-volume"
+        />
+        <TrendMetricCard
+          label="Séries / séance"
+          value={String(lastSets)}
+          icon={Layers}
+          data={trend.sets}
+          color="#8b5cf6"
+          gradientId="trend-sets"
+        />
+      </div>
+
+      {/* Répartition par groupe musculaire */}
+      <MuscleBreakdownCard workouts={workouts} exercises={exercises} />
+
       {/* Tuiles de stats */}
       <div className="grid grid-cols-2 gap-3">
         {stats.map(stat => (
           <div
             key={stat.label}
-            className={`rounded-2xl border border-gray-100 bg-gradient-to-br ${stat.gradient} to-white p-4 shadow-sm transition-shadow hover:shadow-md`}
+            className={`rounded-2xl ${stat.bg} ring-1 ${stat.ring} p-4 shadow-sm transition-shadow hover:shadow-md`}
           >
-            <div className={`inline-flex items-center justify-center w-9 h-9 rounded-xl text-white shadow-md ${stat.chip} mb-3`}>
+            <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl text-white shadow-md ${stat.chip} mb-3`}>
               <stat.icon className="w-5 h-5" />
             </div>
-            <div className="text-2xl font-bold text-gray-900 tabular-nums leading-none">{stat.value}</div>
-            <div className="text-xs text-gray-500 mt-1.5">{stat.label}</div>
+            <div className="text-3xl font-extrabold text-gray-900 tabular-nums leading-none">
+              <CountUp value={stat.value} />
+            </div>
+            <div className="text-xs font-medium text-gray-500 mt-2">{stat.label}</div>
           </div>
         ))}
       </div>

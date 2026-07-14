@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useProfile } from '../context/ProfileContext';
-import { AVATARS } from '../lib/profiles';
 import { Check, Plus, Pencil, Trash2, X } from 'lucide-react';
+import { ProfileAvatar } from './ProfileAvatar';
 
 // Sélecteur de profil local : bouton compact dans le header + feuille de gestion
-// (basculer, ajouter, renommer, supprimer).
+// (basculer, ajouter, renommer, supprimer). Avatars = initiales colorées.
 export function ProfileSwitcher() {
   const { profiles, activeProfileId, activeProfile, switchProfile, addProfile, updateProfile, removeProfile } =
     useProfile();
@@ -14,27 +14,25 @@ export function ProfileSwitcher() {
   // Ajout
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
-  const [newEmoji, setNewEmoji] = useState(AVATARS[0]);
 
   // Édition
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
-  const [editEmoji, setEditEmoji] = useState(AVATARS[0]);
 
-  const resetAdd = () => { setAdding(false); setNewName(''); setNewEmoji(AVATARS[0]); };
+  const resetAdd = () => { setAdding(false); setNewName(''); };
 
   const handleAdd = () => {
-    const p = addProfile(newName, newEmoji);
+    const p = addProfile(newName);
     resetAdd();
     switchProfile(p.id); // bascule direct sur le nouveau profil
   };
 
-  const startEdit = (id: string, name: string, emoji: string) => {
-    setEditingId(id); setEditName(name); setEditEmoji(emoji);
+  const startEdit = (id: string, name: string) => {
+    setEditingId(id); setEditName(name);
   };
 
   const handleSaveEdit = () => {
-    if (editingId) updateProfile(editingId, editName, editEmoji);
+    if (editingId) updateProfile(editingId, editName);
     setEditingId(null);
   };
 
@@ -49,10 +47,10 @@ export function ProfileSwitcher() {
       {/* Bouton header */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors max-w-[45vw]"
+        className="flex items-center gap-1.5 pl-1 pr-2.5 py-1 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors max-w-[45vw]"
         aria-label="Changer de profil"
       >
-        <span className="text-base leading-none">{activeProfile?.emoji ?? '👤'}</span>
+        <ProfileAvatar name={activeProfile?.name ?? 'Profil'} seed={activeProfileId} size="sm" />
         <span className="text-sm font-medium text-gray-700 truncate">{activeProfile?.name ?? 'Profil'}</span>
       </button>
 
@@ -77,9 +75,9 @@ export function ProfileSwitcher() {
             {/* Liste des profils */}
             <div className="space-y-2">
               {profiles.map(p => (
-                <div key={p.id} className="rounded-xl border border-gray-200 overflow-hidden">
+                <div key={p.id} className="rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                   {editingId === p.id ? (
-                    <div className="p-3 space-y-3">
+                    <div className="p-3">
                       <div className="flex gap-2">
                         <input
                           value={editName}
@@ -90,19 +88,6 @@ export function ProfileSwitcher() {
                         />
                         <button onClick={handleSaveEdit} className="px-3 rounded-lg bg-blue-600 text-white text-sm font-medium">OK</button>
                       </div>
-                      <div className="flex flex-wrap gap-1">
-                        {AVATARS.map(a => (
-                          <button
-                            key={a}
-                            onClick={() => setEditEmoji(a)}
-                            className={`w-8 h-8 rounded-lg text-base flex items-center justify-center border transition-colors ${
-                              editEmoji === a ? 'border-blue-500 bg-blue-50' : 'border-transparent hover:bg-gray-100'
-                            }`}
-                          >
-                            {a}
-                          </button>
-                        ))}
-                      </div>
                     </div>
                   ) : (
                     <div className="flex items-center gap-2 p-2">
@@ -110,11 +95,11 @@ export function ProfileSwitcher() {
                         onClick={() => { switchProfile(p.id); setOpen(false); }}
                         className="flex-1 flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
                       >
-                        <span className="text-xl">{p.emoji}</span>
+                        <ProfileAvatar name={p.name} seed={p.id} />
                         <span className="text-sm font-medium text-gray-900 flex-1 truncate">{p.name}</span>
                         {p.id === activeProfileId && <Check className="w-4 h-4 text-blue-600 shrink-0" />}
                       </button>
-                      <button onClick={() => startEdit(p.id, p.name, p.emoji)} className="p-1.5 text-gray-400 hover:text-gray-700" aria-label="Renommer">
+                      <button onClick={() => startEdit(p.id, p.name)} className="p-1.5 text-gray-400 hover:text-gray-700" aria-label="Renommer">
                         <Pencil className="w-4 h-4" />
                       </button>
                       {profiles.length > 1 && (
@@ -130,7 +115,7 @@ export function ProfileSwitcher() {
 
             {/* Ajout d'un profil */}
             {adding ? (
-              <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-3 space-y-3">
+              <div className="rounded-2xl border border-blue-200 bg-blue-50/40 p-3">
                 <div className="flex gap-2">
                   <input
                     value={newName}
@@ -147,20 +132,7 @@ export function ProfileSwitcher() {
                     Créer
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-1">
-                  {AVATARS.map(a => (
-                    <button
-                      key={a}
-                      onClick={() => setNewEmoji(a)}
-                      className={`w-8 h-8 rounded-lg text-base flex items-center justify-center border transition-colors ${
-                        newEmoji === a ? 'border-blue-500 bg-white' : 'border-transparent hover:bg-white'
-                      }`}
-                    >
-                      {a}
-                    </button>
-                  ))}
-                </div>
-                <button onClick={resetAdd} className="text-xs text-gray-400 hover:text-gray-600">Annuler</button>
+                <button onClick={resetAdd} className="text-xs text-gray-400 hover:text-gray-600 mt-2">Annuler</button>
               </div>
             ) : (
               <button
