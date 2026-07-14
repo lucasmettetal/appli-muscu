@@ -1,3 +1,6 @@
+# Config MCP locale (contient une clé API — ne pas versionner)
+.mcp.json
+
 # Dépendances
 node_modules/
 
