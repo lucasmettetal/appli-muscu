@@ -1,6 +1,11 @@
 # Config MCP locale (contient une clé API — ne pas versionner)
 .mcp.json
 
+# Images de la banque d'exercices : ~100 Mo, servies via le CDN jsDelivr.
+# On garde le JSON (public/data) et le placeholder, pas les ~1 700 images.
+public/exercises/images/
+public/exercises/thumbs/
+
 # Dépendances
 node_modules/
 

@@ -1,3 +1,5 @@
+import type { Exercise } from '../context/WorkoutContext';
+
 export const EQUIPMENT_LABEL: Record<string, string> = {
   barbell:           'Barre',
   dumbbell:          'Haltères',
@@ -10,6 +12,14 @@ export const EQUIPMENT_LABEL: Record<string, string> = {
   kettlebell:        'Kettlebell',
   'resistance-band': 'Élastique',
   'smith-machine':   'Machine Smith',
+  bodyweight:        'Poids du corps',
+  'body only':       'Poids du corps',
+  bands:             'Élastiques',
+  kettlebells:       'Kettlebells',
+  'medicine ball':   'Médecine-ball',
+  'exercise ball':   'Swiss ball',
+  'e-z curl bar':    'Barre EZ',
+  'foam roll':       'Rouleau de massage',
 };
 
 export const DIFFICULTY_LABEL: Record<string, string> = {
@@ -41,3 +51,53 @@ export const CATEGORY_LABEL: Record<string, string> = {
   core:       'Abdominaux',
   'full-body':'Corps entier',
 };
+
+export function normalizeSearchText(text: string | undefined): string {
+  return (text ?? '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[-_]+/g, ' ')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function matchesExerciseSearch(
+  exercise: Pick<Exercise, 'name' | 'nameEn' | 'muscleGroup' | 'musclesPrimary' | 'musclesSecondary' | 'equipment' | 'tags' | 'aliases' | 'searchTerms'>,
+  term: string
+): boolean {
+  const query = normalizeSearchText(term.trim());
+  if (!query) return true;
+
+  const fields = [
+    exercise.name,
+    exercise.nameEn,
+    exercise.muscleGroup,
+    ...exercise.musclesPrimary,
+    ...exercise.musclesSecondary,
+    ...exercise.equipment,
+    ...exercise.equipment.map(value => EQUIPMENT_LABEL[value] ?? value),
+    ...exercise.tags,
+    ...(exercise.aliases ?? []),
+    ...(exercise.searchTerms ?? []),
+  ];
+
+  return fields.some(field => normalizeSearchText(field).includes(query));
+}
+
+export function formatExerciseTarget(value: number, metric: Exercise['metric'] = 'reps'): string {
+  if (metric !== 'duration') return `${value} reps`;
+
+  const totalSeconds = Math.max(0, Math.round(value));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+
+  if (minutes === 0) return `${totalSeconds} s`;
+  if (seconds === 0) return `${minutes} min`;
+  return `${minutes} min ${seconds} s`;
+}
+
+export function exerciseSetUnit(metric: Exercise['metric'] = 'reps'): string {
+  return metric === 'duration' ? 'temps' : 'reps';
+}

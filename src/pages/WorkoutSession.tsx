@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router';
 import { useWorkout, STORAGE_KEYS, type WorkoutExercise, type WorkoutSet, type ProgramExercise } from '../context/WorkoutContext';
-import { detectNewPRs, getExercisePR, epley1RM, type NewPR, PR_TYPE_LABEL, PR_TYPE_UNIT } from '@/lib/pr-utils';
+import { detectNewPRs, getExercisePR, epley1RM, getLastPerformance, type NewPR, PR_TYPE_LABEL, PR_TYPE_UNIT } from '@/lib/pr-utils';
 import { loadDraft, saveDraft, clearDraft } from '@/lib/workout-draft';
 import { scopedKey } from '@/lib/profiles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { matchesExerciseSearch, exerciseSetUnit } from '@/lib/exercise-utils';
 import { Plus, Check, Trash2, ChevronLeft, Timer, ChevronDown, Trophy, SkipForward, X } from 'lucide-react';
 
 const RPE_VALUES = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
@@ -57,6 +58,16 @@ function playBeep() {
   } catch {
     // Web Audio non supporté : on ignore
   }
+}
+
+function createWorkoutSet(overrides: Partial<WorkoutSet> = {}): WorkoutSet {
+  return {
+    id: crypto.randomUUID(),
+    weight: 0,
+    reps: 0,
+    completed: false,
+    ...overrides,
+  };
 }
 
 // ─── Timer de repos ───────────────────────────────────────────────────────────
@@ -218,17 +229,42 @@ export function WorkoutSession() {
   const isNew = id === 'new';
   const existingWorkout = isNew ? null : workouts.find(w => w.id === id);
 
-  // Séance lancée depuis un programme (via l'état de navigation) : prioritaire.
-  const programStart = (location.state as { program?: { name: string; exercises: ProgramExercise[] } } | null)?.program ?? null;
+  const navState = location.state as {
+    program?: { name: string; exercises: ProgramExercise[] };
+    repeat?: { name: string; exercises: WorkoutExercise[] };
+  } | null;
+
+  // Séance lancée depuis un programme : sets = cibles, poids pré-rempli avec la
+  // dernière performance quand elle existe.
+  const programStart = navState?.program ?? null;
   const initialFromProgram = useMemo<WorkoutExercise[] | null>(() => {
     if (!isNew || !programStart) return null;
-    return programStart.exercises.map(pe => ({
-      exerciseId: pe.exerciseId,
-      sets: Array.from({ length: Math.max(1, pe.sets) }, () => ({
-        id: crypto.randomUUID(), weight: 0, reps: pe.reps ?? 0, completed: false,
-      })),
+    return programStart.exercises.map(pe => {
+      const last = getLastPerformance(workouts, pe.exerciseId)?.[0];
+      return {
+        exerciseId: pe.exerciseId,
+        sets: Array.from({ length: Math.max(1, pe.sets) }, () => createWorkoutSet({
+          weight: last?.weight ?? 0,
+          reps: pe.reps ?? 0,
+          side: last?.side,
+        })),
+      };
+    });
+  }, [isNew, programStart, workouts]);
+
+  // Séance dupliquée depuis une séance passée : reprend exercices + charges/reps.
+  const repeatStart = navState?.repeat ?? null;
+  const initialFromRepeat = useMemo<WorkoutExercise[] | null>(() => {
+    if (!isNew || !repeatStart) return null;
+    return repeatStart.exercises.map(ex => ({
+      exerciseId: ex.exerciseId,
+      sets: ex.sets.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, side: s.side })),
     }));
-  }, [isNew, programStart]);
+  }, [isNew, repeatStart]);
+
+  const fromNav = !!programStart || !!repeatStart;
+
+  const exerciseById = useMemo(() => new Map(exercises.map(ex => [ex.id, ex])), [exercises]);
 
   // Brouillon d'une séance en cours (uniquement pour une nouvelle séance),
   // lu une seule fois au montage pour restaurer ce qui n'avait pas été terminé.
@@ -236,14 +272,14 @@ export function WorkoutSession() {
 
   const [name, setName] = useState(
     isNew
-      ? programStart?.name ?? initialDraft?.name ?? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
+      ? repeatStart?.name ?? programStart?.name ?? initialDraft?.name ?? `Séance du ${new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}`
       : existingWorkout?.name ?? ''
   );
   const [sessionExercises, setSessionExercises] = useState<WorkoutExercise[]>(
-    isNew ? (initialFromProgram ?? initialDraft?.exercises ?? []) : existingWorkout?.exercises ?? []
+    isNew ? (initialFromRepeat ?? initialFromProgram ?? initialDraft?.exercises ?? []) : existingWorkout?.exercises ?? []
   );
   const [elapsed, setElapsed]               = useState(
-    isNew && initialDraft && !programStart ? Math.max(0, Math.floor((Date.now() - initialDraft.startedAt) / 1000)) : 0
+    isNew && initialDraft && !fromNav ? Math.max(0, Math.floor((Date.now() - initialDraft.startedAt) / 1000)) : 0
   );
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [dialogOpen, setDialogOpen]         = useState(false);
@@ -301,7 +337,7 @@ export function WorkoutSession() {
 
   // ─── Timer de séance ─────────────────────────────────────────────────────────
   const startTimeRef = useRef<number>(
-    isNew && !programStart ? initialDraft?.startedAt ?? Date.now() : Date.now()
+    isNew && !fromNav ? initialDraft?.startedAt ?? Date.now() : Date.now()
   );
 
   useEffect(() => {
@@ -346,10 +382,12 @@ export function WorkoutSession() {
   };
 
   const addExerciseToSession = (exerciseId: string) => {
-    setSessionExercises(prev => [
-      ...prev,
-      { exerciseId, sets: [{ id: crypto.randomUUID(), weight: 0, reps: 0, completed: false }] },
-    ]);
+    // Pré-remplit avec la dernière performance (charges/reps) si elle existe.
+    const last = getLastPerformance(workouts, exerciseId);
+    const sets = last && last.length > 0
+      ? last.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, side: s.side }))
+      : [createWorkoutSet()];
+    setSessionExercises(prev => [...prev, { exerciseId, sets }]);
     setDialogOpen(false);
     setExerciseSearch('');
   };
@@ -358,7 +396,7 @@ export function WorkoutSession() {
     setSessionExercises(prev =>
       prev.map((ex, i) =>
         i === exerciseIdx
-          ? { ...ex, sets: [...ex.sets, { id: crypto.randomUUID(), weight: 0, reps: 0, completed: false }] }
+          ? { ...ex, sets: [...ex.sets, createWorkoutSet({ side: ex.sets[ex.sets.length - 1]?.side })] }
           : ex
       )
     );
@@ -432,11 +470,7 @@ export function WorkoutSession() {
     navigate('/workouts');
   };
 
-  const filteredExercises = exercises.filter(
-    e =>
-      e.name.toLowerCase().includes(exerciseSearch.toLowerCase()) ||
-      e.muscleGroup.toLowerCase().includes(exerciseSearch.toLowerCase())
-  );
+  const filteredExercises = exercises.filter(e => matchesExerciseSearch(e, exerciseSearch));
   const alreadyAdded = new Set(sessionExercises.map(e => e.exerciseId));
 
   if (!isNew && !existingWorkout) {
@@ -515,9 +549,14 @@ export function WorkoutSession() {
         {/* Exercices */}
         <div className="space-y-4">
           {sessionExercises.map((workoutEx, exIdx) => {
-            const exercise       = exercises.find(e => e.id === workoutEx.exerciseId);
+            const exercise       = exerciseById.get(workoutEx.exerciseId);
             const completedCount = workoutEx.sets.filter(s => s.completed).length;
             const prevMaxWeight  = currentPRs.get(workoutEx.exerciseId) ?? 0;
+            const isTimedExercise = exercise?.metric === 'duration';
+            const isUnilateral = !!exercise?.unilateral;
+            const gridTemplate = isUnilateral
+              ? '1.5rem 1fr 1fr 4.5rem 2rem 1.5rem'
+              : '1.5rem 1fr 1fr 2rem 1.5rem';
 
             return (
               <div key={workoutEx.exerciseId} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -548,10 +587,11 @@ export function WorkoutSession() {
                 </div>
 
                 <div className="px-4 pt-2">
-                  <div className="grid grid-cols-[1.5rem_1fr_1fr_2rem_1.5rem] gap-2 mb-1.5 px-0.5">
+                  <div className="grid gap-2 mb-1.5 px-0.5" style={{ gridTemplateColumns: gridTemplate }}>
                     <span className="text-xs text-gray-400">#</span>
                     <span className="text-xs text-gray-400 text-center">kg</span>
-                    <span className="text-xs text-gray-400 text-center">reps</span>
+                    <span className="text-xs text-gray-400 text-center">{exerciseSetUnit(exercise?.metric)}</span>
+                    {isUnilateral && <span className="text-xs text-gray-400 text-center">côté</span>}
                     <span />
                     <span />
                   </div>
@@ -565,9 +605,12 @@ export function WorkoutSession() {
 
                       return (
                         <div key={set.id} className="space-y-1">
-                          <div className={`grid grid-cols-[1.5rem_1fr_1fr_2rem_1.5rem] gap-2 items-center rounded-lg transition-colors ${
-                            isWeightPR && set.completed ? 'bg-yellow-50' : ''
-                          }`}>
+                          <div
+                            className={`grid gap-2 items-center rounded-lg transition-colors ${
+                              isWeightPR && set.completed ? 'bg-yellow-50' : ''
+                            }`}
+                            style={{ gridTemplateColumns: gridTemplate }}
+                          >
                             <span className={`text-xs font-medium text-center ${set.completed ? 'text-green-600' : 'text-gray-400'}`}>
                               {setIdx + 1}
                             </span>
@@ -588,10 +631,33 @@ export function WorkoutSession() {
                               min="0"
                               value={set.reps || ''}
                               onChange={e => updateSet(exIdx, setIdx, 'reps', parseInt(e.target.value) || 0)}
-                              placeholder="0"
+                              placeholder={isTimedExercise ? '0 s' : '0'}
                               className="h-8 text-center text-sm"
                               readOnly={!isNew}
                             />
+                            {isUnilateral && (
+                              <div className="flex items-center justify-center gap-1">
+                                {([
+                                  { value: 'left' as const, label: 'G', title: 'Gauche' },
+                                  { value: 'right' as const, label: 'D', title: 'Droite' },
+                                ]).map(option => (
+                                  <button
+                                    key={option.value}
+                                    type="button"
+                                    onClick={() => isNew && updateSet(exIdx, setIdx, 'side', set.side === option.value ? undefined : option.value)}
+                                    disabled={!isNew}
+                                    title={option.title}
+                                    className={`w-8 h-8 rounded-md border text-xs font-semibold transition-colors ${
+                                      set.side === option.value
+                                        ? 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-white text-gray-500 border-gray-200 hover:border-blue-300 disabled:cursor-default'
+                                    }`}
+                                  >
+                                    {option.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
                             <button
                               onClick={() => isNew && updateSet(exIdx, setIdx, 'completed', !set.completed)}
                               className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors ${
@@ -620,6 +686,9 @@ export function WorkoutSession() {
                               {isWeightPR && est1RM > 0 && (
                                 <span className="text-xs text-gray-400">1RM estimé : {est1RM} kg</span>
                               )}
+                              {set.side && (
+                                <span className="text-xs text-gray-400">{set.side === 'left' ? 'Gauche' : 'Droite'}</span>
+                              )}
                               {set.rpe !== undefined && (
                                 <span className="text-xs text-blue-600 font-medium">RPE {set.rpe}</span>
                               )}
@@ -634,6 +703,12 @@ export function WorkoutSession() {
 
                           {isExpanded && (
                             <div className="ml-7 bg-gray-50 rounded-lg p-3 space-y-3 border border-gray-100">
+                              {set.side && (
+                                <div className="flex items-center justify-between text-xs">
+                                  <span className="text-gray-400">Côté</span>
+                                  <span className="font-semibold text-gray-700">{set.side === 'left' ? 'Gauche' : 'Droite'}</span>
+                                </div>
+                              )}
                               {est1RM > 0 && (
                                 <div className="flex items-center justify-between text-xs">
                                   <span className="text-gray-400">1RM estimé (Epley)</span>

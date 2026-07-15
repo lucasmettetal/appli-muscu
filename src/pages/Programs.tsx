@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
 import { generateProgram, type GeneratedProgram } from '../lib/program-ai';
 import { Sparkles, Loader2, ClipboardList, ChevronRight, Check, RefreshCw, X } from 'lucide-react';
+import { formatExerciseTarget } from '@/lib/exercise-utils';
 
 const SUGGESTIONS = [
   'Full body sur 3 jours',
@@ -15,7 +16,7 @@ export function Programs() {
   const { programs, exercises, addProgram } = useWorkout();
   const navigate = useNavigate();
 
-  const exerciseName = useMemo(() => new Map(exercises.map(e => [e.id, e.name])), [exercises]);
+  const exerciseById = useMemo(() => new Map(exercises.map(e => [e.id, e])), [exercises]);
 
   const [request, setRequest] = useState('');
   const [generating, setGenerating] = useState(false);
@@ -119,8 +120,10 @@ export function Programs() {
                 <ul className="space-y-0.5">
                   {day.exercises.map((ex, j) => (
                     <li key={j} className="text-xs text-gray-600 flex justify-between">
-                      <span>{exerciseName.get(ex.exerciseId) ?? ex.exerciseId}</span>
-                      <span className="text-gray-400">{ex.sets} × {ex.reps ?? '—'}</span>
+                      <span>{exerciseById.get(ex.exerciseId)?.name ?? ex.exerciseId}</span>
+                      <span className="text-gray-400">
+                        {ex.sets} × {ex.reps != null ? formatExerciseTarget(ex.reps, exerciseById.get(ex.exerciseId)?.metric) : '—'}
+                      </span>
                     </li>
                   ))}
                 </ul>

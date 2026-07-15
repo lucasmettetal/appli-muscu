@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
-import { useWorkout } from '../context/WorkoutContext';
-import { Dumbbell, Trash2, Plus, ClipboardList, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router';
+import { useWorkout, type Workout } from '../context/WorkoutContext';
+import { Dumbbell, Trash2, Plus, ClipboardList, ChevronRight, RotateCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
 
@@ -27,10 +27,18 @@ function DeleteConfirmModal({ onConfirm, onCancel }: { onConfirm: () => void; on
 
 export function Workouts() {
   const { workouts, exercises, deleteWorkout } = useWorkout();
+  const navigate = useNavigate();
   const [workoutToDelete, setWorkoutToDelete] = useState<string | null>(null);
 
   const getExerciseName = (id: string) =>
     exercises.find(e => e.id === id)?.name ?? 'Exercice inconnu';
+
+  // Relance une nouvelle séance pré-remplie à partir d'une séance passée.
+  const handleRepeat = (workout: Workout) => {
+    navigate('/workout/new', {
+      state: { repeat: { name: workout.name, exercises: workout.exercises } },
+    });
+  };
 
   return (
     <>
@@ -135,7 +143,14 @@ export function Workouts() {
                   )}
                 </Link>
 
-                <div className="px-4 pb-3 flex justify-end">
+                <div className="px-4 pb-3 flex justify-between items-center">
+                  <button
+                    onClick={() => handleRepeat(workout)}
+                    className="text-xs text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1 transition-colors"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    Refaire
+                  </button>
                   <button
                     onClick={() => setWorkoutToDelete(workout.id)}
                     className="text-xs text-red-400 hover:text-red-600 flex items-center gap-1 transition-colors"

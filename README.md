@@ -34,10 +34,12 @@ L'app est accessible sur `http://localhost:5173`.
 - **Séances** — Création, suivi des séries avec poids/reps, RPE, RIR et notes
 - **Timer de repos** — Flottant, avec presets et ajustements ±15s, bip audio à la fin
 - **Records personnels** — Détection automatique des PRs (charge, 1RM Epley, volume) avec célébration
-- **Bibliothèque d'exercices** — 30 exercices intégrés (avec images début/fin) + création personnalisée + import depuis une banque de ~870 exercices avec images (Free Exercise DB), instructions traduisibles en français à la demande via le Coach IA
-- **Progression** — Graphiques par exercice, statut de progression (positive / stable / stagnation)
+- **Bibliothèque d'exercices** — 873 exercices Free Exercise DB (recherche bilingue FR/EN, traductions françaises progressives) + création personnalisée. Le catalogue JSON est servi localement ; les images sont chargées depuis le CDN jsDelivr (dépôt léger — les ~1 700 images ne sont pas versionnées, voir `.gitignore`).
+- **Programmes** — Génération IA, édition (séries/reps, ajout/retrait d'exercices) et démarrage de séance pré-remplie
+- **Progression** — Graphiques par exercice, poids de corps, pré-remplissage des charges de la dernière séance, « Refaire » une séance passée
 - **Coach IA** — Chat avec Google Gemini (clé API gratuite requise, sans carte bancaire) ou mode démo sans clé
 - **Profils locaux** — Plusieurs personnes peuvent partager le même appareil : chaque profil garde ses propres séances, exercices et clé IA (isolés dans le navigateur, sans synchronisation entre appareils)
+- **PWA** — Installable sur l'écran d'accueil ; le suivi fonctionne hors-ligne (service worker, app shell + catalogue en cache)
 - **Export / Import** — Sauvegarde JSON de toutes les données, avec backup automatique avant import
 
 ## Configuration du Coach IA

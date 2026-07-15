@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
 import { EQUIPMENT_LABEL, DIFFICULTY_LABEL, DIFFICULTY_STYLE, TYPE_LABEL, CATEGORY_LABEL } from '@/lib/exercise-utils';
+import { exercisePlaceholderUrl, FORCE_LABEL, formatEquipment, formatMuscle } from '@/lib/exercise-db';
 import {
   getExercisePR,
   getExerciseHistory,
@@ -15,7 +16,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
 } from 'recharts';
 import {
-  ChevronLeft, Award, Dumbbell, ImageIcon, CheckCircle2, XCircle,
+  ChevronLeft, Award, Dumbbell, CheckCircle2, XCircle,
   TrendingUp, TrendingDown, Minus, Languages, Loader2,
 } from 'lucide-react';
 
@@ -33,20 +34,19 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 function ImageSlot({ src, label }: { src: string | null; label: string }) {
-  if (src) {
-    return (
-      <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-200">
-        <img src={src} alt={label} className="w-full h-full object-cover" />
-        <span className="absolute bottom-2 left-2 text-xs bg-black/50 text-white px-2 py-0.5 rounded-full">
-          {label}
-        </span>
-      </div>
-    );
-  }
   return (
-    <div className="aspect-[4/3] rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 flex flex-col items-center justify-center gap-2">
-      <ImageIcon className="w-7 h-7 text-gray-200" />
-      <span className="text-xs text-gray-400 font-medium text-center px-2">{label}</span>
+    <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+      <img
+        src={src ?? exercisePlaceholderUrl}
+        onError={event => { event.currentTarget.src = exercisePlaceholderUrl; }}
+        alt={label}
+        loading="lazy"
+        decoding="async"
+        className="w-full h-full object-cover"
+      />
+      <span className="absolute bottom-2 left-2 text-xs bg-black/50 text-white px-2 py-0.5 rounded-full">
+        {label}
+      </span>
     </div>
   );
 }
@@ -94,23 +94,26 @@ function StepsList({ steps }: { steps: string[] }) {
 function InstructionsBlock({
   exerciseId,
   builtinSteps,
-  inlineSteps,
+  frenchSteps,
+  englishSteps,
 }: {
   exerciseId: string;
   builtinSteps?: string[];
-  inlineSteps?: string[];
+  frenchSteps?: string[];
+  englishSteps?: string[];
 }) {
   const [translated, setTranslated] = useState<string[] | null>(() => loadAllTr()[exerciseId] ?? null);
   const [translating, setTranslating] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   // Priorité aux instructions françaises intégrées (les 30 de base).
-  if (builtinSteps && builtinSteps.length > 0) {
-    return <Section title="Instructions"><StepsList steps={builtinSteps} /></Section>;
+  const integratedFrench = builtinSteps?.length ? builtinSteps : frenchSteps;
+  if (integratedFrench && integratedFrench.length > 0) {
+    return <Section title="Instructions"><StepsList steps={integratedFrench} /></Section>;
   }
-  if (!inlineSteps || inlineSteps.length === 0) return null;
+  if (!englishSteps || englishSteps.length === 0) return null;
 
-  const steps = translated ?? inlineSteps;
+  const steps = translated ?? englishSteps;
   const isEnglish = !translated;
   const hasKey = !!localStorage.getItem(geminiKeyName());
 
@@ -118,7 +121,7 @@ function InstructionsBlock({
     setTranslating(true);
     setErr(null);
     try {
-      const fr = await translateSteps(inlineSteps);
+      const fr = await translateSteps(englishSteps);
       setTranslated(fr);
       saveTranslation(exerciseId, fr);
     } catch (e) {
@@ -388,6 +391,11 @@ export function ExerciseDetail() {
             <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">
               {TYPE_LABEL[exercise.type] ?? exercise.type}
             </span>
+            {exercise.force && (
+              <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600">
+                {FORCE_LABEL[exercise.force] ?? exercise.force}
+              </span>
+            )}
             {exercise.unilateral && (
               <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">Unilatéral</span>
             )}
@@ -413,7 +421,7 @@ export function ExerciseDetail() {
               <div className="flex flex-wrap gap-1.5">
                 {exercise.musclesPrimary.map(m => (
                   <span key={m} className="text-sm bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full font-medium capitalize">
-                    {m}
+                    {formatMuscle(m)}
                   </span>
                 ))}
               </div>
@@ -425,7 +433,7 @@ export function ExerciseDetail() {
               <div className="flex flex-wrap gap-1.5">
                 {exercise.musclesSecondary.map(m => (
                   <span key={m} className="text-sm bg-gray-100 text-gray-600 px-2.5 py-1 rounded-full capitalize">
-                    {m}
+                    {formatMuscle(m)}
                   </span>
                 ))}
               </div>
@@ -440,7 +448,7 @@ export function ExerciseDetail() {
           <div className="flex flex-wrap gap-2">
             {exercise.equipment.map(eq => (
               <span key={eq} className="text-sm bg-gray-50 border border-gray-200 text-gray-700 px-3 py-1 rounded-full">
-                {EQUIPMENT_LABEL[eq] ?? eq}
+                {EQUIPMENT_LABEL[eq] ?? formatEquipment(eq)}
               </span>
             ))}
           </div>
@@ -452,7 +460,8 @@ export function ExerciseDetail() {
         <InstructionsBlock
           exerciseId={id}
           builtinSteps={content?.instructions}
-          inlineSteps={exercise.instructions}
+          frenchSteps={exercise.instructionsFr ?? (exercise.source !== 'free-exercise-db' ? exercise.instructions : undefined)}
+          englishSteps={exercise.instructionsEn ?? (exercise.source === 'free-exercise-db' ? exercise.instructions : undefined)}
         />
       )}
 
@@ -484,7 +493,7 @@ export function ExerciseDetail() {
         </Section>
       )}
 
-      {!content && (!exercise.instructions || exercise.instructions.length === 0) && (
+      {!content && !exercise.instructionsFr?.length && !exercise.instructionsEn?.length && (!exercise.instructions || exercise.instructions.length === 0) && (
         <div className="bg-gray-50 rounded-xl border border-dashed border-gray-200 p-4 text-center">
           <p className="text-sm text-gray-400">Instructions à venir pour cet exercice.</p>
         </div>

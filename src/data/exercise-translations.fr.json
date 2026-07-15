@@ -1,0 +1,462 @@
+{
+  "Barbell_Bench_Press_-_Medium_Grip": {
+    "nameFr": "Développé Couché Barre",
+    "instructionsFr": [
+      "Allonge-toi sur le banc, pieds à plat au sol, omoplates rétractées et abaissées.",
+      "Saisit la barre en prise pronation, légèrement plus large que les épaules.",
+      "Descends la barre lentement jusqu'à effleurer le bas des pectoraux — ne rebondis pas.",
+      "Pousse la barre vers le haut et légèrement vers l'arrière en expirant, jusqu'à extension complète."
+    ],
+    "legacyIds": [
+      "bench-press-barbell"
+    ]
+  },
+  "Barbell_Incline_Bench_Press_-_Medium_Grip": {
+    "nameFr": "Développé Incliné Barre",
+    "instructionsFr": [
+      "Règle le banc à 30-45° d'inclinaison, allonge-toi, pieds à plat au sol, omoplates rétractées.",
+      "Saisis la barre en pronation, un peu plus large que les épaules, et déracke-la bras tendus.",
+      "Descends la barre lentement vers le haut des pectoraux, sous les clavicules.",
+      "Pousse la barre verticalement jusqu'à extension complète en expirant."
+    ],
+    "legacyIds": [
+      "bench-press-incline-barbell"
+    ]
+  },
+  "Dumbbell_Flyes": {
+    "nameFr": "Écarté Haltères",
+    "instructionsFr": [
+      "Allongé sur un banc plat, haltères tendus au-dessus de la poitrine, paumes face à face.",
+      "Descends les bras sur les côtés en arc de cercle, coudes légèrement fléchis et fixes.",
+      "Ouvre jusqu'à sentir l'étirement des pectoraux, sans descendre plus bas que les épaules.",
+      "Remonte en suivant le même arc de cercle en contractant les pectoraux."
+    ],
+    "legacyIds": [
+      "dumbbell-fly"
+    ]
+  },
+  "Pushups": {
+    "nameFr": "Pompes",
+    "instructionsFr": [
+      "Place les mains légèrement plus larges que les épaules et gaine tout le corps.",
+      "Descends la poitrine vers le sol en gardant les coudes contrôlés.",
+      "Remonte en poussant le sol jusqu'à l'extension complète des bras."
+    ],
+    "aliases": [
+      "pompe",
+      "pompes",
+      "pompes classiques",
+      "push up",
+      "push-up"
+    ],
+    "legacyIds": [
+      "push-up"
+    ]
+  },
+  "Incline_Push-Up": {
+    "nameFr": "Pompes inclinées",
+    "instructionsFr": [
+      "Place les mains sur un support stable et surélevé.",
+      "Garde le corps droit pendant toute la descente.",
+      "Effectue une pompe contrôlée puis repousse jusqu'en haut."
+    ],
+    "aliases": [
+      "pompe inclinée",
+      "pompes inclinées",
+      "incline push up"
+    ],
+    "legacyIds": [
+      "incline-push-up"
+    ]
+  },
+  "Decline_Push-Up": {
+    "nameFr": "Pompes pieds surélevés",
+    "instructionsFr": [
+      "Place les pieds sur un support stable et garde le tronc gainé.",
+      "Descends la poitrine vers le sol sans casser la ligne du corps.",
+      "Repousse de manière contrôlée jusqu'à la position haute."
+    ],
+    "aliases": [
+      "pompe déclinée",
+      "pompes pieds surélevés",
+      "decline push up"
+    ],
+    "legacyIds": [
+      "decline-push-up"
+    ]
+  },
+  "Barbell_Deadlift": {
+    "nameFr": "Soulevé de Terre Conventionnel",
+    "instructionsFr": [
+      "Pieds à largeur de hanches, barre positionnée au-dessus des lacets.",
+      "Saisis la barre juste à l'extérieur des jambes, dos plat, hanches fléchies, omoplates au-dessus de la barre.",
+      "Pousse dans le sol avec les jambes en gardant la barre collée aux tibias — la barre monte.",
+      "Verrouille en haut avec hanches et genoux en extension complète, épaules légèrement en arrière."
+    ],
+    "legacyIds": [
+      "deadlift-conventional"
+    ]
+  },
+  "Romanian_Deadlift": {
+    "nameFr": "Soulevé de Terre Roumain",
+    "instructionsFr": [
+      "Debout, barre tenue en pronation à largeur d'épaules, genoux légèrement fléchis.",
+      "Pousse les hanches vers l'arrière en faisant glisser la barre le long des cuisses.",
+      "Descends jusqu'à sentir l'étirement des ischio-jambiers, dos plat.",
+      "Reviens en poussant les hanches vers l'avant et en contractant les fessiers."
+    ],
+    "legacyIds": [
+      "deadlift-romanian"
+    ]
+  },
+  "Pullups": {
+    "nameFr": "Tractions",
+    "instructionsFr": [
+      "Saisit la barre en pronation (paumes vers l'avant), mains légèrement plus larges que les épaules.",
+      "Depuis la position suspendue, rétracte les omoplates vers le bas et l'intérieur.",
+      "Tire ton corps vers le haut en amenant les coudes vers les hanches jusqu'à ce que le menton dépasse la barre.",
+      "Redescends lentement et complètement jusqu'à extension totale des bras avant de repartir."
+    ],
+    "legacyIds": [
+      "pull-up"
+    ]
+  },
+  "Inverted_Row": {
+    "nameFr": "Rowing inversé sous table",
+    "instructionsFr": [
+      "Utilise uniquement un support parfaitement stable, jamais une table légère ou instable.",
+      "Garde le corps droit et gainé pendant toute la répétition.",
+      "Tire la poitrine vers le support puis redescends de manière contrôlée."
+    ],
+    "aliases": [
+      "rowing inversé",
+      "tirage australien",
+      "australian pull up",
+      "inverted row"
+    ],
+    "legacyIds": [
+      "inverted-row-table"
+    ]
+  },
+  "Bent_Over_Barbell_Row": {
+    "nameFr": "Rowing Barre",
+    "instructionsFr": [
+      "Debout, penché à environ 45°, genoux légèrement fléchis, dos droit, barre en prise pronation.",
+      "Tire la barre vers le bas du ventre en ramenant les coudes vers l'arrière.",
+      "Contracte les dorsaux et rhomboïdes en haut — pince les omoplates.",
+      "Redescends en contrôlant jusqu'à extension complète des bras."
+    ],
+    "legacyIds": [
+      "barbell-row"
+    ]
+  },
+  "Wide-Grip_Lat_Pulldown": {
+    "nameFr": "Tirage Poulie Haute",
+    "instructionsFr": [
+      "Assis, genoux bloqués sous les appuis, saisit la barre en pronation, largeur supérieure aux épaules.",
+      "Penche légèrement le buste en arrière, rétracte les omoplates.",
+      "Tire la barre vers le haut des pectoraux en amenant les coudes vers les hanches.",
+      "Remonte lentement jusqu'à extension complète des bras en gardant la tension."
+    ],
+    "legacyIds": [
+      "cable-lat-pulldown"
+    ]
+  },
+  "One-Arm_Dumbbell_Row": {
+    "nameFr": "Rowing Haltère",
+    "instructionsFr": [
+      "Un genou et une main en appui sur un banc, dos plat et parallèle au sol, haltère dans l'autre main bras tendu.",
+      "Tire l'haltère vers la hanche en ramenant le coude vers l'arrière.",
+      "Contracte le dorsal en haut, coude le long du corps.",
+      "Redescends lentement jusqu'à extension complète du bras."
+    ],
+    "legacyIds": [
+      "dumbbell-row"
+    ]
+  },
+  "Standing_Military_Press": {
+    "nameFr": "Développé Militaire Barre",
+    "instructionsFr": [
+      "Barre posée sur les deltoïdes antérieurs, prise légèrement plus large que les épaules, coudes devant la barre.",
+      "Pousse la barre verticalement au-dessus de la tête.",
+      "En montant, rentre légèrement la tête pour laisser passer la barre, puis ressors-la une fois la barre passée.",
+      "Descends contrôlé jusqu'aux deltoïdes antérieurs en gardant le core engagé."
+    ],
+    "legacyIds": [
+      "overhead-press-barbell"
+    ]
+  },
+  "Side_Lateral_Raise": {
+    "nameFr": "Élévations Latérales",
+    "instructionsFr": [
+      "Debout, haltères le long du corps, légère flexion des coudes (10-15°).",
+      "Monte les bras sur les côtés jusqu'à hauteur des épaules en gardant les coudes légèrement fléchis.",
+      "Tourne légèrement le petit doigt vers le haut — comme verser un verre d'eau.",
+      "Descends lentement en 2-3 secondes pour maximiser le travail excentrique."
+    ],
+    "legacyIds": [
+      "lateral-raise-dumbbell"
+    ]
+  },
+  "Face_Pull": {
+    "nameFr": "Face Pull",
+    "instructionsFr": [
+      "Règle la poulie à hauteur de visage, corde en prise neutre (paumes face à face).",
+      "Recule pour mettre le câble en tension, bras tendus devant toi.",
+      "Tire la corde vers ton visage en écartant les mains, coudes hauts.",
+      "Contracte les deltoïdes postérieurs et les rhomboïdes, puis reviens contrôlé."
+    ],
+    "legacyIds": [
+      "face-pull-cable"
+    ]
+  },
+  "Kettlebell_Arnold_Press": {
+    "nameFr": "Arnold Press",
+    "instructionsFr": [
+      "Assis, haltères devant les épaules, paumes tournées vers toi.",
+      "Monte les haltères en tournant les poignets pour finir paumes vers l'avant.",
+      "Termine bras tendus au-dessus de la tête sans verrouiller brutalement les coudes.",
+      "Redescends en inversant la rotation jusqu'à la position de départ."
+    ],
+    "legacyIds": [
+      "arnold-press"
+    ]
+  },
+  "Barbell_Squat": {
+    "nameFr": "Squat Barre",
+    "instructionsFr": [
+      "Place la barre sur la partie haute des trapèzes (high bar) ou dans le creux du haut du dos (low bar).",
+      "Pieds à largeur d'épaules ou légèrement plus larges, orteils tournés à 15-30° vers l'extérieur.",
+      "Descends en poussant les genoux dans l'axe des orteils jusqu'au parallèle ou en dessous.",
+      "Remonte en poussant le sol, hanches et épaules au même rythme — ne laisse pas les hanches partir en premier."
+    ],
+    "legacyIds": [
+      "squat-barbell"
+    ]
+  },
+  "Leg_Press": {
+    "nameFr": "Leg Press",
+    "instructionsFr": [
+      "Assis dans la machine, pieds à plat sur la plateforme, largeur d'épaules.",
+      "Déverrouille les sécurités, descends en fléchissant les genoux vers la poitrine.",
+      "Arrête quand les genoux atteignent environ 90°, sans décoller les fessiers.",
+      "Pousse la plateforme jusqu'à l'extension sans verrouiller brutalement les genoux."
+    ],
+    "legacyIds": [
+      "leg-press-machine"
+    ]
+  },
+  "Dumbbell_Lunges": {
+    "nameFr": "Fentes Avant",
+    "instructionsFr": [
+      "Debout, pieds à largeur de hanches, buste droit (haltères en option).",
+      "Fais un grand pas en avant et descends jusqu'à ce que le genou arrière frôle le sol.",
+      "Le genou avant reste au-dessus de la cheville, tibia vertical.",
+      "Pousse sur le talon avant pour revenir en position de départ."
+    ],
+    "legacyIds": [
+      "lunge"
+    ]
+  },
+  "Lying_Leg_Curls": {
+    "nameFr": "Leg Curl Couché",
+    "instructionsFr": [
+      "Allongé face contre la machine, chevilles sous le rouleau, jambes tendues.",
+      "Fléchis les genoux en amenant le rouleau vers les fessiers.",
+      "Contracte les ischio-jambiers en fin de mouvement.",
+      "Redescends lentement sans laisser les poids se reposer complètement."
+    ],
+    "legacyIds": [
+      "leg-curl-machine"
+    ]
+  },
+  "Barbell_Hip_Thrust": {
+    "nameFr": "Hip Thrust",
+    "instructionsFr": [
+      "Assis au sol, buste adossé à un banc, barre en travers des hanches (avec pad de protection).",
+      "Pieds à plat au sol, largeur des épaules, légèrement devant les genoux.",
+      "Pousse les hanches vers le haut jusqu'à ce que cuisses et torse forment une ligne droite.",
+      "Contracte fort les fessiers en haut pendant 1 seconde, puis descends contrôlé."
+    ],
+    "legacyIds": [
+      "hip-thrust"
+    ]
+  },
+  "Chair_Squat": {
+    "nameFr": "Squat vers une chaise",
+    "instructionsFr": [
+      "Descends de manière contrôlée jusqu'à toucher légèrement une chaise.",
+      "Garde le torse gainé et les genoux dans l'axe des pieds.",
+      "Reviens debout en poussant dans le sol."
+    ],
+    "aliases": [
+      "squat chaise",
+      "chair squat",
+      "box squat poids du corps"
+    ],
+    "legacyIds": [
+      "chair-squat"
+    ]
+  },
+  "Rocking_Standing_Calf_Raise": {
+    "nameFr": "Mollets Debout",
+    "instructionsFr": [
+      "Debout, avant-pieds sur une marche ou un support, talons dans le vide.",
+      "Descends les talons sous le niveau de la marche pour étirer les mollets.",
+      "Monte sur la pointe des pieds le plus haut possible.",
+      "Marque une pause en haut, puis redescends lentement."
+    ],
+    "legacyIds": [
+      "calf-raise-standing"
+    ]
+  },
+  "Dumbbell_Bicep_Curl": {
+    "nameFr": "Curl Haltères",
+    "instructionsFr": [
+      "Debout ou assis, haltères le long du corps, paumes face en avant (supination).",
+      "Fléchis le coude en amenant l'haltère vers l'épaule, coude fixe contre le corps.",
+      "Supra le poignet légèrement en fin de mouvement pour maximiser la contraction.",
+      "Redescends lentement jusqu'à extension complète."
+    ],
+    "legacyIds": [
+      "dumbbell-curl"
+    ]
+  },
+  "Hammer_Curls": {
+    "nameFr": "Curl Marteau",
+    "instructionsFr": [
+      "Debout, haltères le long du corps, paumes face à face (prise neutre).",
+      "Fléchis les coudes en gardant les paumes face à face.",
+      "Monte jusqu'à hauteur des épaules, coudes fixes contre le corps.",
+      "Redescends lentement jusqu'à extension complète."
+    ],
+    "legacyIds": [
+      "hammer-curl"
+    ]
+  },
+  "EZ-Bar_Curl": {
+    "nameFr": "Curl Barre EZ",
+    "instructionsFr": [
+      "Debout, barre EZ tenue en supination sur les prises inclinées, coudes le long du corps.",
+      "Fléchis les coudes pour monter la barre vers les épaules.",
+      "Contracte les biceps en haut sans avancer les coudes.",
+      "Redescends lentement jusqu'à extension complète des bras."
+    ],
+    "legacyIds": [
+      "barbell-curl-ez"
+    ]
+  },
+  "Triceps_Pushdown": {
+    "nameFr": "Extension Triceps Poulie",
+    "instructionsFr": [
+      "Face à la poulie haute, saisis la barre ou la corde, coudes collés au corps.",
+      "Pousse vers le bas jusqu'à extension complète des bras.",
+      "Contracte les triceps en bas, seuls les avant-bras bougent.",
+      "Remonte de façon contrôlée sans laisser les coudes s'écarter."
+    ],
+    "legacyIds": [
+      "triceps-pushdown-cable"
+    ]
+  },
+  "EZ-Bar_Skullcrusher": {
+    "nameFr": "Barre Front (Skull Crusher)",
+    "instructionsFr": [
+      "Allongé sur un banc, barre EZ tendue au-dessus de la poitrine, prise serrée.",
+      "Fléchis les coudes pour descendre la barre vers le front, bras immobiles.",
+      "Descends jusqu'au front ou légèrement derrière la tête.",
+      "Tends les bras en contractant les triceps."
+    ],
+    "legacyIds": [
+      "skull-crusher"
+    ]
+  },
+  "Dips_-_Triceps_Version": {
+    "nameFr": "Dips",
+    "instructionsFr": [
+      "En appui bras tendus sur des barres parallèles, corps suspendu.",
+      "Descends en fléchissant les coudes jusqu'à ce que les épaules arrivent au niveau des coudes.",
+      "Buste vertical pour cibler les triceps, penché en avant pour les pectoraux.",
+      "Pousse pour remonter jusqu'à extension complète des bras."
+    ],
+    "legacyIds": [
+      "dips"
+    ]
+  },
+  "Plank": {
+    "nameFr": "Planche (Gainage)",
+    "instructionsFr": [
+      "Maintiens le corps aligné sur les avant-bras et les pointes de pieds.",
+      "Contracte les abdominaux et les fessiers sans laisser descendre le bassin.",
+      "Garde une respiration régulière pendant toute la tenue."
+    ],
+    "aliases": [
+      "gainage",
+      "gainage classique",
+      "planche",
+      "plank"
+    ],
+    "legacyIds": [
+      "plank"
+    ]
+  },
+  "Dead_Bug": {
+    "nameFr": "Dead Bug",
+    "instructionsFr": [
+      "Allonge-toi sur le dos et colle les lombaires au sol.",
+      "Tends simultanément une jambe et le bras opposé sans décoller le bassin.",
+      "Reviens au centre puis change de côté."
+    ],
+    "aliases": [
+      "dead bug",
+      "insecte mort"
+    ],
+    "legacyIds": [
+      "dead-bug"
+    ]
+  },
+  "Crunches": {
+    "nameFr": "Crunch",
+    "instructionsFr": [
+      "Allongé sur le dos, genoux fléchis, pieds au sol, mains près des tempes.",
+      "Enroule le haut du dos en décollant les omoplates du sol.",
+      "Contracte les abdominaux en soufflant en haut du mouvement.",
+      "Redescends lentement sans reposer complètement la tête."
+    ],
+    "legacyIds": [
+      "crunch"
+    ]
+  },
+  "Hanging_Leg_Raise": {
+    "nameFr": "Relevé de Jambes Suspendu",
+    "instructionsFr": [
+      "Suspendu à une barre, bras tendus, corps immobile.",
+      "Monte les jambes tendues (ou genoux fléchis) vers l'avant.",
+      "Enroule le bassin en fin de mouvement pour contracter les abdominaux bas.",
+      "Redescends lentement sans te balancer."
+    ],
+    "legacyIds": [
+      "hanging-leg-raise"
+    ]
+  },
+  "Russian_Twist": {
+    "nameFr": "Russian Twist",
+    "instructionsFr": [
+      "Assis, buste incliné en arrière (~45°), pieds décollés ou au sol, mains jointes ou avec un lest.",
+      "Tourne le buste d'un côté en amenant les mains vers le sol.",
+      "Reviens au centre puis tourne de l'autre côté.",
+      "Garde le dos droit et le tronc gainé pendant tout le mouvement."
+    ],
+    "legacyIds": [
+      "russian-twist"
+    ]
+  },
+  "Dumbbell_Bench_Press": {
+    "nameFr": "Développé couché avec haltères",
+    "aliases": [
+      "développé haltères",
+      "développé couché haltères",
+      "dumbbell bench",
+      "db bench"
+    ]
+  }
+}

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 
 function figmaAssetResolver() {
@@ -23,6 +24,44 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      injectRegister: 'auto',
+      includeAssets: ['icon.svg', 'exercises/placeholder.svg'],
+      manifest: {
+        name: 'Fitness Tracker — Suivi musculation',
+        short_name: 'Muscu',
+        description: 'Suivi de musculation : séances, records, programmes et coach IA.',
+        lang: 'fr',
+        theme_color: '#2563eb',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
+        icons: [
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' },
+        ],
+      },
+      workbox: {
+        // Précache l'app (JS/CSS/HTML/SVG) + le JSON de la banque (recherche
+        // hors-ligne). Les ~1 700 images (jpg) NE sont PAS précachées — elles
+        // viennent du CDN et sont mises en cache à l'usage (runtimeCaching).
+        globPatterns: ['**/*.{js,css,html,svg,json,woff2}'],
+        globIgnores: ['**/exercises/images/**', '**/exercises/thumbs/**'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+        navigateFallback: '/index.html',
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/.*\.(?:jpg|jpeg|png|svg)$/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'exercise-images',
+              expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+        ],
+      },
+    }),
   ],
   resolve: {
     alias: {

@@ -27,8 +27,8 @@
         "force",
         "powerlifting"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Bench_Press_-_Medium_Grip/1.jpg"
+      "imageStart": "free-exercise-db:Barbell_Bench_Press_-_Medium_Grip/0.jpg",
+      "imageEnd": "free-exercise-db:Barbell_Bench_Press_-_Medium_Grip/1.jpg"
     },
     {
       "id": "bench-press-incline-barbell",
@@ -54,8 +54,8 @@
       "tags": [
         "push"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg"
+      "imageStart": "free-exercise-db:Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",
+      "imageEnd": "free-exercise-db:Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg"
     },
     {
       "id": "dumbbell-fly",
@@ -81,13 +81,20 @@
         "push",
         "étirement"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Flyes/1.jpg"
+      "imageStart": "free-exercise-db:Dumbbell_Flyes/0.jpg",
+      "imageEnd": "free-exercise-db:Dumbbell_Flyes/1.jpg"
     },
     {
       "id": "push-up",
       "name": "Pompes",
       "nameEn": "Push-up",
+      "aliases": [
+        "pompe",
+        "pompes",
+        "pompes classiques",
+        "push up",
+        "push-up"
+      ],
       "category": "chest",
       "muscleGroup": "Pectoraux",
       "musclesPrimary": [
@@ -107,8 +114,189 @@
         "push",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pushups/1.jpg"
+      "instructions": [
+        "Place les mains légèrement plus larges que les épaules et gaine tout le corps.",
+        "Descends la poitrine vers le sol en gardant les coudes contrôlés.",
+        "Remonte en poussant le sol jusqu'à l'extension complète des bras."
+      ],
+      "imageStart": "free-exercise-db:Pushups/0.jpg",
+      "imageEnd": "free-exercise-db:Pushups/1.jpg"
+    },
+    {
+      "id": "incline-push-up",
+      "name": "Pompes inclinées",
+      "nameEn": "Incline Push-up",
+      "aliases": [
+        "pompe inclinée",
+        "pompes inclinées",
+        "incline push up"
+      ],
+      "category": "chest",
+      "muscleGroup": "Pectoraux",
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "deltoide-anterieur"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Place les mains sur un support stable et surélevé.",
+        "Garde le corps droit pendant toute la descente.",
+        "Effectue une pompe contrôlée puis repousse jusqu'en haut."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "decline-push-up",
+      "name": "Pompes pieds surélevés",
+      "nameEn": "Decline Push-up",
+      "aliases": [
+        "pompe déclinée",
+        "pompes pieds surélevés",
+        "decline push up"
+      ],
+      "category": "chest",
+      "muscleGroup": "Haut des pectoraux",
+      "musclesPrimary": [
+        "pectoraux"
+      ],
+      "musclesSecondary": [
+        "deltoide-anterieur",
+        "triceps"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "intermediate",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Place les pieds sur un support stable et garde le tronc gainé.",
+        "Descends la poitrine vers le sol sans casser la ligne du corps.",
+        "Repousse de manière contrôlée jusqu'à la position haute."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "close-grip-push-up",
+      "name": "Pompes serrées",
+      "nameEn": "Close-grip Push-up",
+      "aliases": [
+        "pompe serrée",
+        "pompes serrées",
+        "close grip push up",
+        "diamond push up"
+      ],
+      "category": "arms",
+      "muscleGroup": "Triceps",
+      "musclesPrimary": [
+        "triceps"
+      ],
+      "musclesSecondary": [
+        "pectoraux",
+        "deltoide-anterieur"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "intermediate",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Rapproche les mains sous le torse et garde les coudes près du corps.",
+        "Descends en gardant le buste solide et le mouvement contrôlé.",
+        "Repousse sans perdre l'alignement du corps."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "scapular-push-up",
+      "name": "Pompes scapulaires",
+      "nameEn": "Scapular Push-up",
+      "aliases": [
+        "pompe scapulaire",
+        "pompes scapulaires",
+        "scapular push up"
+      ],
+      "category": "chest",
+      "muscleGroup": "Dentelé antérieur",
+      "musclesPrimary": [
+        "serratus-anterior"
+      ],
+      "musclesSecondary": [
+        "deltoide-anterieur",
+        "trapèzes"
+      ],
+      "equipment": [],
+      "type": "isolation",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Reste en position haute de pompe, bras tendus.",
+        "Rapproche puis éloigne les omoplates sans plier les coudes.",
+        "Garde le tronc gainé pendant tout le mouvement."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "pike-push-up",
+      "name": "Pompes en V",
+      "nameEn": "Pike Push-up",
+      "aliases": [
+        "pike push up",
+        "pompe en V",
+        "pompes épaules"
+      ],
+      "category": "shoulders",
+      "muscleGroup": "Épaules",
+      "musclesPrimary": [
+        "deltoide-anterieur"
+      ],
+      "musclesSecondary": [
+        "triceps",
+        "pectoraux"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "intermediate",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Place le corps en V inversé, mains et pieds ancrés au sol.",
+        "Descends la tête vers le sol entre les mains en contrôlant la trajectoire.",
+        "Repousse pour revenir en position de départ."
+      ],
+      "imageStart": null,
+      "imageEnd": null
     },
     {
       "id": "deadlift-conventional",
@@ -138,8 +326,8 @@
         "force",
         "powerlifting"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Deadlift/1.jpg"
+      "imageStart": "free-exercise-db:Barbell_Deadlift/0.jpg",
+      "imageEnd": "free-exercise-db:Barbell_Deadlift/1.jpg"
     },
     {
       "id": "deadlift-romanian",
@@ -166,8 +354,8 @@
         "pull",
         "ischio"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Romanian_Deadlift/1.jpg"
+      "imageStart": "free-exercise-db:Romanian_Deadlift/0.jpg",
+      "imageEnd": "free-exercise-db:Romanian_Deadlift/1.jpg"
     },
     {
       "id": "pull-up",
@@ -194,8 +382,148 @@
         "pull",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Pullups/1.jpg"
+      "imageStart": "free-exercise-db:Pullups/0.jpg",
+      "imageEnd": "free-exercise-db:Pullups/1.jpg"
+    },
+    {
+      "id": "inverted-row-table",
+      "name": "Rowing inversé sous table",
+      "nameEn": "Inverted Row",
+      "aliases": [
+        "rowing inversé",
+        "tirage australien",
+        "australian pull up",
+        "inverted row"
+      ],
+      "category": "back",
+      "muscleGroup": "Dos",
+      "musclesPrimary": [
+        "grand-dorsal"
+      ],
+      "musclesSecondary": [
+        "biceps",
+        "deltoide-posterieur"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "pull",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Utilise uniquement un support parfaitement stable, jamais une table légère ou instable.",
+        "Garde le corps droit et gainé pendant toute la répétition.",
+        "Tire la poitrine vers le support puis redescends de manière contrôlée."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "superman-pull",
+      "name": "Superman avec tirage",
+      "nameEn": "Superman Pull",
+      "aliases": [
+        "superman pull",
+        "superman avec tirage"
+      ],
+      "category": "back",
+      "muscleGroup": "Dos",
+      "musclesPrimary": [
+        "grand-dorsal"
+      ],
+      "musclesSecondary": [
+        "lombaires",
+        "deltoide-posterieur"
+      ],
+      "equipment": [],
+      "type": "isolation",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "pull",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Allonge-toi sur le ventre, bras tendus devant toi.",
+        "Ramène les coudes vers les côtes en contractant le dos.",
+        "Contrôle la descente sans relâcher la tension."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "reverse-snow-angel",
+      "name": "Ange inversé au sol",
+      "nameEn": "Reverse Snow Angel",
+      "aliases": [
+        "reverse snow angel",
+        "ange inversé"
+      ],
+      "category": "back",
+      "muscleGroup": "Haut du dos",
+      "musclesPrimary": [
+        "haut-du-dos"
+      ],
+      "musclesSecondary": [
+        "deltoide-posterieur"
+      ],
+      "equipment": [],
+      "type": "mobility",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "pull",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Allonge-toi sur le ventre en gardant la sangle abdominale engagée.",
+        "Déplace lentement les bras des hanches jusqu'au-dessus de la tête.",
+        "Ne relâche pas la tension pendant tout le trajet."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "y-t-w-floor",
+      "name": "Y-T-W au sol",
+      "nameEn": "Y-T-W",
+      "aliases": [
+        "ytw",
+        "y-t-w",
+        "exercice y t w"
+      ],
+      "category": "back",
+      "muscleGroup": "Haut du dos",
+      "musclesPrimary": [
+        "haut-du-dos"
+      ],
+      "musclesSecondary": [
+        "deltoide-posterieur",
+        "trapèzes"
+      ],
+      "equipment": [],
+      "type": "mobility",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "metric": "reps",
+      "tags": [
+        "pull",
+        "poids-du-corps",
+        "activation"
+      ],
+      "instructions": [
+        "Allonge-toi sur le ventre et enchaîne les positions Y, T puis W.",
+        "Contracte les omoplates à chaque position sans cambrer excessivement.",
+        "Réalise le mouvement de façon lente et contrôlée."
+      ],
+      "imageStart": null,
+      "imageEnd": null
     },
     {
       "id": "barbell-row",
@@ -222,8 +550,8 @@
       "tags": [
         "pull"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bent_Over_Barbell_Row/1.jpg"
+      "imageStart": "free-exercise-db:Bent_Over_Barbell_Row/0.jpg",
+      "imageEnd": "free-exercise-db:Bent_Over_Barbell_Row/1.jpg"
     },
     {
       "id": "cable-lat-pulldown",
@@ -248,8 +576,8 @@
       "tags": [
         "pull"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Wide-Grip_Lat_Pulldown/1.jpg"
+      "imageStart": "free-exercise-db:Wide-Grip_Lat_Pulldown/0.jpg",
+      "imageEnd": "free-exercise-db:Wide-Grip_Lat_Pulldown/1.jpg"
     },
     {
       "id": "dumbbell-row",
@@ -277,8 +605,8 @@
         "pull",
         "unilateral"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/1.jpg"
+      "imageStart": "free-exercise-db:One-Arm_Dumbbell_Row/0.jpg",
+      "imageEnd": "free-exercise-db:One-Arm_Dumbbell_Row/1.jpg"
     },
     {
       "id": "overhead-press-barbell",
@@ -306,8 +634,8 @@
         "push",
         "force"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Standing_Military_Press/1.jpg"
+      "imageStart": "free-exercise-db:Standing_Military_Press/0.jpg",
+      "imageEnd": "free-exercise-db:Standing_Military_Press/1.jpg"
     },
     {
       "id": "lateral-raise-dumbbell",
@@ -332,8 +660,8 @@
       "tags": [
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Side_Lateral_Raise/1.jpg"
+      "imageStart": "free-exercise-db:Side_Lateral_Raise/0.jpg",
+      "imageEnd": "free-exercise-db:Side_Lateral_Raise/1.jpg"
     },
     {
       "id": "face-pull-cable",
@@ -360,8 +688,8 @@
         "pull",
         "santé-épaules"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Face_Pull/1.jpg"
+      "imageStart": "free-exercise-db:Face_Pull/0.jpg",
+      "imageEnd": "free-exercise-db:Face_Pull/1.jpg"
     },
     {
       "id": "arnold-press",
@@ -386,8 +714,8 @@
       "tags": [
         "push"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Arnold_Press/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Arnold_Press/1.jpg"
+      "imageStart": "free-exercise-db:Kettlebell_Arnold_Press/0.jpg",
+      "imageEnd": "free-exercise-db:Kettlebell_Arnold_Press/1.jpg"
     },
     {
       "id": "squat-barbell",
@@ -417,8 +745,8 @@
         "force",
         "powerlifting"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Squat/1.jpg"
+      "imageStart": "free-exercise-db:Barbell_Squat/0.jpg",
+      "imageEnd": "free-exercise-db:Barbell_Squat/1.jpg"
     },
     {
       "id": "leg-press-machine",
@@ -443,8 +771,8 @@
       "tags": [
         "push"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Leg_Press/1.jpg"
+      "imageStart": "free-exercise-db:Leg_Press/0.jpg",
+      "imageEnd": "free-exercise-db:Leg_Press/1.jpg"
     },
     {
       "id": "lunge",
@@ -471,8 +799,8 @@
         "push",
         "unilateral"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Lunges/1.jpg"
+      "imageStart": "free-exercise-db:Dumbbell_Lunges/0.jpg",
+      "imageEnd": "free-exercise-db:Dumbbell_Lunges/1.jpg"
     },
     {
       "id": "leg-curl-machine",
@@ -497,8 +825,8 @@
         "pull",
         "ischio"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Lying_Leg_Curls/1.jpg"
+      "imageStart": "free-exercise-db:Lying_Leg_Curls/0.jpg",
+      "imageEnd": "free-exercise-db:Lying_Leg_Curls/1.jpg"
     },
     {
       "id": "hip-thrust",
@@ -524,8 +852,112 @@
       "tags": [
         "push"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Hip_Thrust/1.jpg"
+      "imageStart": "free-exercise-db:Barbell_Hip_Thrust/0.jpg",
+      "imageEnd": "free-exercise-db:Barbell_Hip_Thrust/1.jpg"
+    },
+    {
+      "id": "glute-bridge",
+      "name": "Pont fessier",
+      "nameEn": "Glute Bridge",
+      "aliases": [
+        "pont fessier",
+        "glute bridge"
+      ],
+      "category": "legs",
+      "muscleGroup": "Fessiers",
+      "musclesPrimary": [
+        "fessiers"
+      ],
+      "musclesSecondary": [
+        "ischio-jambiers",
+        "core"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Allonge-toi sur le dos et place les pieds à plat au sol.",
+        "Pousse dans les talons pour lever le bassin en contractant les fessiers.",
+        "Redescends de manière contrôlée sans perdre la tension."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "chair-squat",
+      "name": "Squat vers une chaise",
+      "nameEn": "Chair Squat",
+      "aliases": [
+        "squat chaise",
+        "chair squat",
+        "box squat poids du corps"
+      ],
+      "category": "legs",
+      "muscleGroup": "Quadriceps",
+      "musclesPrimary": [
+        "quadriceps"
+      ],
+      "musclesSecondary": [
+        "fessiers",
+        "ischio-jambiers"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "beginner",
+      "unilateral": false,
+      "bodyweight": true,
+      "tags": [
+        "squat",
+        "poids-du-corps"
+      ],
+      "instructions": [
+        "Descends de manière contrôlée jusqu'à toucher légèrement une chaise.",
+        "Garde le torse gainé et les genoux dans l'axe des pieds.",
+        "Reviens debout en poussant dans le sol."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "assisted-reverse-lunge",
+      "name": "Fentes arrière assistées",
+      "nameEn": "Assisted Reverse Lunge",
+      "aliases": [
+        "fente arrière assistée",
+        "reverse lunge"
+      ],
+      "category": "legs",
+      "muscleGroup": "Quadriceps",
+      "musclesPrimary": [
+        "quadriceps"
+      ],
+      "musclesSecondary": [
+        "fessiers",
+        "ischio-jambiers"
+      ],
+      "equipment": [],
+      "type": "compound",
+      "difficulty": "beginner",
+      "unilateral": true,
+      "bodyweight": true,
+      "tags": [
+        "push",
+        "poids-du-corps",
+        "unilateral"
+      ],
+      "instructions": [
+        "Tiens-toi à un support stable puis recule une jambe.",
+        "Descends de manière contrôlée en gardant le buste droit.",
+        "Remonte en poussant dans la jambe avant, puis change de côté."
+      ],
+      "imageStart": null,
+      "imageEnd": null
     },
     {
       "id": "calf-raise-standing",
@@ -547,8 +979,8 @@
       "tags": [
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Rocking_Standing_Calf_Raise/1.jpg"
+      "imageStart": "free-exercise-db:Rocking_Standing_Calf_Raise/0.jpg",
+      "imageEnd": "free-exercise-db:Rocking_Standing_Calf_Raise/1.jpg"
     },
     {
       "id": "dumbbell-curl",
@@ -574,8 +1006,8 @@
         "pull",
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dumbbell_Bicep_Curl/1.jpg"
+      "imageStart": "free-exercise-db:Dumbbell_Bicep_Curl/0.jpg",
+      "imageEnd": "free-exercise-db:Dumbbell_Bicep_Curl/1.jpg"
     },
     {
       "id": "hammer-curl",
@@ -601,8 +1033,8 @@
         "pull",
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hammer_Curls/1.jpg"
+      "imageStart": "free-exercise-db:Hammer_Curls/0.jpg",
+      "imageEnd": "free-exercise-db:Hammer_Curls/1.jpg"
     },
     {
       "id": "barbell-curl-ez",
@@ -627,8 +1059,8 @@
         "pull",
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Curl/1.jpg"
+      "imageStart": "free-exercise-db:EZ-Bar_Curl/0.jpg",
+      "imageEnd": "free-exercise-db:EZ-Bar_Curl/1.jpg"
     },
     {
       "id": "triceps-pushdown-cable",
@@ -651,8 +1083,8 @@
         "push",
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Triceps_Pushdown/1.jpg"
+      "imageStart": "free-exercise-db:Triceps_Pushdown/0.jpg",
+      "imageEnd": "free-exercise-db:Triceps_Pushdown/1.jpg"
     },
     {
       "id": "skull-crusher",
@@ -676,8 +1108,8 @@
         "push",
         "isolation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Skullcrusher/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/EZ-Bar_Skullcrusher/1.jpg"
+      "imageStart": "free-exercise-db:EZ-Bar_Skullcrusher/0.jpg",
+      "imageEnd": "free-exercise-db:EZ-Bar_Skullcrusher/1.jpg"
     },
     {
       "id": "dips",
@@ -703,13 +1135,19 @@
         "push",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Dips_-_Triceps_Version/1.jpg"
+      "imageStart": "free-exercise-db:Dips_-_Triceps_Version/0.jpg",
+      "imageEnd": "free-exercise-db:Dips_-_Triceps_Version/1.jpg"
     },
     {
       "id": "plank",
       "name": "Planche (Gainage)",
       "nameEn": "Plank",
+      "aliases": [
+        "gainage",
+        "gainage classique",
+        "planche",
+        "plank"
+      ],
       "category": "core",
       "muscleGroup": "Abdominaux",
       "musclesPrimary": [
@@ -728,8 +1166,84 @@
         "gainage",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/1.jpg"
+      "metric": "duration",
+      "instructions": [
+        "Maintiens le corps aligné sur les avant-bras et les pointes de pieds.",
+        "Contracte les abdominaux et les fessiers sans laisser descendre le bassin.",
+        "Garde une respiration régulière pendant toute la tenue."
+      ],
+      "imageStart": "free-exercise-db:Plank/0.jpg",
+      "imageEnd": "free-exercise-db:Plank/1.jpg"
+    },
+    {
+      "id": "side-plank",
+      "name": "Gainage latéral",
+      "nameEn": "Side Plank",
+      "aliases": [
+        "gainage latéral",
+        "side plank"
+      ],
+      "category": "core",
+      "muscleGroup": "Abdominaux obliques",
+      "musclesPrimary": [
+        "obliques"
+      ],
+      "musclesSecondary": [
+        "transverse",
+        "deltoide-anterieur"
+      ],
+      "equipment": [],
+      "type": "isolation",
+      "difficulty": "beginner",
+      "unilateral": true,
+      "bodyweight": true,
+      "metric": "duration",
+      "tags": [
+        "gainage",
+        "poids-du-corps",
+        "unilateral"
+      ],
+      "instructions": [
+        "Maintiens le corps aligné sur un avant-bras et le côté des pieds.",
+        "Ne laisse pas descendre le bassin pendant la tenue.",
+        "Garde la nuque dans le prolongement de la colonne."
+      ],
+      "imageStart": null,
+      "imageEnd": null
+    },
+    {
+      "id": "dead-bug",
+      "name": "Dead Bug",
+      "nameEn": "Dead Bug",
+      "aliases": [
+        "dead bug",
+        "insecte mort"
+      ],
+      "category": "core",
+      "muscleGroup": "Abdominaux",
+      "musclesPrimary": [
+        "core"
+      ],
+      "musclesSecondary": [
+        "transverse"
+      ],
+      "equipment": [],
+      "type": "isolation",
+      "difficulty": "beginner",
+      "unilateral": true,
+      "bodyweight": true,
+      "tags": [
+        "gainage",
+        "poids-du-corps",
+        "unilateral"
+      ],
+      "instructions": [
+        "Allonge-toi sur le dos et colle les lombaires au sol.",
+        "Tends simultanément une jambe et le bras opposé sans décoller le bassin.",
+        "Reviens au centre puis change de côté."
+      ],
+      "imageStart": null,
+      "imageEnd": null
     },
     {
       "id": "crunch",
@@ -750,8 +1264,8 @@
         "gainage",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Crunches/1.jpg"
+      "imageStart": "free-exercise-db:Crunches/0.jpg",
+      "imageEnd": "free-exercise-db:Crunches/1.jpg"
     },
     {
       "id": "hanging-leg-raise",
@@ -777,8 +1291,8 @@
         "gainage",
         "poids-du-corps"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Hanging_Leg_Raise/1.jpg"
+      "imageStart": "free-exercise-db:Hanging_Leg_Raise/0.jpg",
+      "imageEnd": "free-exercise-db:Hanging_Leg_Raise/1.jpg"
     },
     {
       "id": "russian-twist",
@@ -802,8 +1316,8 @@
         "poids-du-corps",
         "rotation"
       ],
-      "imageStart": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/0.jpg",
-      "imageEnd": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Russian_Twist/1.jpg"
+      "imageStart": "free-exercise-db:Russian_Twist/0.jpg",
+      "imageEnd": "free-exercise-db:Russian_Twist/1.jpg"
     }
   ]
 }

@@ -1,13 +1,16 @@
-import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useMemo, useRef } from 'react';
 import exercisesData from '../data/exercises.json';
 import { scopedKey } from '../lib/profiles';
 import { supabase } from '../lib/supabase';
+import { fetchExerciseLibrary, legacyCanonicalId, localizeExerciseMedia } from '../lib/exercise-db';
 import { useAuth } from './AuthContext';
 
 export interface Exercise {
   id: string;
   name: string;
+  nameFr?: string;
   nameEn?: string;
+  aliases?: string[];
   category: 'chest' | 'back' | 'legs' | 'shoulders' | 'arms' | 'core' | 'full-body';
   muscleGroup: string;
   musclesPrimary: string[];
@@ -17,10 +20,18 @@ export interface Exercise {
   difficulty: 'beginner' | 'intermediate' | 'advanced';
   unilateral: boolean;
   bodyweight: boolean;
+  metric?: 'reps' | 'duration';
   tags: string[];
+  searchTerms?: string[];
   imageStart: string | null;
   imageEnd: string | null;
-  instructions?: string[]; // étapes inline (exos importés depuis la banque)
+  thumbnail?: string | null;
+  instructions?: string[];
+  instructionsFr?: string[];
+  instructionsEn?: string[];
+  force?: string | null;
+  mechanic?: string | null;
+  source?: 'free-exercise-db' | 'local';
   custom?: boolean;
 }
 
@@ -29,6 +40,7 @@ export interface WorkoutSet {
   weight: number;
   reps: number;
   completed: boolean;
+  side?: 'left' | 'right';
   rpe?: number;
   rir?: number;
   notes?: string;
@@ -183,6 +195,8 @@ function validateImport(data: unknown): ImportResult {
 
 interface WorkoutContextType {
   exercises: Exercise[];
+  exerciseLibraryLoading: boolean;
+  exerciseLibraryError: string | null;
   workouts: Workout[];
   bodyWeights: BodyWeight[];
   programs: Program[];
@@ -209,7 +223,9 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   const cloudUserId = configured && session ? session.user.id : null;
 
   const [customExercises, setCustomExercises] = useState<Exercise[]>(() =>
-    cloudUserId ? [] : safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), [])
+    cloudUserId
+      ? []
+      : safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), []).map(localizeExerciseMedia)
   );
 
   const [workouts, setWorkouts] = useState<Workout[]>(() =>
@@ -223,6 +239,27 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   const [programs, setPrograms] = useState<Program[]>(() =>
     cloudUserId ? [] : safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), [])
   );
+
+  const [libraryExercises, setLibraryExercises] = useState<Exercise[]>([]);
+  const [exerciseLibraryLoading, setExerciseLibraryLoading] = useState(true);
+  const [exerciseLibraryError, setExerciseLibraryError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchExerciseLibrary()
+      .then(exercises => {
+        if (!cancelled) setLibraryExercises(exercises);
+      })
+      .catch(error => {
+        if (!cancelled) {
+          setExerciseLibraryError(error instanceof Error ? error.message : 'Bibliothèque locale indisponible');
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setExerciseLibraryLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   // En mode cloud, on attend le premier chargement distant avant d'autoriser les
   // écritures cloud (pour ne pas écraser les données existantes avec du vide).
@@ -255,7 +292,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
       if (hasCloud) {
         setWorkouts(cloud.workouts ?? []);
-        setCustomExercises((cloud.customExercises ?? []).map(e => ({ ...e, custom: true })));
+        setCustomExercises((cloud.customExercises ?? []).map(e => localizeExerciseMedia({ ...e, custom: true })));
         setBodyWeights(cloud.bodyWeights ?? []);
         setPrograms(cloud.programs ?? []);
       } else {
@@ -266,7 +303,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
         const localPrograms = safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), []);
         if (localWorkouts.length > 0 || localCustom.length > 0 || localBodyWeights.length > 0 || localPrograms.length > 0) {
           setWorkouts(localWorkouts);
-          setCustomExercises(localCustom.map(e => ({ ...e, custom: true })));
+          setCustomExercises(localCustom.map(e => localizeExerciseMedia({ ...e, custom: true })));
           setBodyWeights(localBodyWeights);
           setPrograms(localPrograms);
           await supabase!
@@ -317,10 +354,34 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
   }, [workouts, customExercises, bodyWeights, programs, cloudUserId, cloudLoaded]);
 
-  const exercises: Exercise[] = [...baseExercises, ...customExercises];
+  const referencedExerciseIds = useMemo(() => {
+    const ids = new Set<string>();
+    workouts.forEach(workout => workout.exercises.forEach(exercise => ids.add(exercise.exerciseId)));
+    programs.forEach(program => program.days.forEach(day => day.exercises.forEach(exercise => ids.add(exercise.exerciseId))));
+    return ids;
+  }, [workouts, programs]);
+
+  const exercises = useMemo<Exercise[]>(() => {
+    const localizedBase = baseExercises.map(exercise => localizeExerciseMedia({ ...exercise, source: 'local' }));
+    if (libraryExercises.length === 0) return [...localizedBase, ...customExercises];
+
+    // Les exercices sans équivalent Free Exercise DB constituent la bibliothèque
+    // complémentaire. Les anciennes entrées équivalentes ne sont ajoutées que si
+    // un historique/programme les référence encore.
+    const complementary = localizedBase.filter(exercise => !legacyCanonicalId(exercise.id));
+    const legacyCompatibility = localizedBase.filter(exercise =>
+      !!legacyCanonicalId(exercise.id) && referencedExerciseIds.has(exercise.id)
+    );
+    return [...libraryExercises, ...complementary, ...legacyCompatibility, ...customExercises];
+  }, [libraryExercises, customExercises, referencedExerciseIds]);
 
   const addExercise = (exercise: Omit<Exercise, 'id' | 'custom'>) => {
-    setCustomExercises(prev => [...prev, { ...exercise, id: crypto.randomUUID(), custom: true }]);
+    setCustomExercises(prev => [...prev, {
+      ...exercise,
+      id: `custom-${crypto.randomUUID()}`,
+      source: 'local',
+      custom: true,
+    }]);
   };
 
   const addWorkout = (workout: Omit<Workout, 'id'>) => {
@@ -380,7 +441,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
     if (!validation.success) return validation;
 
     setWorkouts(data.workouts);
-    setCustomExercises(data.customExercises.map(e => ({ ...e, custom: true })));
+    setCustomExercises(data.customExercises.map(e => localizeExerciseMedia({ ...e, custom: true })));
     setBodyWeights(Array.isArray(data.bodyWeights) ? data.bodyWeights : []);
     setPrograms(Array.isArray(data.programs) ? data.programs : []);
 
@@ -394,7 +455,8 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
 
   return (
     <WorkoutContext.Provider value={{
-      exercises, workouts, bodyWeights, programs,
+      exercises, exerciseLibraryLoading, exerciseLibraryError,
+      workouts, bodyWeights, programs,
       addExercise, addWorkout, updateWorkout, deleteWorkout,
       addBodyWeight, deleteBodyWeight,
       addProgram, updateProgram, deleteProgram,

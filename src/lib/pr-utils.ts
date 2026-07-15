@@ -150,6 +150,27 @@ export function getExerciseHistory(workouts: Workout[], exerciseId: string): Ses
   return snapshots.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 }
 
+// ─── Dernière performance (pré-remplissage) ──────────────────────────────────
+
+export interface LastSet {
+  weight: number;
+  reps: number;
+  side?: 'left' | 'right';
+}
+
+// Séries de la séance la plus récente contenant cet exercice (avec au moins une
+// série valide). Sert à pré-remplir les charges/reps lors d'une nouvelle séance.
+export function getLastPerformance(workouts: Workout[], exerciseId: string): LastSet[] | null {
+  const sorted = [...workouts].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  for (const w of sorted) {
+    const ex = w.exercises.find(e => e.exerciseId === exerciseId);
+    if (!ex) continue;
+    const valid = ex.sets.filter(s => s.weight > 0 || s.reps > 0);
+    if (valid.length > 0) return valid.map(s => ({ weight: s.weight, reps: s.reps, side: s.side }));
+  }
+  return null;
+}
+
 // ─── Statut de progression ────────────────────────────────────────────────────
 
 export type ProgressionStatus = 'positive' | 'stable' | 'stagnation' | 'insufficient';

@@ -5,6 +5,7 @@ import {
   detectNewPRs,
   getExerciseHistory,
   getProgressionStatus,
+  getLastPerformance,
   type SessionSnapshot,
 } from './pr-utils';
 import type { Workout, WorkoutSet } from '../context/WorkoutContext';
@@ -198,5 +199,33 @@ describe('getProgressionStatus', () => {
     const res = getProgressionStatus(history);
     // moyenne des 3 précédentes = 100, dernière = 103.5 -> +3.5% -> positive
     expect(res.status).toBe('positive');
+  });
+});
+
+// ─── getLastPerformance ───────────────────────────────────────────────────────
+
+describe('getLastPerformance', () => {
+  it('renvoie null si jamais pratiqué', () => {
+    const workouts = [mkWorkout('2026-01-01', [{ exerciseId: 'bench', sets: [mkSet(50, 5)] }])];
+    expect(getLastPerformance(workouts, 'squat')).toBeNull();
+  });
+
+  it('renvoie les séries de la séance la plus récente', () => {
+    const workouts = [
+      mkWorkout('2026-01-01', [{ exerciseId: 'squat', sets: [mkSet(100, 5)] }]),
+      mkWorkout('2026-02-01', [{ exerciseId: 'squat', sets: [mkSet(110, 5), mkSet(110, 4)] }]),
+    ];
+    expect(getLastPerformance(workouts, 'squat')).toEqual([
+      { weight: 110, reps: 5 },
+      { weight: 110, reps: 4 },
+    ]);
+  });
+
+  it('ignore les séances sans série valide et remonte à la précédente', () => {
+    const workouts = [
+      mkWorkout('2026-01-01', [{ exerciseId: 'squat', sets: [mkSet(100, 5)] }]),
+      mkWorkout('2026-02-01', [{ exerciseId: 'squat', sets: [mkSet(0, 0)] }]),
+    ];
+    expect(getLastPerformance(workouts, 'squat')).toEqual([{ weight: 100, reps: 5 }]);
   });
 });
