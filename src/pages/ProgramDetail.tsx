@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, Link } from 'react-router';
 import { useWorkout, type ProgramExercise } from '../context/WorkoutContext';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, Play, Trash2, Pencil, Check } from 'lucide-react';
+import { ChevronLeft, Play, Trash2, Pencil, Check, ChevronRight } from 'lucide-react';
 
 export function ProgramDetail() {
   const { id } = useParams<{ id: string }>();
@@ -88,12 +88,35 @@ export function ProgramDetail() {
               <p className="text-xs text-gray-400 mt-0.5">{day.exercises.length} exercice(s)</p>
             </div>
             <ul className="divide-y divide-gray-50">
-              {day.exercises.map((ex, i) => (
-                <li key={i} className="px-4 py-2.5 flex justify-between items-center">
-                  <span className="text-sm text-gray-800">{exerciseName.get(ex.exerciseId) ?? 'Exercice inconnu'}</span>
-                  <span className="text-xs text-gray-400">{ex.sets} série(s){ex.reps ? ` × ${ex.reps} reps` : ''}</span>
-                </li>
-              ))}
+              {day.exercises.map((ex, i) => {
+                const name = exerciseName.get(ex.exerciseId);
+                const meta = `${ex.sets} série(s)${ex.reps ? ` × ${ex.reps} reps` : ''}`;
+
+                // Exercice absent de la bibliothèque → pas de fiche à ouvrir.
+                if (!name) {
+                  return (
+                    <li key={i} className="px-4 py-2.5 flex justify-between items-center gap-2">
+                      <span className="text-sm text-gray-400">Exercice inconnu</span>
+                      <span className="text-xs text-gray-400 shrink-0">{meta}</span>
+                    </li>
+                  );
+                }
+
+                return (
+                  <li key={i}>
+                    <Link
+                      to={`/exercise/${ex.exerciseId}`}
+                      className="px-4 py-2.5 flex justify-between items-center gap-2 hover:bg-blue-50/50 transition-colors"
+                    >
+                      <span className="text-sm text-gray-800 truncate">{name}</span>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs text-gray-400">{meta}</span>
+                        <ChevronRight className="w-4 h-4 text-gray-300" />
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
             <div className="px-4 py-3">
               <Button className="w-full" onClick={() => startDay(day.name, day.exercises)}>
