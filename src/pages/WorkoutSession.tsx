@@ -7,8 +7,8 @@ import { scopedKey } from '@/lib/profiles';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { matchesExerciseSearch, exerciseSetUnit } from '@/lib/exercise-utils';
-import { Plus, Check, Trash2, ChevronLeft, Timer, ChevronDown, Trophy, SkipForward, X } from 'lucide-react';
+import { matchesExerciseSearch, exerciseSetUnit, exerciseMetric, formatExerciseTarget } from '@/lib/exercise-utils';
+import { Plus, Check, Trash2, ChevronLeft, Timer, ChevronDown, Trophy, SkipForward, X, Play, Pause, RotateCcw } from 'lucide-react';
 
 const RPE_VALUES = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
 const RIR_VALUES = [0, 1, 2, 3, 4];
@@ -188,11 +188,15 @@ function PRCelebrationModal({ prs, onClose }: { prs: NewPR[]; onClose: () => voi
               <p className="text-xs text-yellow-700 mt-0.5">{PR_TYPE_LABEL[pr.type]}</p>
               <div className="flex items-baseline gap-2 mt-2">
                 <span className="text-2xl font-bold text-yellow-600">
-                  {pr.value} {PR_TYPE_UNIT[pr.type]}
+                  {pr.type === 'duration'
+                    ? formatExerciseTarget(pr.value, 'duration')
+                    : `${pr.value} ${PR_TYPE_UNIT[pr.type]}`}
                 </span>
                 {pr.previousValue > 0 && (
                   <span className="text-xs text-gray-400">
-                    (avant : {pr.previousValue} {PR_TYPE_UNIT[pr.type]})
+                    (avant : {pr.type === 'duration'
+                      ? formatExerciseTarget(pr.previousValue, 'duration')
+                      : `${pr.previousValue} ${PR_TYPE_UNIT[pr.type]}`})
                   </span>
                 )}
               </div>
@@ -218,6 +222,120 @@ function PRBadge() {
   );
 }
 
+// ─── Chronomètre d'une série en durée (maintien) ─────────────────────────────
+// Compte le temps écoulé (démarrer/pause/reprendre/réinitialiser). La durée
+// réelle reste éditable à la main avant validation. Le décompte s'arrête à la
+// fermeture (il ne tourne jamais en arrière-plan une fois la page quittée).
+
+function DurationTimerModal({
+  exerciseName,
+  initialSeconds,
+  onValidate,
+  onClose,
+}: {
+  exerciseName: string;
+  initialSeconds: number;
+  onValidate: (seconds: number) => void;
+  onClose: () => void;
+}) {
+  const [seconds, setSeconds] = useState(Math.max(0, Math.round(initialSeconds)));
+  const [running, setRunning] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const baseRef = useRef(seconds);   // secondes accumulées avant le segment courant
+  const startRef = useRef(0);        // horodatage du début du segment courant
+
+  const stopInterval = () => {
+    if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
+  };
+
+  // Nettoyage : jamais de timer résiduel après fermeture / démontage.
+  useEffect(() => () => stopInterval(), []);
+
+  const start = () => {
+    if (running) return;
+    baseRef.current = seconds;
+    startRef.current = Date.now();
+    setRunning(true);
+    intervalRef.current = setInterval(() => {
+      setSeconds(baseRef.current + Math.floor((Date.now() - startRef.current) / 1000));
+    }, 250);
+  };
+  const pause = () => { stopInterval(); setRunning(false); };
+  const reset = () => { stopInterval(); setRunning(false); setSeconds(0); };
+
+  const handleValidate = () => {
+    stopInterval();
+    onValidate(Math.max(0, Math.round(seconds)));
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end bg-black/60 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="bg-white w-full rounded-t-2xl p-6 space-y-5 max-w-lg mx-auto"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="text-center">
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Maintien</p>
+          <h2 className="text-base font-bold text-gray-900 mt-0.5">{exerciseName}</h2>
+        </div>
+
+        {/* Décompte */}
+        <div className="text-center">
+          <span className="font-mono font-bold tabular-nums text-5xl text-gray-900">
+            {formatDuration(seconds)}
+          </span>
+        </div>
+
+        {/* Contrôles chrono */}
+        <div className="flex items-center justify-center gap-3">
+          {running ? (
+            <button
+              onClick={pause}
+              className="flex items-center gap-1.5 bg-gray-900 text-white font-medium px-5 py-2.5 rounded-full"
+            >
+              <Pause className="w-4 h-4" /> Pause
+            </button>
+          ) : (
+            <button
+              onClick={start}
+              className="flex items-center gap-1.5 bg-blue-600 text-white font-medium px-5 py-2.5 rounded-full"
+            >
+              <Play className="w-4 h-4" /> {seconds > 0 ? 'Reprendre' : 'Démarrer'}
+            </button>
+          )}
+          <button
+            onClick={reset}
+            className="flex items-center gap-1.5 text-gray-500 border border-gray-200 px-4 py-2.5 rounded-full hover:border-gray-300"
+          >
+            <RotateCcw className="w-4 h-4" /> Réinit.
+          </button>
+        </div>
+
+        {/* Ajustement manuel de la durée réelle */}
+        <div className="flex items-center justify-center gap-2">
+          <label className="text-xs text-gray-400">Durée réelle</label>
+          <Input
+            type="number"
+            min="0"
+            inputMode="numeric"
+            value={seconds || ''}
+            onChange={e => { pause(); setSeconds(Math.max(0, parseInt(e.target.value) || 0)); }}
+            className="h-9 w-20 text-center text-sm"
+          />
+          <span className="text-xs text-gray-400">s</span>
+        </div>
+
+        <div className="flex gap-3">
+          <Button variant="outline" className="flex-1" onClick={onClose}>Annuler</Button>
+          <Button className="flex-1" onClick={handleValidate} disabled={seconds <= 0}>
+            <Check className="w-4 h-4 mr-1.5" /> Valider
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page principale ──────────────────────────────────────────────────────────
 
 export function WorkoutSession() {
@@ -225,6 +343,8 @@ export function WorkoutSession() {
   const navigate = useNavigate();
   const location = useLocation();
   const { exercises, workouts, addWorkout } = useWorkout();
+
+  const exerciseById = useMemo(() => new Map(exercises.map(ex => [ex.id, ex])), [exercises]);
 
   const isNew = id === 'new';
   const existingWorkout = isNew ? null : workouts.find(w => w.id === id);
@@ -241,30 +361,30 @@ export function WorkoutSession() {
     if (!isNew || !programStart) return null;
     return programStart.exercises.map(pe => {
       const last = getLastPerformance(workouts, pe.exerciseId)?.[0];
+      const isTimed = exerciseMetric(exerciseById.get(pe.exerciseId)) === 'duration';
       return {
         exerciseId: pe.exerciseId,
-        sets: Array.from({ length: Math.max(1, pe.sets) }, () => createWorkoutSet({
-          weight: last?.weight ?? 0,
-          reps: pe.reps ?? 0,
-          side: last?.side,
-        })),
+        sets: Array.from({ length: Math.max(1, pe.sets) }, () => createWorkoutSet(
+          isTimed
+            // Cible en durée (legacy : ancienne valeur stockée dans reps).
+            ? { durationSeconds: pe.durationSeconds ?? pe.reps ?? 0, side: last?.side }
+            : { weight: last?.weight ?? 0, reps: pe.reps ?? 0, side: last?.side }
+        )),
       };
     });
-  }, [isNew, programStart, workouts]);
+  }, [isNew, programStart, workouts, exerciseById]);
 
-  // Séance dupliquée depuis une séance passée : reprend exercices + charges/reps.
+  // Séance dupliquée depuis une séance passée : reprend exercices + charges/reps/durées.
   const repeatStart = navState?.repeat ?? null;
   const initialFromRepeat = useMemo<WorkoutExercise[] | null>(() => {
     if (!isNew || !repeatStart) return null;
     return repeatStart.exercises.map(ex => ({
       exerciseId: ex.exerciseId,
-      sets: ex.sets.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, side: s.side })),
+      sets: ex.sets.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, durationSeconds: s.durationSeconds, side: s.side })),
     }));
   }, [isNew, repeatStart]);
 
   const fromNav = !!programStart || !!repeatStart;
-
-  const exerciseById = useMemo(() => new Map(exercises.map(ex => [ex.id, ex])), [exercises]);
 
   // Brouillon d'une séance en cours (uniquement pour une nouvelle séance),
   // lu une seule fois au montage pour restaurer ce qui n'avait pas été terminé.
@@ -286,6 +406,7 @@ export function WorkoutSession() {
   const [expandedSets, setExpandedSets]     = useState<Set<string>>(new Set());
   const [newPRs, setNewPRs]                 = useState<NewPR[]>([]);
   const [showPRModal, setShowPRModal]       = useState(false);
+  const [timerTarget, setTimerTarget]       = useState<{ exIdx: number; setIdx: number } | null>(null);
 
   // ─── Timer de repos ─────────────────────────────────────────────────────────
   const [restDuration, setRestDuration] = useState<number>(() => {
@@ -362,11 +483,12 @@ export function WorkoutSession() {
   }, [isNew, name, sessionExercises]);
 
   // ─── Records actuels (snapshot au démarrage) ─────────────────────────────────
+  // On conserve charge max ET meilleur maintien pour signaler le bon type de PR.
   const currentPRs = useMemo(() => {
-    const map = new Map<string, number>();
+    const map = new Map<string, { maxWeight: number; maxDuration: number }>();
     for (const ex of exercises) {
       const pr = getExercisePR(workouts, ex.id);
-      if (pr) map.set(ex.id, pr.maxWeight);
+      if (pr) map.set(ex.id, { maxWeight: pr.maxWeight, maxDuration: pr.maxDuration });
     }
     return map;
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -385,7 +507,7 @@ export function WorkoutSession() {
     // Pré-remplit avec la dernière performance (charges/reps) si elle existe.
     const last = getLastPerformance(workouts, exerciseId);
     const sets = last && last.length > 0
-      ? last.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, side: s.side }))
+      ? last.map(s => createWorkoutSet({ weight: s.weight, reps: s.reps, durationSeconds: s.durationSeconds, side: s.side }))
       : [createWorkoutSet()];
     setSessionExercises(prev => [...prev, { exerciseId, sets }]);
     setDialogOpen(false);
@@ -432,6 +554,16 @@ export function WorkoutSession() {
 
   const removeExercise = (exerciseIdx: number) => {
     setSessionExercises(prev => prev.filter((_, i) => i !== exerciseIdx));
+  };
+
+  // Validation du chronomètre : enregistre la durée réelle puis valide la série
+  // (ce qui déclenche aussi le timer de repos, comme une validation manuelle).
+  const handleTimerValidate = (seconds: number) => {
+    if (!timerTarget) return;
+    const { exIdx, setIdx } = timerTarget;
+    updateSet(exIdx, setIdx, 'durationSeconds', seconds);
+    updateSet(exIdx, setIdx, 'completed', true);
+    setTimerTarget(null);
   };
 
   const finishWorkout = () => {
@@ -485,6 +617,20 @@ export function WorkoutSession() {
   return (
     <>
       {showPRModal && <PRCelebrationModal prs={newPRs} onClose={() => navigate('/workouts')} />}
+
+      {timerTarget && (() => {
+        const wEx = sessionExercises[timerTarget.exIdx];
+        const tSet = wEx?.sets[timerTarget.setIdx];
+        const tExercise = wEx ? exerciseById.get(wEx.exerciseId) : undefined;
+        return (
+          <DurationTimerModal
+            exerciseName={tExercise?.name ?? 'Maintien'}
+            initialSeconds={tSet?.durationSeconds ?? 0}
+            onValidate={handleTimerValidate}
+            onClose={() => setTimerTarget(null)}
+          />
+        );
+      })()}
 
       {/* Timer de repos flottant */}
       {restActive && isNew && (
@@ -551,12 +697,16 @@ export function WorkoutSession() {
           {sessionExercises.map((workoutEx, exIdx) => {
             const exercise       = exerciseById.get(workoutEx.exerciseId);
             const completedCount = workoutEx.sets.filter(s => s.completed).length;
-            const prevMaxWeight  = currentPRs.get(workoutEx.exerciseId) ?? 0;
-            const isTimedExercise = exercise?.metric === 'duration';
+            const exercisePR     = currentPRs.get(workoutEx.exerciseId);
+            const prevMaxWeight  = exercisePR?.maxWeight ?? 0;
+            const prevMaxDuration = exercisePR?.maxDuration ?? 0;
+            const isTimedExercise = exerciseMetric(exercise) === 'duration';
             const isUnilateral = !!exercise?.unilateral;
+            // Colonne de valeur élargie en mode durée (input + bouton chrono).
+            const valueCol = isTimedExercise ? '1.6fr' : '1fr';
             const gridTemplate = isUnilateral
-              ? '1.5rem 1fr 1fr 4.5rem 2rem 1.5rem'
-              : '1.5rem 1fr 1fr 2rem 1.5rem';
+              ? `1.5rem 1fr ${valueCol} 4.5rem 2rem 1.5rem`
+              : `1.5rem 1fr ${valueCol} 2rem 1.5rem`;
 
             return (
               <div key={workoutEx.exerciseId} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
@@ -566,9 +716,13 @@ export function WorkoutSession() {
                     <h3 className="font-semibold text-gray-900 text-sm">{exercise?.name ?? 'Exercice'}</h3>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="text-xs text-gray-400">{exercise?.muscleGroup}</span>
-                      {prevMaxWeight > 0 && (
-                        <span className="text-xs text-gray-300">· record : {prevMaxWeight} kg</span>
-                      )}
+                      {isTimedExercise
+                        ? prevMaxDuration > 0 && (
+                            <span className="text-xs text-gray-300">· record : {formatExerciseTarget(prevMaxDuration, 'duration')}</span>
+                          )
+                        : prevMaxWeight > 0 && (
+                            <span className="text-xs text-gray-300">· record : {prevMaxWeight} kg</span>
+                          )}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -600,14 +754,15 @@ export function WorkoutSession() {
                     {workoutEx.sets.map((set, setIdx) => {
                       const isExpanded  = expandedSets.has(set.id);
                       const hasExtra    = set.rpe !== undefined || set.rir !== undefined || !!set.notes?.trim();
-                      const isWeightPR  = isNew && set.weight > 0 && set.weight > prevMaxWeight;
-                      const est1RM      = set.weight > 0 && set.reps > 0 ? epley1RM(set.weight, set.reps) : 0;
+                      const isWeightPR  = isNew && !isTimedExercise && set.weight > 0 && set.weight > prevMaxWeight;
+                      const isDurationPR = isNew && isTimedExercise && (set.durationSeconds ?? 0) > 0 && (set.durationSeconds ?? 0) > prevMaxDuration;
+                      const est1RM      = !isTimedExercise && set.weight > 0 && set.reps > 0 ? epley1RM(set.weight, set.reps) : 0;
 
                       return (
                         <div key={set.id} className="space-y-1">
                           <div
                             className={`grid gap-2 items-center rounded-lg transition-colors ${
-                              isWeightPR && set.completed ? 'bg-yellow-50' : ''
+                              (isWeightPR || isDurationPR) && set.completed ? 'bg-yellow-50' : ''
                             }`}
                             style={{ gridTemplateColumns: gridTemplate }}
                           >
@@ -626,15 +781,41 @@ export function WorkoutSession() {
                                 readOnly={!isNew}
                               />
                             </div>
-                            <Input
-                              type="number"
-                              min="0"
-                              value={set.reps || ''}
-                              onChange={e => updateSet(exIdx, setIdx, 'reps', parseInt(e.target.value) || 0)}
-                              placeholder={isTimedExercise ? '0 s' : '0'}
-                              className="h-8 text-center text-sm"
-                              readOnly={!isNew}
-                            />
+                            {isTimedExercise ? (
+                              <div className="flex items-center gap-1">
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  inputMode="numeric"
+                                  value={set.durationSeconds || ''}
+                                  onChange={e => updateSet(exIdx, setIdx, 'durationSeconds', parseInt(e.target.value) || 0)}
+                                  placeholder="0 s"
+                                  className="h-8 text-center text-sm flex-1 min-w-0"
+                                  readOnly={!isNew}
+                                />
+                                {isNew && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setTimerTarget({ exIdx, setIdx })}
+                                    className="shrink-0 w-8 h-8 rounded-md border border-gray-200 text-blue-600 flex items-center justify-center hover:border-blue-300 transition-colors"
+                                    aria-label="Chronométrer ce maintien"
+                                    title="Chronométrer ce maintien"
+                                  >
+                                    <Timer className="w-4 h-4" />
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <Input
+                                type="number"
+                                min="0"
+                                value={set.reps || ''}
+                                onChange={e => updateSet(exIdx, setIdx, 'reps', parseInt(e.target.value) || 0)}
+                                placeholder="0"
+                                className="h-8 text-center text-sm"
+                                readOnly={!isNew}
+                              />
+                            )}
                             {isUnilateral && (
                               <div className="flex items-center justify-center gap-1">
                                 {([
@@ -680,9 +861,9 @@ export function WorkoutSession() {
                             </button>
                           </div>
 
-                          {!isExpanded && (isWeightPR || hasExtra) && (
+                          {!isExpanded && (isWeightPR || isDurationPR || hasExtra) && (
                             <div className="flex flex-wrap items-center gap-2 pl-7 pb-0.5">
-                              {isWeightPR && set.completed && <PRBadge />}
+                              {(isWeightPR || isDurationPR) && set.completed && <PRBadge />}
                               {isWeightPR && est1RM > 0 && (
                                 <span className="text-xs text-gray-400">1RM estimé : {est1RM} kg</span>
                               )}

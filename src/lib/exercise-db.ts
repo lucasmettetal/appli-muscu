@@ -53,6 +53,21 @@ export const MECHANIC_LABEL: Record<string, string> = {
   compound: 'Polyarticulaire', isolation: 'Isolation',
 };
 
+// Détection des exercices mesurés en DURÉE (maintiens, gainages, étirements
+// statiques). On s'appuie d'abord sur `force === 'static'` (fiable dans la base :
+// couvre les étirements et la plupart des maintiens), puis sur des mots-clés de
+// maintien — avec une liste d'exclusion pour les exercices réellement en
+// répétitions dont le nom contient un terme ambigu.
+const DURATION_KEYWORDS = /\b(plank|wall[- ]?sit|dead[- ]?hang|hollow|l[- ]?sit|isometric|hold)\b/i;
+const REPS_KEYWORDS = /\b(push|pull|row|bridge|dead[- ]?bug|snow|angel|raise|curl|press|squat|lunge|crunch|sit[- ]?up|thrust|deadlift|clean|snatch|jerk|swing|kick|climb|jump|throw|walk|carry|extension|flexion)\b/i;
+
+function classifyMetric(entry: ExerciseDbEntry): 'reps' | 'duration' {
+  if (entry.force === 'static') return 'duration';
+  const text = entry.name ?? '';
+  if (DURATION_KEYWORDS.test(text) && !REPS_KEYWORDS.test(text)) return 'duration';
+  return 'reps';
+}
+
 const CATEGORY_BY_MUSCLE: Record<string, Exercise['category']> = {
   abdominals: 'core', chest: 'chest', shoulders: 'shoulders',
   biceps: 'arms', triceps: 'arms', forearms: 'arms',
@@ -127,7 +142,7 @@ export function mapDbEntry(entry: ExerciseDbEntry): Exercise {
     difficulty: entry.level === 'beginner' ? 'beginner' : entry.level === 'expert' ? 'advanced' : 'intermediate',
     unilateral: /(?:one[- ]arm|one[- ]leg|single[- ]arm|single[- ]leg)/i.test(entry.name),
     bodyweight: entry.equipment === 'body only',
-    metric: entry.force === 'static' ? 'duration' : 'reps',
+    metric: classifyMetric(entry),
     tags: [entry.category, entry.force, entry.mechanic].filter((value): value is string => !!value),
     searchTerms: [
       ...primary.map(formatMuscle),

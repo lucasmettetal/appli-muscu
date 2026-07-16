@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router';
 import { useWorkout, type ProgramExercise, type ProgramDay } from '../context/WorkoutContext';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, Play, Trash2, Pencil, Check, ChevronRight, Plus, Search, X } from 'lucide-react';
-import { formatExerciseTarget } from '@/lib/exercise-utils';
+import { formatProgramTarget, programTargetValue, exerciseMetric } from '@/lib/exercise-utils';
 
 export function ProgramDetail() {
   const { id } = useParams<{ id: string }>();
@@ -61,8 +61,11 @@ export function ProgramDetail() {
     ));
   };
   const addExerciseToDay = (dayId: string, exerciseId: string) => {
+    const newExercise: ProgramExercise = exerciseMetric(exerciseById.get(exerciseId)) === 'duration'
+      ? { exerciseId, sets: 3, durationSeconds: 30 }
+      : { exerciseId, sets: 3, reps: 10 };
     setDays(program.days.map(d =>
-      d.id === dayId ? { ...d, exercises: [...d.exercises, { exerciseId, sets: 3, reps: 10 }] } : d
+      d.id === dayId ? { ...d, exercises: [...d.exercises, newExercise] } : d
     ));
     setPickerDayId(null);
   };
@@ -128,7 +131,9 @@ export function ProgramDetail() {
               {day.exercises.map((ex, i) => {
                 const exercise = exerciseById.get(ex.exerciseId);
                 const name = exercise?.name ?? 'Exercice inconnu';
-                const meta = `${ex.sets} série(s)${ex.reps ? ` × ${formatExerciseTarget(ex.reps, exercise?.metric)}` : ''}`;
+                const metric = exerciseMetric(exercise);
+                const target = programTargetValue(ex, exercise);
+                const meta = `${ex.sets} série(s)${target ? ` × ${formatProgramTarget(ex, exercise)}` : ''}`;
 
                 // ─── Ligne en mode édition ───────────────────────────────────
                 if (editing) {
@@ -143,13 +148,29 @@ export function ProgramDetail() {
                         aria-label="Séries"
                       />
                       <span className="text-xs text-gray-400">×</span>
-                      <input
-                        type="number" min="1" inputMode="numeric"
-                        value={ex.reps ?? ''}
-                        onChange={e => patchExercise(day.id, i, { reps: parseInt(e.target.value) || undefined })}
-                        className="w-11 text-center text-sm border border-gray-200 rounded-md py-1 focus:outline-none focus:border-blue-400"
-                        aria-label="Répétitions"
-                      />
+                      {metric === 'duration' ? (
+                        <>
+                          <input
+                            type="number" min="1" inputMode="numeric"
+                            value={ex.durationSeconds ?? ''}
+                            onChange={e => patchExercise(day.id, i, { durationSeconds: parseInt(e.target.value) || undefined, reps: undefined })}
+                            className="w-14 text-center text-sm border border-gray-200 rounded-md py-1 focus:outline-none focus:border-blue-400"
+                            aria-label="Durée (secondes)"
+                          />
+                          <span className="text-xs text-gray-400">s</span>
+                        </>
+                      ) : (
+                        <>
+                          <input
+                            type="number" min="1" inputMode="numeric"
+                            value={ex.reps ?? ''}
+                            onChange={e => patchExercise(day.id, i, { reps: parseInt(e.target.value) || undefined, durationSeconds: undefined })}
+                            className="w-11 text-center text-sm border border-gray-200 rounded-md py-1 focus:outline-none focus:border-blue-400"
+                            aria-label="Répétitions"
+                          />
+                          <span className="text-xs text-gray-400">reps</span>
+                        </>
+                      )}
                       <button
                         onClick={() => removeExercise(day.id, i)}
                         className="text-gray-300 hover:text-red-500 transition-colors shrink-0 ml-1"

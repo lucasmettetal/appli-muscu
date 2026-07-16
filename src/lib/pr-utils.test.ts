@@ -17,6 +17,11 @@ function mkSet(weight: number, reps: number, extra: Partial<WorkoutSet> = {}): W
   return { id: `set-${setCounter++}`, weight, reps, completed: true, ...extra };
 }
 
+// Série en durée (maintien) : poids/reps à 0, durée en secondes.
+function mkDurationSet(durationSeconds: number, extra: Partial<WorkoutSet> = {}): WorkoutSet {
+  return { id: `set-${setCounter++}`, weight: 0, reps: 0, durationSeconds, completed: true, ...extra };
+}
+
 let workoutCounter = 0;
 function mkWorkout(
   date: string,
@@ -84,6 +89,19 @@ describe('getExercisePR', () => {
     expect(pr!.maxWeight).toBe(100);
     expect(pr!.maxWeightReps).toBe(8);
   });
+
+  it('identifie le meilleur maintien pour un exercice en durée (planche)', () => {
+    const workouts = [
+      mkWorkout('2026-01-01', [{ exerciseId: 'plank', sets: [mkDurationSet(30), mkDurationSet(30)] }]),
+      mkWorkout('2026-01-08', [{ exerciseId: 'plank', sets: [mkDurationSet(45), mkDurationSet(40)] }]),
+    ];
+    const pr = getExercisePR(workouts, 'plank');
+    expect(pr).not.toBeNull();
+    expect(pr!.maxWeight).toBe(0);          // aucune charge : ce n'est pas un record de charge
+    expect(pr!.maxDuration).toBe(45);        // meilleur maintien
+    expect(pr!.totalDuration).toBe(85);      // meilleur cumul de séance (45 + 40)
+    expect(pr!.prDate).toBe('2026-01-08');
+  });
 });
 
 // ─── detectNewPRs ─────────────────────────────────────────────────────────────
@@ -128,6 +146,18 @@ describe('detectNewPRs', () => {
     const next = { exercises: [{ exerciseId: 'squat', sets: [mkSet(0, 0)] }] };
     expect(detectNewPRs(previous, next, names)).toHaveLength(0);
   });
+
+  it('détecte un record de maintien pour un exercice en durée', () => {
+    const previous = [mkWorkout('2026-01-01', [{ exerciseId: 'plank', sets: [mkDurationSet(30)] }])];
+    const next = { exercises: [{ exerciseId: 'plank', sets: [mkDurationSet(45)] }] };
+    const prs = detectNewPRs(previous, next, new Map([['plank', 'Planche']]));
+    const durationPR = prs.find(p => p.type === 'duration');
+    expect(durationPR).toBeDefined();
+    expect(durationPR!.value).toBe(45);
+    expect(durationPR!.previousValue).toBe(30);
+    // Un maintien ne produit jamais de record de charge/1RM.
+    expect(prs.some(p => p.type === 'weight' || p.type === 'estimated1RM')).toBe(false);
+  });
 });
 
 // ─── getExerciseHistory ───────────────────────────────────────────────────────
@@ -165,7 +195,11 @@ describe('getExerciseHistory', () => {
 // ─── getProgressionStatus ─────────────────────────────────────────────────────
 
 function snap(estimated1RM: number, date = '2026-01-01'): SessionSnapshot {
-  return { date, maxWeight: 0, bestSetWeight: 0, bestSetReps: 0, totalVolume: 0, estimated1RM, setCount: 1 };
+  return { date, maxWeight: 0, bestSetWeight: 0, bestSetReps: 0, totalVolume: 0, estimated1RM, bestDuration: 0, totalDuration: 0, setCount: 1 };
+}
+
+function durationSnap(bestDuration: number, date = '2026-01-01'): SessionSnapshot {
+  return { date, maxWeight: 0, bestSetWeight: 0, bestSetReps: 0, totalVolume: 0, estimated1RM: 0, bestDuration, totalDuration: bestDuration, setCount: 1 };
 }
 
 describe('getProgressionStatus', () => {
@@ -199,6 +233,22 @@ describe('getProgressionStatus', () => {
     const res = getProgressionStatus(history);
     // moyenne des 3 précédentes = 100, dernière = 103.5 -> +3.5% -> positive
     expect(res.status).toBe('positive');
+  });
+
+  it('base la progression sur le maintien pour un exercice en durée', () => {
+    // 1RM à 0 partout : sans le mode durée, on ne détecterait aucune progression.
+    const history = [durationSnap(30), durationSnap(30), durationSnap(30), durationSnap(45)];
+    const res = getProgressionStatus(history, 'duration');
+    expect(res.status).toBe('positive');
+    expect(res.delta).toBe(50);
+    expect(res.description).toContain('maintien');
+  });
+
+  it('recommande d\'allonger le maintien quand la durée stagne', () => {
+    const history = [durationSnap(30), durationSnap(30), durationSnap(30), durationSnap(30)];
+    const res = getProgressionStatus(history, 'duration');
+    expect(res.status).toBe('stable');
+    expect(res.description).toMatch(/5 à 10 s/);
   });
 });
 

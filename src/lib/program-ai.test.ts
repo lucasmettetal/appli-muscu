@@ -72,6 +72,17 @@ describe('parseProgramResponse', () => {
     const json = JSON.stringify({ days: [{ name: 'J', exercises: [{ exerciseId: 'xxx', sets: 3 }] }] });
     expect(parseProgramResponse(json, catalog)).toBeNull();
   });
+
+  it('convertit la cible en durée pour un exercice de maintien', () => {
+    const plank: Exercise = { ...ex('plank', 'Planche', 'core'), metric: 'duration' };
+    const json = JSON.stringify({
+      days: [{ name: 'Gainage', exercises: [{ exerciseId: 'plank', sets: 3, reps: 30 }] }],
+    });
+    const prog = parseProgramResponse(json, [...catalog, plank]);
+    const parsed = prog!.days[0].exercises[0];
+    expect(parsed.durationSeconds).toBe(30);
+    expect(parsed.reps).toBeUndefined(); // aucune valeur stockée dans les reps
+  });
 });
 
 // ─── mockGenerateProgram ──────────────────────────────────────────────────────

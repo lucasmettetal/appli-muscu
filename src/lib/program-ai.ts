@@ -1,5 +1,6 @@
 import type { Exercise } from '../context/WorkoutContext';
 import { GeminiAIService, geminiKeyName } from './ai-service';
+import { exerciseMetric } from './exercise-utils';
 
 // ─── Programme généré (format intermédiaire, avant sauvegarde) ────────────────
 
@@ -7,7 +8,11 @@ export interface GeneratedProgramExercise {
   exerciseId: string;
   sets: number;
   reps?: number;
+  durationSeconds?: number;
 }
+
+// Durée cible par défaut (secondes) pour un exercice de maintien généré.
+const DEFAULT_HOLD_SECONDS = 30;
 export interface GeneratedProgramDay {
   name: string;
   exercises: GeneratedProgramExercise[];
@@ -53,6 +58,7 @@ ${catalog}`;
 
 export function parseProgramResponse(text: string, exercises: Exercise[]): GeneratedProgram | null {
   const validIds = new Set(exercises.map(e => e.id));
+  const exerciseById = new Map(exercises.map(e => [e.id, e]));
 
   // Extrait le bloc JSON même si le modèle ajoute du texte ou des balises ```.
   const start = text.indexOf('{');
@@ -82,10 +88,19 @@ export function parseProgramResponse(text: string, exercises: Exercise[]): Gener
       const ex = e as Record<string, unknown>;
       if (typeof ex.exerciseId !== 'string' || !validIds.has(ex.exerciseId)) continue;
       const sets = clamp(Number(ex.sets) || 3, 1, 10);
-      const reps = ex.reps !== undefined && Number.isFinite(Number(ex.reps))
-        ? clamp(Number(ex.reps), 1, 30)
-        : undefined;
-      exs.push({ exerciseId: ex.exerciseId, sets, ...(reps !== undefined ? { reps } : {}) });
+      // Le modèle raisonne en répétitions : pour un exercice de maintien on
+      // convertit la cible en durée (secondes) au lieu de la stocker en reps.
+      if (exerciseMetric(exerciseById.get(ex.exerciseId)) === 'duration') {
+        const seconds = ex.reps !== undefined && Number.isFinite(Number(ex.reps))
+          ? clamp(Number(ex.reps) >= 5 ? Number(ex.reps) : DEFAULT_HOLD_SECONDS, 5, 300)
+          : DEFAULT_HOLD_SECONDS;
+        exs.push({ exerciseId: ex.exerciseId, sets, durationSeconds: seconds });
+      } else {
+        const reps = ex.reps !== undefined && Number.isFinite(Number(ex.reps))
+          ? clamp(Number(ex.reps), 1, 30)
+          : undefined;
+        exs.push({ exerciseId: ex.exerciseId, sets, ...(reps !== undefined ? { reps } : {}) });
+      }
     }
 
     if (exs.length === 0) continue; // on ignore un jour sans exercice valide
@@ -130,7 +145,9 @@ export function mockGenerateProgram(request: string, exercises: Exercise[]): Gen
     const fallback = picked.length > 0 ? picked : exercises.slice(0, 4);
     days.push({
       name: template.name,
-      exercises: fallback.map(e => ({ exerciseId: e.id, sets: 4, reps: 8 })),
+      exercises: fallback.map(e => exerciseMetric(e) === 'duration'
+        ? { exerciseId: e.id, sets: 3, durationSeconds: DEFAULT_HOLD_SECONDS }
+        : { exerciseId: e.id, sets: 4, reps: 8 }),
     });
   }
 

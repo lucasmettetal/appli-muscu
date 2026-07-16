@@ -38,7 +38,8 @@ export interface Exercise {
 export interface WorkoutSet {
   id: string;
   weight: number;
-  reps: number;
+  reps: number;                 // utilisé pour les exercices en répétitions
+  durationSeconds?: number;     // utilisé pour les exercices en durée (maintiens)
   completed: boolean;
   side?: 'left' | 'right';
   rpe?: number;
@@ -71,8 +72,9 @@ export interface BodyWeight {
 
 export interface ProgramExercise {
   exerciseId: string;
-  sets: number;   // nombre de séries cible
-  reps?: number;  // reps cible (indicatif)
+  sets: number;              // nombre de séries cible
+  reps?: number;             // reps cible (exercices en répétitions)
+  durationSeconds?: number;  // durée cible en secondes (exercices en durée)
   notes?: string;
 }
 

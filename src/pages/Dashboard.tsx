@@ -3,6 +3,7 @@ import { useWorkout } from '../context/WorkoutContext';
 import { useProfile } from '../context/ProfileContext';
 import { useAuth } from '../context/AuthContext';
 import { getExercisePR } from '@/lib/pr-utils';
+import { exerciseMetric, formatExerciseTarget } from '@/lib/exercise-utils';
 import { Calendar, Dumbbell, TrendingUp, Award, Trophy, Plus, ChevronRight, Layers } from 'lucide-react';
 import { Link } from 'react-router';
 import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
@@ -70,7 +71,7 @@ export function Dashboard() {
     return exercises
       .map(ex => {
         const pr = getExercisePR(workouts, ex.id);
-        return pr ? { name: ex.name, id: ex.id, ...pr } : null;
+        return pr ? { name: ex.name, id: ex.id, metric: exerciseMetric(ex), ...pr } : null;
       })
       .filter((p): p is NonNullable<typeof p> => p !== null)
       .sort((a, b) => new Date(b.prDate).getTime() - new Date(a.prDate).getTime())
@@ -173,13 +174,21 @@ export function Dashboard() {
                   <p className="text-sm font-medium text-gray-900 truncate">{pr.name}</p>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {new Date(pr.prDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
-                    {pr.maxWeightReps > 0 && ` · ${pr.maxWeightReps} reps`}
+                    {pr.metric === 'duration'
+                      ? ' · maintien'
+                      : pr.maxWeightReps > 0 && ` · ${pr.maxWeightReps} reps`}
                   </p>
                 </div>
                 <div className="text-right shrink-0">
-                  <p className="text-sm font-bold text-amber-600">{pr.maxWeight} kg</p>
-                  {pr.estimated1RM > 0 && (
-                    <p className="text-xs text-gray-400">~{pr.estimated1RM} kg 1RM</p>
+                  {pr.metric === 'duration' ? (
+                    <p className="text-sm font-bold text-amber-600">{formatExerciseTarget(pr.maxDuration, 'duration')}</p>
+                  ) : (
+                    <>
+                      <p className="text-sm font-bold text-amber-600">{pr.maxWeight} kg</p>
+                      {pr.estimated1RM > 0 && (
+                        <p className="text-xs text-gray-400">~{pr.estimated1RM} kg 1RM</p>
+                      )}
+                    </>
                   )}
                 </div>
               </Link>

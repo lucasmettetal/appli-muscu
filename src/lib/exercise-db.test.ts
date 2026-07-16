@@ -58,4 +58,22 @@ describe('bibliothèque locale Free Exercise DB', () => {
     expect(legacyCanonicalId('push-up')).toBe('Pushups');
     expect(legacyCanonicalId('bench-press-barbell')).toBe('Barbell_Bench_Press_-_Medium_Grip');
   });
+
+  it('classe les maintiens statiques en durée et les mouvements en répétitions', () => {
+    const base: Omit<ExerciseDbEntry, 'id' | 'name' | 'force'> = {
+      level: 'beginner', mechanic: 'isolation', equipment: 'body only',
+      primaryMuscles: ['abdominals'], secondaryMuscles: [], instructions: [],
+      category: 'strength', images: [],
+    };
+
+    // force "static" → durée (planche, gainage latéral, wall sit…)
+    expect(mapDbEntry({ ...base, id: 'Plank', name: 'Plank', force: 'static' }).metric).toBe('duration');
+    // nom de maintien sans terme de répétition → durée
+    expect(mapDbEntry({ ...base, id: 'Wall_Sit', name: 'Wall Sit', force: null }).metric).toBe('duration');
+    // vrais mouvements → répétitions, même en poids du corps
+    expect(mapDbEntry({ ...base, id: 'Pushups', name: 'Pushups', force: 'push' }).metric).toBe('reps');
+    expect(mapDbEntry({ ...base, id: 'Glute_Bridge', name: 'Glute Bridge', force: 'push' }).metric).toBe('reps');
+    // "Superman Pull" contient un terme de répétition → reps (pas un maintien)
+    expect(mapDbEntry({ ...base, id: 'Superman_Pull', name: 'Superman Pull', force: 'pull' }).metric).toBe('reps');
+  });
 });

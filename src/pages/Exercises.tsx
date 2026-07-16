@@ -71,6 +71,7 @@ export function Exercises() {
   const [newName, setNewName] = useState('');
   const [newCategory, setNewCategory] = useState<Exercise['category']>('chest');
   const [newMuscleGroup, setNewMuscleGroup] = useState('');
+  const [newMetric, setNewMetric] = useState<'reps' | 'duration'>('reps');
 
   const activeAdvancedCount = [equipment, type, difficulty].filter(value => value !== 'all').length;
 
@@ -109,6 +110,7 @@ export function Exercises() {
       difficulty: 'beginner',
       unilateral: false,
       bodyweight: false,
+      metric: newMetric,
       tags: [],
       imageStart: null,
       imageEnd: null,
@@ -117,6 +119,7 @@ export function Exercises() {
     setNewName('');
     setNewMuscleGroup('');
     setNewCategory('chest');
+    setNewMetric('reps');
     setDialogOpen(false);
   };
 
@@ -161,6 +164,31 @@ export function Exercises() {
                   value={newMuscleGroup}
                   onChange={event => setNewMuscleGroup(event.target.value)}
                 />
+              </div>
+              <div className="space-y-1.5">
+                <Label>Mesure</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {([
+                    { value: 'reps' as const, label: 'Répétitions', hint: 'ex : 3 × 12' },
+                    { value: 'duration' as const, label: 'Durée', hint: 'ex : 3 × 30 s' },
+                  ]).map(option => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setNewMetric(option.value)}
+                      className={`text-left rounded-lg border px-3 py-2 transition-colors ${
+                        newMetric === option.value
+                          ? 'border-blue-500 bg-blue-50'
+                          : 'border-gray-200 hover:border-blue-300'
+                      }`}
+                    >
+                      <span className={`block text-sm font-medium ${newMetric === option.value ? 'text-blue-700' : 'text-gray-700'}`}>
+                        {option.label}
+                      </span>
+                      <span className="block text-xs text-gray-400">{option.hint}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
               <Button className="w-full" onClick={handleAdd}>Créer l&apos;exercice</Button>
             </div>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
-import { EQUIPMENT_LABEL, DIFFICULTY_LABEL, DIFFICULTY_STYLE, TYPE_LABEL, CATEGORY_LABEL } from '@/lib/exercise-utils';
+import { EQUIPMENT_LABEL, DIFFICULTY_LABEL, DIFFICULTY_STYLE, TYPE_LABEL, CATEGORY_LABEL, exerciseMetric, formatExerciseTarget } from '@/lib/exercise-utils';
 import { exercisePlaceholderUrl, FORCE_LABEL, formatEquipment, formatMuscle } from '@/lib/exercise-db';
 import {
   getExercisePR,
@@ -169,8 +169,6 @@ function StatBox({ label, value, icon }: { label: string; value: string | number
 
 // ─── Section Progression ──────────────────────────────────────────────────────
 
-type ChartMetric = '1RM' | 'Charge max' | 'Volume';
-
 const STATUS_STYLE: Record<string, { pill: string; icon: React.ReactNode }> = {
   positive:     { pill: 'bg-green-50 text-green-700 border-green-200',    icon: <TrendingUp   className="w-3.5 h-3.5" /> },
   stable:       { pill: 'bg-blue-50  text-blue-700  border-blue-200',     icon: <Minus        className="w-3.5 h-3.5" /> },
@@ -178,28 +176,41 @@ const STATUS_STYLE: Record<string, { pill: string; icon: React.ReactNode }> = {
   insufficient: { pill: 'bg-gray-50  text-gray-500  border-gray-200',     icon: <Minus        className="w-3.5 h-3.5" /> },
 };
 
-const METRIC_COLOR: Record<ChartMetric, string> = {
+const METRIC_COLOR: Record<string, string> = {
   '1RM':        '#3b82f6',
   'Charge max': '#f59e0b',
   'Volume':     '#8b5cf6',
+  'Durée max':  '#3b82f6',
+  'Temps total':'#8b5cf6',
 };
 
 function ProgressionSection({
   snapshots,
   progression,
+  metric,
 }: {
   snapshots: SessionSnapshot[];
   progression: ProgressionResult;
+  metric: 'reps' | 'duration';
 }) {
-  const [metric, setMetric] = useState<ChartMetric>('1RM');
+  const isDuration = metric === 'duration';
+  const chartMetrics = isDuration ? ['Durée max', 'Temps total'] : ['1RM', 'Charge max', 'Volume'];
+  const [chartMetric, setChartMetric] = useState<string>(chartMetrics[0]);
   const style = STATUS_STYLE[progression.status] ?? STATUS_STYLE.insufficient;
 
+  // Valeur suivie pour la tendance de la timeline (jamais un mélange reps/secondes).
+  const trendValue = (s: SessionSnapshot) => (isDuration ? s.bestDuration : s.estimated1RM);
+  const formatValue = (v: number) => (isDuration ? formatExerciseTarget(v, 'duration') : `${v} kg`);
+
   const chartData = snapshots.map(s => ({
-    date:         new Date(s.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
-    '1RM':        s.estimated1RM,
-    'Charge max': s.maxWeight,
-    'Volume':     s.totalVolume,
+    date: new Date(s.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }),
+    ...(isDuration
+      ? { 'Durée max': s.bestDuration, 'Temps total': s.totalDuration }
+      : { '1RM': s.estimated1RM, 'Charge max': s.maxWeight, 'Volume': s.totalVolume }),
   }));
+
+  const chartLabel = (m: string) =>
+    m === 'Volume' ? 'Volume (kg)' : m;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
@@ -218,17 +229,17 @@ function ProgressionSection({
       {snapshots.length >= 2 && (
         <>
           <div className="flex gap-1 flex-wrap">
-            {(['1RM', 'Charge max', 'Volume'] as ChartMetric[]).map(m => (
+            {chartMetrics.map(m => (
               <button
                 key={m}
-                onClick={() => setMetric(m)}
+                onClick={() => setChartMetric(m)}
                 className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
-                  metric === m
+                  chartMetric === m
                     ? 'bg-blue-600 text-white border-blue-600'
                     : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'
                 }`}
               >
-                {m === 'Volume' ? 'Volume (kg)' : m}
+                {chartLabel(m)}
               </button>
             ))}
           </div>
@@ -248,18 +259,20 @@ function ProgressionSection({
                   tickLine={false}
                   axisLine={false}
                   domain={['auto', 'auto']}
+                  tickFormatter={isDuration ? (v: number) => formatExerciseTarget(v, 'duration') : undefined}
+                  width={isDuration ? 48 : undefined}
                 />
                 <Tooltip
                   contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e5e7eb', padding: '6px 10px' }}
-                  formatter={(val: number) => [`${val} kg`, metric]}
+                  formatter={(val: number) => [formatValue(val), chartMetric]}
                   labelStyle={{ color: '#6b7280', marginBottom: 2 }}
                 />
                 <Line
                   type="monotone"
-                  dataKey={metric}
-                  stroke={METRIC_COLOR[metric]}
+                  dataKey={chartMetric}
+                  stroke={METRIC_COLOR[chartMetric] ?? '#3b82f6'}
                   strokeWidth={2.5}
-                  dot={{ r: 3.5, fill: METRIC_COLOR[metric], strokeWidth: 0 }}
+                  dot={{ r: 3.5, fill: METRIC_COLOR[chartMetric] ?? '#3b82f6', strokeWidth: 0 }}
                   activeDot={{ r: 5 }}
                 />
               </LineChart>
@@ -276,8 +289,8 @@ function ProgressionSection({
           const prevIndex = snapshots.length - 1 - i - 1;
           const prev = prevIndex >= 0 ? snapshots[prevIndex] : null;
           const trend = prev
-            ? snap.estimated1RM > prev.estimated1RM ? 'up'
-            : snap.estimated1RM < prev.estimated1RM ? 'down'
+            ? trendValue(snap) > trendValue(prev) ? 'up'
+            : trendValue(snap) < trendValue(prev) ? 'down'
             : 'eq'
             : null;
           const isLatest = i === 0;
@@ -298,17 +311,28 @@ function ProgressionSection({
                   {trend === 'down' && <TrendingDown className="w-3.5 h-3.5 text-orange-400" />}
                   {trend === 'eq'   && <Minus        className="w-3.5 h-3.5 text-gray-400" />}
                   <span className={`text-xs font-bold ${isLatest ? 'text-blue-700' : 'text-gray-700'}`}>
-                    1RM ~{snap.estimated1RM} kg
+                    {isDuration
+                      ? `Maintien ${formatExerciseTarget(snap.bestDuration, 'duration')}`
+                      : `1RM ~${snap.estimated1RM} kg`}
                   </span>
                 </div>
               </div>
               <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-gray-500">
-                <span>Max <strong className="text-gray-900">{snap.maxWeight} kg</strong></span>
-                <span>
-                  Meilleur set{' '}
-                  <strong className="text-gray-900">{snap.bestSetWeight}×{snap.bestSetReps}</strong>
-                </span>
-                <span>Vol. <strong className="text-gray-900">{snap.totalVolume} kg</strong></span>
+                {isDuration ? (
+                  <>
+                    <span>Meilleur maintien <strong className="text-gray-900">{formatExerciseTarget(snap.bestDuration, 'duration')}</strong></span>
+                    <span>Temps total <strong className="text-gray-900">{formatExerciseTarget(snap.totalDuration, 'duration')}</strong></span>
+                  </>
+                ) : (
+                  <>
+                    <span>Max <strong className="text-gray-900">{snap.maxWeight} kg</strong></span>
+                    <span>
+                      Meilleur set{' '}
+                      <strong className="text-gray-900">{snap.bestSetWeight}×{snap.bestSetReps}</strong>
+                    </span>
+                    <span>Vol. <strong className="text-gray-900">{snap.totalVolume} kg</strong></span>
+                  </>
+                )}
                 <span className="text-gray-400">{snap.setCount} série{snap.setCount > 1 ? 's' : ''}</span>
               </div>
             </div>
@@ -344,6 +368,9 @@ export function ExerciseDetail() {
     ? instructionsData[id as InstructionKey]
     : null;
 
+  const metric = exerciseMetric(exercise);
+  const isDuration = metric === 'duration';
+
   // Historique pour les cards récentes (vue séance)
   const history = workouts
     .filter(w => w.exercises.some(e => e.exerciseId === id))
@@ -352,18 +379,21 @@ export function ExerciseDetail() {
       const weights = ex.sets.map(s => s.weight).filter(Boolean);
       const maxWeight = weights.length > 0 ? Math.max(...weights) : 0;
       const totalVolume = ex.sets.reduce((sum, s) => sum + s.weight * s.reps, 0);
+      const durations = ex.sets.map(s => s.durationSeconds ?? 0);
+      const bestDuration = durations.length > 0 ? Math.max(0, ...durations) : 0;
+      const totalDuration = durations.reduce((sum, d) => sum + d, 0);
       const completedSets = ex.sets.filter(s => s.completed).length;
       const rpeSets = ex.sets.filter(s => s.rpe !== undefined);
       const avgRpe = rpeSets.length > 0
         ? rpeSets.reduce((sum, s) => sum + (s.rpe ?? 0), 0) / rpeSets.length
         : null;
-      return { workoutId: w.id, date: w.date, workoutName: w.name, maxWeight, totalVolume, sets: ex.sets.length, completedSets, avgRpe };
+      return { workoutId: w.id, date: w.date, workoutName: w.name, maxWeight, totalVolume, bestDuration, totalDuration, sets: ex.sets.length, completedSets, avgRpe };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   const prData    = id ? getExercisePR(workouts, id) : null;
   const snapshots = id ? getExerciseHistory(workouts, id) : [];
-  const progression = getProgressionStatus(snapshots);
+  const progression = getProgressionStatus(snapshots, metric);
 
   return (
     <div className="space-y-6">
@@ -501,7 +531,7 @@ export function ExerciseDetail() {
 
       {/* Progression — visible dès la 1ère séance */}
       {snapshots.length >= 1 && (
-        <ProgressionSection snapshots={snapshots} progression={progression} />
+        <ProgressionSection snapshots={snapshots} progression={progression} metric={metric} />
       )}
 
       {/* Performances personnelles */}
@@ -517,16 +547,33 @@ export function ExerciseDetail() {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-2 mb-4">
-              <StatBox
-                label="Record charge"
-                value={prData ? `${prData.maxWeight} kg` : '—'}
-                icon={<Award className="w-4 h-4 text-yellow-500" />}
-              />
-              <StatBox
-                label="1RM estimé"
-                value={prData?.estimated1RM ? `${prData.estimated1RM} kg` : '—'}
-                icon={<Award className="w-4 h-4 text-orange-400" />}
-              />
+              {isDuration ? (
+                <>
+                  <StatBox
+                    label="Meilleur maintien"
+                    value={prData?.maxDuration ? formatExerciseTarget(prData.maxDuration, 'duration') : '—'}
+                    icon={<Award className="w-4 h-4 text-yellow-500" />}
+                  />
+                  <StatBox
+                    label="Temps total (séance)"
+                    value={prData?.totalDuration ? formatExerciseTarget(prData.totalDuration, 'duration') : '—'}
+                    icon={<Award className="w-4 h-4 text-orange-400" />}
+                  />
+                </>
+              ) : (
+                <>
+                  <StatBox
+                    label="Record charge"
+                    value={prData ? `${prData.maxWeight} kg` : '—'}
+                    icon={<Award className="w-4 h-4 text-yellow-500" />}
+                  />
+                  <StatBox
+                    label="1RM estimé"
+                    value={prData?.estimated1RM ? `${prData.estimated1RM} kg` : '—'}
+                    icon={<Award className="w-4 h-4 text-orange-400" />}
+                  />
+                </>
+              )}
               <StatBox label="Séances" value={history.length} />
               <StatBox
                 label="Dernière"
@@ -546,14 +593,19 @@ export function ExerciseDetail() {
                   <div>
                     <p className="text-sm font-medium text-gray-900">{h.workoutName}</p>
                     <p className="text-xs text-gray-400">
-                      {h.completedSets}/{h.sets} séries · vol. {h.totalVolume} kg
+                      {h.completedSets}/{h.sets} séries
+                      {isDuration
+                        ? ` · total ${formatExerciseTarget(h.totalDuration, 'duration')}`
+                        : ` · vol. ${h.totalVolume} kg`}
                       {h.avgRpe !== null && (
                         <span className="ml-1 text-blue-500">· RPE {h.avgRpe.toFixed(1)}</span>
                       )}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-semibold text-gray-900">{h.maxWeight} kg</p>
+                    <p className="text-sm font-semibold text-gray-900">
+                      {isDuration ? formatExerciseTarget(h.bestDuration, 'duration') : `${h.maxWeight} kg`}
+                    </p>
                     <p className="text-xs text-gray-400">
                       {new Date(h.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
                     </p>

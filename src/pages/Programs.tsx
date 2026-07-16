@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router';
 import { useWorkout } from '../context/WorkoutContext';
 import { generateProgram, type GeneratedProgram } from '../lib/program-ai';
 import { Sparkles, Loader2, ClipboardList, ChevronRight, Check, RefreshCw, X } from 'lucide-react';
-import { formatExerciseTarget } from '@/lib/exercise-utils';
+import { formatProgramTarget, programTargetValue } from '@/lib/exercise-utils';
 
 const SUGGESTIONS = [
   'Full body sur 3 jours',
@@ -118,14 +118,18 @@ export function Programs() {
               <div key={i} className="bg-white rounded-lg border border-gray-200 p-3">
                 <p className="text-sm font-medium text-gray-900 mb-1.5">{day.name}</p>
                 <ul className="space-y-0.5">
-                  {day.exercises.map((ex, j) => (
-                    <li key={j} className="text-xs text-gray-600 flex justify-between">
-                      <span>{exerciseById.get(ex.exerciseId)?.name ?? ex.exerciseId}</span>
-                      <span className="text-gray-400">
-                        {ex.sets} × {ex.reps != null ? formatExerciseTarget(ex.reps, exerciseById.get(ex.exerciseId)?.metric) : '—'}
-                      </span>
-                    </li>
-                  ))}
+                  {day.exercises.map((ex, j) => {
+                    const exercise = exerciseById.get(ex.exerciseId);
+                    const hasTarget = programTargetValue(ex, exercise) > 0;
+                    return (
+                      <li key={j} className="text-xs text-gray-600 flex justify-between">
+                        <span>{exercise?.name ?? ex.exerciseId}</span>
+                        <span className="text-gray-400">
+                          {ex.sets} × {hasTarget ? formatProgramTarget(ex, exercise) : '—'}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

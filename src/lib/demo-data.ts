@@ -1,4 +1,5 @@
 import type { Workout, Exercise, WorkoutSet, BodyWeight } from '../context/WorkoutContext';
+import { exerciseMetric } from './exercise-utils';
 
 // Générateur de données de démonstration : ~4 semaines de séances réalistes
 // avec progression, pour visualiser tous les widgets du dashboard « pleins ».
@@ -58,16 +59,26 @@ export function generateDemoWorkouts(exercises: Exercise[]): Workout[] {
 
       const exercisesForWorkout = chosen.map(ex => {
         const isCompound = ex.type === 'compound';
+        const isDuration = exerciseMetric(ex) === 'duration';
         const setCount = isCompound ? 4 : 3;
         const progression = (WEEKS - 1 - week) * 2.5; // + charge chaque semaine
         const base = (BASE_WEIGHT[ex.category] ?? 20) + progression;
+        const durationBase = 25 + (WEEKS - 1 - week) * 5; // maintien allongé chaque semaine
 
-        const sets: WorkoutSet[] = Array.from({ length: setCount }, (_, i) => ({
-          id: crypto.randomUUID(),
-          weight: ex.bodyweight ? 0 : round(base + i * 2.5),
-          reps: isCompound ? 8 + (i % 2) : 12,
-          completed: true,
-        }));
+        const sets: WorkoutSet[] = Array.from({ length: setCount }, (_, i) => isDuration
+          ? {
+              id: crypto.randomUUID(),
+              weight: 0,
+              reps: 0,
+              durationSeconds: durationBase + i * 5,
+              completed: true,
+            }
+          : {
+              id: crypto.randomUUID(),
+              weight: ex.bodyweight ? 0 : round(base + i * 2.5),
+              reps: isCompound ? 8 + (i % 2) : 12,
+              completed: true,
+            });
 
         return { exerciseId: ex.id, sets };
       });

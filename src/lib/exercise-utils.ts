@@ -99,5 +99,40 @@ export function formatExerciseTarget(value: number, metric: Exercise['metric'] =
 }
 
 export function exerciseSetUnit(metric: Exercise['metric'] = 'reps'): string {
-  return metric === 'duration' ? 'temps' : 'reps';
+  return metric === 'duration' ? 'sec' : 'reps';
+}
+
+// Mesure effective d'un exercice (défaut : répétitions pour les anciennes données).
+export function exerciseMetric(ex?: Pick<Exercise, 'metric'> | null): 'reps' | 'duration' {
+  return ex?.metric === 'duration' ? 'duration' : 'reps';
+}
+
+// Valeur cible d'un exercice de programme selon sa mesure. Rétro-compatible :
+// si un exercice en durée n'a qu'une ancienne valeur dans `reps`, on la
+// réinterprète en secondes (aucune donnée n'est perdue).
+export function programTargetValue(
+  pe: { reps?: number; durationSeconds?: number },
+  ex?: Pick<Exercise, 'metric'> | null,
+): number {
+  if (exerciseMetric(ex) === 'duration') return pe.durationSeconds ?? pe.reps ?? 0;
+  return pe.reps ?? 0;
+}
+
+// Cible formatée d'un exercice de programme ("12 reps", "30 s", "1 min",
+// éventuellement suffixée " par côté" pour un exercice unilatéral).
+export function formatProgramTarget(
+  pe: { reps?: number; durationSeconds?: number },
+  ex?: Pick<Exercise, 'metric' | 'unilateral'> | null,
+): string {
+  const metric = exerciseMetric(ex);
+  const base = formatExerciseTarget(programTargetValue(pe, ex), metric);
+  return ex?.unilateral ? `${base} par côté` : base;
+}
+
+// Valeur réalisée d'une série selon la mesure de l'exercice.
+export function setMetricValue(
+  set: { reps: number; durationSeconds?: number },
+  metric: 'reps' | 'duration',
+): number {
+  return metric === 'duration' ? set.durationSeconds ?? 0 : set.reps;
 }
