@@ -189,8 +189,26 @@ export function entrySubtitle(entry: ExerciseDbEntry): string {
 }
 
 export function legacyCanonicalId(legacyId: string): string | undefined {
-  return Object.entries(TRANSLATIONS)
-    .find(([, translation]) => translation.legacyIds?.includes(legacyId))?.[0];
+  return legacyLookup().get(legacyId);
+}
+
+// Table inversée { ancienId → idCanonique banque }, construite une seule fois.
+let legacyMap: Map<string, string> | null = null;
+function legacyLookup(): Map<string, string> {
+  if (legacyMap) return legacyMap;
+  legacyMap = new Map();
+  for (const [canonical, translation] of Object.entries(TRANSLATIONS)) {
+    for (const legacyId of translation.legacyIds ?? []) legacyMap.set(legacyId, canonical);
+  }
+  return legacyMap;
+}
+
+// Redirige un ancien identifiant local vers son exercice canonique de la banque
+// (quand il en existe un). Sert à dédoublonner les références des séances et
+// programmes : l'exercice local sans image disparaît au profit de la version
+// banque (images + métrique reps/durée correctes). Idempotent.
+export function remapLegacyId(id: string): string {
+  return legacyLookup().get(id) ?? id;
 }
 
 export function localizeExerciseMedia(exercise: Exercise): Exercise {

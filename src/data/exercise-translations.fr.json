@@ -6286,7 +6286,15 @@
     ]
   },
   "Side_Bridge": {
-    "nameFr": "Gainage latéral"
+    "nameFr": "Gainage latéral",
+    "aliases": [
+      "gainage lateral",
+      "planche laterale",
+      "side plank"
+    ],
+    "legacyIds": [
+      "side-plank"
+    ]
   },
   "Side_Hop-Sprint": {
     "nameFr": "Sauts latéraux et sprint",

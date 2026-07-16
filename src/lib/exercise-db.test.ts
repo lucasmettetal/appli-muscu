@@ -4,6 +4,7 @@ import {
   imageUrl,
   legacyCanonicalId,
   mapDbEntry,
+  remapLegacyId,
   thumbnailUrl,
 } from './exercise-db';
 import { matchesExerciseSearch, normalizeSearchText } from './exercise-utils';
@@ -57,6 +58,15 @@ describe('bibliothèque locale Free Exercise DB', () => {
   it('maintient la correspondance des anciens identifiants', () => {
     expect(legacyCanonicalId('push-up')).toBe('Pushups');
     expect(legacyCanonicalId('bench-press-barbell')).toBe('Barbell_Bench_Press_-_Medium_Grip');
+    // Gainage latéral : ancien exercice local redirigé vers la banque (avec image).
+    expect(legacyCanonicalId('side-plank')).toBe('Side_Bridge');
+  });
+
+  it('redirige (remapLegacyId) les références legacy et laisse le reste intact', () => {
+    expect(remapLegacyId('push-up')).toBe('Pushups');
+    expect(remapLegacyId('side-plank')).toBe('Side_Bridge');
+    expect(remapLegacyId('Pushups')).toBe('Pushups');             // déjà canonique → inchangé
+    expect(remapLegacyId('scapular-push-up')).toBe('scapular-push-up'); // exercice maison unique → inchangé
   });
 
   it('classe les maintiens statiques en durée et les mouvements en répétitions', () => {

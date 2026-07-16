@@ -2,7 +2,7 @@ import { createContext, useContext, useState, ReactNode, useEffect, useMemo, use
 import exercisesData from '../data/exercises.json';
 import { scopedKey } from '../lib/profiles';
 import { supabase } from '../lib/supabase';
-import { fetchExerciseLibrary, legacyCanonicalId, localizeExerciseMedia } from '../lib/exercise-db';
+import { fetchExerciseLibrary, legacyCanonicalId, localizeExerciseMedia, remapLegacyId } from '../lib/exercise-db';
 import { useAuth } from './AuthContext';
 
 export interface Exercise {
@@ -123,6 +123,27 @@ export const STORAGE_KEYS = {
   GEMINI_KEY:        'muscu_gemini_key',
 } as const;
 
+// Dédoublonnage : redirige les références d'exercices « legacy » (anciennes
+// entrées locales) vers leur équivalent canonique de la banque, qui porte les
+// images et la bonne métrique. Idempotent — s'applique sans risque à chaque
+// chargement.
+function migrateWorkoutRefs(workout: Workout): Workout {
+  return {
+    ...workout,
+    exercises: workout.exercises.map(ex => ({ ...ex, exerciseId: remapLegacyId(ex.exerciseId) })),
+  };
+}
+
+function migrateProgramRefs(program: Program): Program {
+  return {
+    ...program,
+    days: program.days.map(day => ({
+      ...day,
+      exercises: day.exercises.map(pe => ({ ...pe, exerciseId: remapLegacyId(pe.exerciseId) })),
+    })),
+  };
+}
+
 function safeJSONParse<T>(key: string, fallback: T): T {
   try {
     const saved = localStorage.getItem(key);
@@ -231,7 +252,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   );
 
   const [workouts, setWorkouts] = useState<Workout[]>(() =>
-    cloudUserId ? [] : safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), [])
+    cloudUserId ? [] : safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), []).map(migrateWorkoutRefs)
   );
 
   const [bodyWeights, setBodyWeights] = useState<BodyWeight[]>(() =>
@@ -239,7 +260,7 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
   );
 
   const [programs, setPrograms] = useState<Program[]>(() =>
-    cloudUserId ? [] : safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), [])
+    cloudUserId ? [] : safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), []).map(migrateProgramRefs)
   );
 
   const [libraryExercises, setLibraryExercises] = useState<Exercise[]>([]);
@@ -293,16 +314,16 @@ export function WorkoutProvider({ children }: { children: ReactNode }) {
         (cloud.programs?.length ?? 0) > 0;
 
       if (hasCloud) {
-        setWorkouts(cloud.workouts ?? []);
+        setWorkouts((cloud.workouts ?? []).map(migrateWorkoutRefs));
         setCustomExercises((cloud.customExercises ?? []).map(e => localizeExerciseMedia({ ...e, custom: true })));
         setBodyWeights(cloud.bodyWeights ?? []);
-        setPrograms(cloud.programs ?? []);
+        setPrograms((cloud.programs ?? []).map(migrateProgramRefs));
       } else {
         // Aucune donnée cloud : migration des données locales (profil actif) vers le compte.
-        const localWorkouts = safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), []);
+        const localWorkouts = safeJSONParse<Workout[]>(scopedKey(STORAGE_KEYS.WORKOUTS), []).map(migrateWorkoutRefs);
         const localCustom = safeJSONParse<Exercise[]>(scopedKey(STORAGE_KEYS.CUSTOM_EXERCISES), []);
         const localBodyWeights = safeJSONParse<BodyWeight[]>(scopedKey(STORAGE_KEYS.BODYWEIGHTS), []);
-        const localPrograms = safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), []);
+        const localPrograms = safeJSONParse<Program[]>(scopedKey(STORAGE_KEYS.PROGRAMS), []).map(migrateProgramRefs);
         if (localWorkouts.length > 0 || localCustom.length > 0 || localBodyWeights.length > 0 || localPrograms.length > 0) {
           setWorkouts(localWorkouts);
           setCustomExercises(localCustom.map(e => localizeExerciseMedia({ ...e, custom: true })));

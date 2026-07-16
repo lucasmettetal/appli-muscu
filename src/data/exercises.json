@@ -225,8 +225,8 @@
         "Descends en gardant le buste solide et le mouvement contrôlé.",
         "Repousse sans perdre l'alignement du corps."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Push-Ups_-_Close_Triceps_Position/0.jpg",
+      "imageEnd": "free-exercise-db:Push-Ups_-_Close_Triceps_Position/1.jpg"
     },
     {
       "id": "scapular-push-up",
@@ -260,8 +260,8 @@
         "Rapproche puis éloigne les omoplates sans plier les coudes.",
         "Garde le tronc gainé pendant tout le mouvement."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Pushups/0.jpg",
+      "imageEnd": "free-exercise-db:Pushups/1.jpg"
     },
     {
       "id": "pike-push-up",
@@ -295,8 +295,8 @@
         "Descends la tête vers le sol entre les mains en contrôlant la trajectoire.",
         "Repousse pour revenir en position de départ."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Handstand_Push-Ups/0.jpg",
+      "imageEnd": "free-exercise-db:Handstand_Push-Ups/1.jpg"
     },
     {
       "id": "deadlift-conventional",
@@ -452,8 +452,8 @@
         "Ramène les coudes vers les côtes en contractant le dos.",
         "Contrôle la descente sans relâcher la tension."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Superman/0.jpg",
+      "imageEnd": "free-exercise-db:Superman/1.jpg"
     },
     {
       "id": "reverse-snow-angel",
@@ -485,8 +485,8 @@
         "Déplace lentement les bras des hanches jusqu'au-dessus de la tête.",
         "Ne relâche pas la tension pendant tout le trajet."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Superman/0.jpg",
+      "imageEnd": "free-exercise-db:Superman/1.jpg"
     },
     {
       "id": "y-t-w-floor",
@@ -522,8 +522,8 @@
         "Contracte les omoplates à chaque position sans cambrer excessivement.",
         "Réalise le mouvement de façon lente et contrôlée."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Superman/0.jpg",
+      "imageEnd": "free-exercise-db:Superman/1.jpg"
     },
     {
       "id": "barbell-row",
@@ -886,8 +886,8 @@
         "Pousse dans les talons pour lever le bassin en contractant les fessiers.",
         "Redescends de manière contrôlée sans perdre la tension."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Butt_Lift_Bridge/0.jpg",
+      "imageEnd": "free-exercise-db:Butt_Lift_Bridge/1.jpg"
     },
     {
       "id": "chair-squat",
@@ -956,8 +956,8 @@
         "Descends de manière contrôlée en gardant le buste droit.",
         "Remonte en poussant dans la jambe avant, puis change de côté."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Bodyweight_Walking_Lunge/0.jpg",
+      "imageEnd": "free-exercise-db:Bodyweight_Walking_Lunge/1.jpg"
     },
     {
       "id": "calf-raise-standing",
