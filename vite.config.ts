@@ -85,6 +85,12 @@ export default defineConfig({
   assetsInclude: ['**/*.svg', '**/*.csv'],
 
   build: {
+    // recharts (~540 Ko) est chargé en différé (mini-graphes du dashboard, pages
+    // Progression/Fiche). On l'exclut du modulepreload pour qu'il ne soit
+    // téléchargé qu'au moment où un graphe est réellement rendu.
+    modulePreload: {
+      resolveDependencies: (_url, deps) => deps.filter(dep => !dep.includes('charts-vendor')),
+    },
     rollupOptions: {
       output: {
         // Regroupe les grosses libs tierces dans des chunks stables, mis en

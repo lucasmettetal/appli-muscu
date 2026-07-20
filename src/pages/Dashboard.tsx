@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, lazy, Suspense } from 'react';
 import { useWorkout } from '../context/WorkoutContext';
 import { useProfile } from '../context/ProfileContext';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,11 @@ import { Link } from 'react-router';
 import { WorkoutDraftBanner } from '../components/WorkoutDraftBanner';
 import { WorkoutSummaryCard } from '../components/WorkoutSummaryCard';
 import { WeeklyGoalsCard } from '../components/WeeklyGoalsCard';
-import { TrendMetricCard } from '../components/TrendMetricCard';
+// recharts (~540 Ko) est isolé dans ce composant : on le charge en différé pour
+// qu'il ne pèse pas sur le premier affichage du tableau de bord.
+const TrendMetricCard = lazy(() =>
+  import('../components/TrendMetricCard').then(m => ({ default: m.TrendMetricCard }))
+);
 import { MuscleBreakdownCard } from '../components/MuscleBreakdownCard';
 import { StreakStrip } from '../components/StreakStrip';
 import { CountUp } from '../components/CountUp';
@@ -113,25 +117,32 @@ export function Dashboard() {
       {/* Résumé de la dernière séance */}
       {recentWorkouts.length > 0 && <WorkoutSummaryCard workout={recentWorkouts[0]} />}
 
-      {/* Tendances (KPI + mini-graphes) */}
-      <div className="grid grid-cols-2 gap-3">
-        <TrendMetricCard
-          label="Volume / séance"
-          value={`${lastVolume.toLocaleString('fr-FR')} kg`}
-          icon={TrendingUp}
-          data={trend.volume}
-          color="#3b82f6"
-          gradientId="trend-volume"
-        />
-        <TrendMetricCard
-          label="Séries / séance"
-          value={String(lastSets)}
-          icon={Layers}
-          data={trend.sets}
-          color="#8b5cf6"
-          gradientId="trend-sets"
-        />
-      </div>
+      {/* Tendances (KPI + mini-graphes) — recharts chargé en différé */}
+      <Suspense fallback={
+        <div className="grid grid-cols-2 gap-3">
+          <div className="h-28 rounded-2xl bg-gray-100 animate-pulse" />
+          <div className="h-28 rounded-2xl bg-gray-100 animate-pulse" />
+        </div>
+      }>
+        <div className="grid grid-cols-2 gap-3">
+          <TrendMetricCard
+            label="Volume / séance"
+            value={`${lastVolume.toLocaleString('fr-FR')} kg`}
+            icon={TrendingUp}
+            data={trend.volume}
+            color="#3b82f6"
+            gradientId="trend-volume"
+          />
+          <TrendMetricCard
+            label="Séries / séance"
+            value={String(lastSets)}
+            icon={Layers}
+            data={trend.sets}
+            color="#8b5cf6"
+            gradientId="trend-sets"
+          />
+        </div>
+      </Suspense>
 
       {/* Répartition par groupe musculaire */}
       <MuscleBreakdownCard workouts={workouts} exercises={exercises} />
