@@ -60,6 +60,43 @@ function playBeep() {
   }
 }
 
+// Demande (une fois) l'autorisation d'afficher des notifications de fin de repos.
+// Doit être appelée depuis un geste utilisateur (démarrage du timer / validation).
+function requestRestNotifications() {
+  try {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
+    }
+  } catch { /* API indisponible */ }
+}
+
+// Signale la fin du repos : vibration (Android) + notification si l'app est en
+// arrière-plan et l'autorisation accordée. Le bip sonore reste géré séparément.
+function notifyRestDone() {
+  try { navigator.vibrate?.([120, 60, 120, 60, 240]); } catch { /* non supporté (iOS) */ }
+
+  if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+  if (!document.hidden) return; // au premier plan, le bip + l'écran suffisent
+
+  const title = 'Repos terminé 💪';
+  const options = {
+    body: 'Place à la série suivante.',
+    tag: 'rest-timer',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
+    renotify: true,
+  } as NotificationOptions;
+
+  // Le service worker affiche la notification de façon fiable même en arrière-plan.
+  if (navigator.serviceWorker?.ready) {
+    navigator.serviceWorker.ready
+      .then(reg => reg.showNotification(title, options))
+      .catch(() => { try { new Notification(title, options); } catch { /* ignore */ } });
+  } else {
+    try { new Notification(title, options); } catch { /* ignore */ }
+  }
+}
+
 function createWorkoutSet(overrides: Partial<WorkoutSet> = {}): WorkoutSet {
   return {
     id: crypto.randomUUID(),
@@ -416,6 +453,7 @@ export function WorkoutSession() {
   const [restRemaining, setRestRemaining] = useState(0);
   const [restActive, setRestActive]       = useState(false);
   const restIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const notifAskedRef   = useRef(false);
 
   const stopRest = useCallback(() => {
     if (restIntervalRef.current) clearInterval(restIntervalRef.current);
@@ -424,6 +462,8 @@ export function WorkoutSession() {
   }, []);
 
   const startRest = useCallback((duration: number) => {
+    // Première utilisation du timer : on propose les notifications de fin de repos.
+    if (!notifAskedRef.current) { notifAskedRef.current = true; requestRestNotifications(); }
     if (restIntervalRef.current) clearInterval(restIntervalRef.current);
     setRestRemaining(duration);
     setRestActive(true);
@@ -433,6 +473,7 @@ export function WorkoutSession() {
           clearInterval(restIntervalRef.current!);
           setRestActive(false);
           playBeep();
+          notifyRestDone();
           return 0;
         }
         return prev - 1;
