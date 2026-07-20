@@ -921,8 +921,8 @@
         "Garde le torse gainé et les genoux dans l'axe des pieds.",
         "Reviens debout en poussant dans le sol."
       ],
-      "imageStart": null,
-      "imageEnd": null
+      "imageStart": "free-exercise-db:Bodyweight_Squat/0.jpg",
+      "imageEnd": "free-exercise-db:Bodyweight_Squat/1.jpg"
     },
     {
       "id": "assisted-reverse-lunge",

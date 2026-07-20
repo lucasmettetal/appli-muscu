@@ -283,19 +283,16 @@
     ]
   },
   "Chair_Squat": {
-    "nameFr": "Squat vers une chaise",
+    "nameFr": "Squat guidé sur boîte",
     "instructionsFr": [
       "Descends de manière contrôlée jusqu'à toucher légèrement une chaise.",
       "Garde le torse gainé et les genoux dans l'axe des pieds.",
       "Reviens debout en poussant dans le sol."
     ],
     "aliases": [
-      "squat chaise",
-      "chair squat",
-      "box squat poids du corps"
-    ],
-    "legacyIds": [
-      "chair-squat"
+      "squat guide sur boite",
+      "box squat",
+      "squat machine sur boite"
     ]
   },
   "Rocking_Standing_Calf_Raise": {
