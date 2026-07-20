@@ -37,8 +37,8 @@ function loadChat(): AIMessage[] {
 // ─── Suggestions rapides ──────────────────────────────────────────────────────
 
 const QUICK_PROMPTS = [
-  'Analyse mes dernières séances',
-  'Suis-je en progression ?',
+  'Analyse ma progression et dis-moi où je stagne',
+  'Quels objectifs viser à ma prochaine séance ?',
   'Que travailler ce soir ?',
   'Conseils récupération',
 ];

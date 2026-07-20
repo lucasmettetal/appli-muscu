@@ -3,6 +3,7 @@ import {
   formatRecentWorkouts,
   formatPRSummary,
   formatProgressionSummary,
+  formatNextTargets,
   buildSystemPrompt,
 } from './ai-context';
 import type { Workout, Exercise, WorkoutSet } from '../context/WorkoutContext';
@@ -31,6 +32,11 @@ function mkWorkout(date: string, name: string, exercises: Workout['exercises']):
 const squat = mkExercise('squat', 'Squat');
 const bench = mkExercise('bench', 'Développé couché');
 const exercises = [squat, bench];
+
+// Exercice en durée (planche) pour vérifier que le contexte IA « voit » les maintiens.
+const plank: Exercise = { ...mkExercise('plank', 'Planche'), metric: 'duration' };
+const exercisesWithPlank = [squat, bench, plank];
+const mkHold = (durationSeconds: number) => mkSet(0, 0, { durationSeconds });
 
 // ─── formatRecentWorkouts ─────────────────────────────────────────────────────
 
@@ -76,6 +82,15 @@ describe('formatRecentWorkouts', () => {
     expect(out).toContain('Jambes');
     expect(out).not.toContain('Squat :');
   });
+
+  it('résume les exercices en durée en secondes (pas en kg)', () => {
+    const workouts = [
+      mkWorkout('2026-01-08', 'Gainage', [{ exerciseId: 'plank', sets: [mkHold(30), mkHold(45)] }]),
+    ];
+    const out = formatRecentWorkouts(workouts, exercisesWithPlank);
+    expect(out).toContain('Planche : maintien max 45 s × 2 série(s)');
+    expect(out).not.toContain('kg');
+  });
 });
 
 // ─── formatPRSummary ──────────────────────────────────────────────────────────
@@ -95,6 +110,29 @@ describe('formatPRSummary', () => {
     expect(out).toContain('1RM estimé');
     // bench jamais pratiqué -> absent
     expect(out).not.toContain('Développé couché');
+  });
+
+  it('affiche le meilleur maintien pour un exercice en durée', () => {
+    const workouts = [
+      mkWorkout('2026-01-08', 'Gainage', [{ exerciseId: 'plank', sets: [mkHold(50)] }]),
+    ];
+    const out = formatPRSummary(workouts, exercisesWithPlank);
+    expect(out).toContain('Planche : meilleur maintien 50 s');
+    expect(out).not.toMatch(/Planche.*kg/);
+  });
+});
+
+// ─── formatNextTargets ────────────────────────────────────────────────────────
+
+describe('formatNextTargets', () => {
+  it('propose un objectif chiffré par exercice pratiqué', () => {
+    const workouts = [
+      mkWorkout('2026-01-08', 'Jambes', [{ exerciseId: 'squat', sets: [mkSet(60, 8)] }]),
+      mkWorkout('2026-01-09', 'Gainage', [{ exerciseId: 'plank', sets: [mkHold(30)] }]),
+    ];
+    const out = formatNextTargets(workouts, exercisesWithPlank);
+    expect(out).toContain('Squat : viser 9 reps (actuel 8)');
+    expect(out).toContain('Planche : viser 35 s (actuel 30 s)');
   });
 });
 
@@ -128,6 +166,7 @@ describe('buildSystemPrompt', () => {
     expect(prompt).toContain('STATISTIQUES GÉNÉRALES');
     expect(prompt).toContain('RECORDS PERSONNELS');
     expect(prompt).toContain('PROGRESSION PAR EXERCICE');
+    expect(prompt).toContain('OBJECTIFS SUGGÉRÉS');
     expect(prompt).toContain('DERNIÈRES SÉANCES');
     expect(prompt).toContain('Séances totales : 1');
   });

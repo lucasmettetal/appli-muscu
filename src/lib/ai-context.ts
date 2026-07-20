@@ -1,5 +1,6 @@
 import type { Workout, Exercise } from '../context/WorkoutContext';
-import { getExercisePR, getProgressionStatus, getExerciseHistory } from './pr-utils';
+import { getExercisePR, getProgressionStatus, getExerciseHistory, getProgressionSuggestion } from './pr-utils';
+import { exerciseMetric, formatExerciseTarget } from './exercise-utils';
 
 // ─── Sérialisation du contexte utilisateur ────────────────────────────────────
 
@@ -19,19 +20,28 @@ export function formatRecentWorkouts(
 ): string {
   if (workouts.length === 0) return 'Aucune séance enregistrée.';
 
-  const exerciseMap = new Map(exercises.map(e => [e.id, e.name]));
+  const exerciseMap = new Map(exercises.map(e => [e.id, e]));
   const recent = workouts.slice(0, limit);
 
   return recent.map(w => {
     const lines: string[] = [`• ${w.name} (${fmtShort(w.date)})`];
     for (const ex of w.exercises) {
-      const name = exerciseMap.get(ex.exerciseId) ?? ex.exerciseId;
-      const validSets = ex.sets.filter(s => s.weight > 0 && s.reps > 0);
-      if (validSets.length === 0) continue;
-      const maxW   = Math.max(...validSets.map(s => s.weight));
+      const exercise = exerciseMap.get(ex.exerciseId);
+      const name = exercise?.name ?? ex.exerciseId;
       const avgRpe = ex.sets.filter(s => s.rpe !== undefined).reduce((a, s, _, arr) => a + (s.rpe ?? 0) / arr.length, 0);
       const rpeStr = avgRpe > 0 ? ` RPE ${avgRpe.toFixed(1)}` : '';
-      lines.push(`  - ${name} : max ${maxW} kg × ${validSets.length} série(s)${rpeStr}`);
+
+      if (exerciseMetric(exercise) === 'duration') {
+        const holds = ex.sets.filter(s => (s.durationSeconds ?? 0) > 0);
+        if (holds.length === 0) continue;
+        const best = Math.max(...holds.map(s => s.durationSeconds ?? 0));
+        lines.push(`  - ${name} : maintien max ${formatExerciseTarget(best, 'duration')} × ${holds.length} série(s)${rpeStr}`);
+      } else {
+        const validSets = ex.sets.filter(s => s.weight > 0 && s.reps > 0);
+        if (validSets.length === 0) continue;
+        const maxW = Math.max(...validSets.map(s => s.weight));
+        lines.push(`  - ${name} : max ${maxW} kg × ${validSets.length} série(s)${rpeStr}`);
+      }
     }
     return lines.join('\n');
   }).join('\n');
@@ -67,6 +77,10 @@ export function formatPRSummary(
   return practiced.map(ex => {
     const pr = getExercisePR(workouts, ex.id);
     if (!pr) return null;
+    if (exerciseMetric(ex) === 'duration') {
+      if (pr.maxDuration <= 0) return null;
+      return `• ${ex.name} : meilleur maintien ${formatExerciseTarget(pr.maxDuration, 'duration')}`;
+    }
     return `• ${ex.name} : ${pr.maxWeight} kg (${pr.maxWeightReps} reps) — 1RM estimé ${pr.estimated1RM} kg`;
   }).filter(Boolean).join('\n');
 }
@@ -88,9 +102,32 @@ export function formatProgressionSummary(
 
   return practiced.map(ex => {
     const history = getExerciseHistory(workouts, ex.id);
-    const prog    = getProgressionStatus(history);
+    const prog    = getProgressionStatus(history, exerciseMetric(ex));
     return `• ${ex.name} : ${STATUS_FR[prog.status]}${prog.delta !== null ? ` (${prog.delta > 0 ? '+' : ''}${prog.delta}%)` : ''}`;
   }).filter(Boolean).join('\n');
+}
+
+// Objectifs suggérés (surcharge progressive) — mêmes règles que la fiche exercice
+export function formatNextTargets(
+  workouts: Workout[],
+  exercises: Exercise[],
+): string {
+  const practiced = practicedExercises(workouts, exercises);
+  if (practiced.length === 0) return 'Aucune donnée.';
+
+  const lines = practiced.map(ex => {
+    const s = getProgressionSuggestion(workouts, ex.id, exerciseMetric(ex));
+    if (!s) return null;
+    if (s.type === 'duration') {
+      return `• ${ex.name} : viser ${formatExerciseTarget(s.suggested, 'duration')} (actuel ${formatExerciseTarget(s.current, 'duration')})`;
+    }
+    if (s.type === 'weight') {
+      return `• ${ex.name} : viser ${s.suggested} kg × ${s.reps} (actuel ${s.current} kg)`;
+    }
+    return `• ${ex.name} : viser ${s.suggested} reps (actuel ${s.current})`;
+  }).filter(Boolean);
+
+  return lines.length > 0 ? lines.join('\n') : 'Aucune donnée.';
 }
 
 // Statistiques générales
@@ -133,6 +170,9 @@ ${formatPRSummary(workouts, exercises)}
 
 PROGRESSION PAR EXERCICE
 ${formatProgressionSummary(workouts, exercises)}
+
+OBJECTIFS SUGGÉRÉS (surcharge progressive)
+${formatNextTargets(workouts, exercises)}
 
 DERNIÈRES SÉANCES (5 plus récentes)
 ${formatRecentWorkouts(workouts, exercises, 5)}
