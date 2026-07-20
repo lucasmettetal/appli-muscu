@@ -5,6 +5,7 @@ import {
   detectNewPRs,
   getExerciseHistory,
   getProgressionStatus,
+  getProgressionSuggestion,
   getLastPerformance,
   type SessionSnapshot,
 } from './pr-utils';
@@ -249,6 +250,32 @@ describe('getProgressionStatus', () => {
     const res = getProgressionStatus(history, 'duration');
     expect(res.status).toBe('stable');
     expect(res.description).toMatch(/5 à 10 s/);
+  });
+});
+
+// ─── getProgressionSuggestion ─────────────────────────────────────────────────
+
+describe('getProgressionSuggestion', () => {
+  it('renvoie null sans historique', () => {
+    expect(getProgressionSuggestion([], 'squat')).toBeNull();
+  });
+
+  it('ajoute de la charge quand le plafond de reps est atteint', () => {
+    const workouts = [mkWorkout('2026-01-01', [{ exerciseId: 'squat', sets: [mkSet(60, 12)] }])];
+    const s = getProgressionSuggestion(workouts, 'squat');
+    expect(s).toEqual({ type: 'weight', current: 60, suggested: 62.5, reps: 8 });
+  });
+
+  it('ajoute une répétition tant que le plafond n\'est pas atteint', () => {
+    const workouts = [mkWorkout('2026-01-01', [{ exerciseId: 'squat', sets: [mkSet(60, 8)] }])];
+    const s = getProgressionSuggestion(workouts, 'squat');
+    expect(s).toEqual({ type: 'reps', current: 8, suggested: 9 });
+  });
+
+  it('allonge le maintien de 5 s pour un exercice en durée', () => {
+    const workouts = [mkWorkout('2026-01-01', [{ exerciseId: 'plank', sets: [mkDurationSet(30)] }])];
+    const s = getProgressionSuggestion(workouts, 'plank', 'duration');
+    expect(s).toEqual({ type: 'duration', current: 30, suggested: 35 });
   });
 });
 

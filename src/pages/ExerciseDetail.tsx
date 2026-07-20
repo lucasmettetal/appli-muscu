@@ -7,8 +7,10 @@ import {
   getExercisePR,
   getExerciseHistory,
   getProgressionStatus,
+  getProgressionSuggestion,
   type SessionSnapshot,
   type ProgressionResult,
+  type ProgressionSuggestion,
 } from '@/lib/pr-utils';
 import instructionsData from '../data/exercise-instructions.json';
 import { geminiKeyName, GeminiAIService } from '@/lib/ai-service';
@@ -17,7 +19,7 @@ import {
 } from 'recharts';
 import {
   ChevronLeft, Award, Dumbbell, CheckCircle2, XCircle,
-  TrendingUp, TrendingDown, Minus, Languages, Loader2,
+  TrendingUp, TrendingDown, Minus, Languages, Loader2, Target,
 } from 'lucide-react';
 
 type InstructionKey = keyof typeof instructionsData;
@@ -184,14 +186,27 @@ const METRIC_COLOR: Record<string, string> = {
   'Temps total':'#8b5cf6',
 };
 
+// Formate une suggestion de surcharge progressive en « actuel → objectif ».
+function formatSuggestion(s: ProgressionSuggestion): { now: string; goal: string } {
+  if (s.type === 'duration') {
+    return { now: formatExerciseTarget(s.current, 'duration'), goal: formatExerciseTarget(s.suggested, 'duration') };
+  }
+  if (s.type === 'weight') {
+    return { now: `${s.current} kg`, goal: `${s.suggested} kg × ${s.reps}` };
+  }
+  return { now: `${s.current} rép`, goal: `${s.suggested} rép` };
+}
+
 function ProgressionSection({
   snapshots,
   progression,
   metric,
+  suggestion,
 }: {
   snapshots: SessionSnapshot[];
   progression: ProgressionResult;
   metric: 'reps' | 'duration';
+  suggestion: ProgressionSuggestion | null;
 }) {
   const isDuration = metric === 'duration';
   const chartMetrics = isDuration ? ['Durée max', 'Temps total'] : ['1RM', 'Charge max', 'Volume'];
@@ -224,6 +239,21 @@ function ProgressionSection({
         </div>
         <p className="text-xs text-gray-500 mt-1.5">{progression.description}</p>
       </div>
+
+      {/* Prochain objectif (surcharge progressive) */}
+      {suggestion && (() => {
+        const { now, goal } = formatSuggestion(suggestion);
+        return (
+          <div className="flex items-center gap-2.5 rounded-xl border border-blue-100 bg-blue-50/60 px-3 py-2.5">
+            <Target className="w-4 h-4 text-blue-600 shrink-0" />
+            <p className="text-xs text-gray-700">
+              <span className="font-semibold text-blue-700">Prochain objectif :</span>{' '}
+              vise <strong className="text-gray-900">{goal}</strong>
+              <span className="text-gray-400"> (dernière séance : {now})</span>
+            </p>
+          </div>
+        );
+      })()}
 
       {/* Graphique (seulement si ≥ 2 séances) */}
       {snapshots.length >= 2 && (
@@ -394,6 +424,7 @@ export function ExerciseDetail() {
   const prData    = id ? getExercisePR(workouts, id) : null;
   const snapshots = id ? getExerciseHistory(workouts, id) : [];
   const progression = getProgressionStatus(snapshots, metric);
+  const suggestion = id ? getProgressionSuggestion(workouts, id, metric) : null;
 
   return (
     <div className="space-y-6">
@@ -531,7 +562,7 @@ export function ExerciseDetail() {
 
       {/* Progression — visible dès la 1ère séance */}
       {snapshots.length >= 1 && (
-        <ProgressionSection snapshots={snapshots} progression={progression} metric={metric} />
+        <ProgressionSection snapshots={snapshots} progression={progression} metric={metric} suggestion={suggestion} />
       )}
 
       {/* Performances personnelles */}

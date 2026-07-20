@@ -268,6 +268,49 @@ export function getProgressionStatus(
   };
 }
 
+// ─── Suggestion de surcharge progressive ────────────────────────────────────
+// Objectif « raisonnable » pour la prochaine séance, calculé à partir de la
+// dernière performance. Jamais « augmente les reps » pour un exercice en durée.
+
+export interface ProgressionSuggestion {
+  type: 'weight' | 'reps' | 'duration';
+  current: number;    // kg (weight), répétitions (reps) ou secondes (duration)
+  suggested: number;
+  reps?: number;      // reps cibles associées quand on ajoute de la charge
+}
+
+// Seuil de reps au-delà duquel on ajoute de la charge plutôt que des reps
+// (double progression classique).
+const REPS_TO_ADD_LOAD = 12;
+
+export function getProgressionSuggestion(
+  workouts: Workout[],
+  exerciseId: string,
+  metric: 'reps' | 'duration' = 'reps',
+): ProgressionSuggestion | null {
+  const history = getExerciseHistory(workouts, exerciseId);
+  if (history.length === 0) return null;
+  const last = history[history.length - 1];
+
+  // Exercices en durée : on allonge le maintien de 5 s.
+  if (metric === 'duration') {
+    if (last.bestDuration <= 0) return null;
+    return { type: 'duration', current: last.bestDuration, suggested: last.bestDuration + 5 };
+  }
+
+  // Exercices en charge : double progression (reps jusqu'au plafond, puis +charge).
+  // NB : les exercices au poids du corps (charge 0) ne sont pas suivis dans
+  // l'historique aujourd'hui — pas de suggestion pour eux.
+  if (last.maxWeight > 0) {
+    if (last.bestSetReps >= REPS_TO_ADD_LOAD) {
+      return { type: 'weight', current: last.bestSetWeight, suggested: last.bestSetWeight + 2.5, reps: 8 };
+    }
+    return { type: 'reps', current: last.bestSetReps, suggested: last.bestSetReps + 1 };
+  }
+
+  return null;
+}
+
 // ─── Labels ───────────────────────────────────────────────────────────────────
 
 export const PR_TYPE_LABEL: Record<PRType, string> = {
